@@ -29,6 +29,8 @@ const userSchema = new mongoose.Schema(
         firstName: String,
         lastName: String,
         age: String,
+        gender: String,
+        location: String,
         foodPreferences: Array,
         dislikedFoods: Array,
         interests: Array,
