@@ -16,6 +16,9 @@ export default {
           'Apple SD Gothic Neo',
         ],
       },
+      colors: {
+        error: '#ef4444',
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],
