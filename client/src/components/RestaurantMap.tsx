@@ -1,22 +1,36 @@
-import React ,  { useEffect, useState }from 'react';
-import { createRoot } from 'react-dom/client';
+import React ,  { useEffect, useState, useCallback, useRef  }from 'react';
 import { APIProvider, AdvancedMarker, Map, Marker, Pin, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { config } from '../config';
+import {debounce} from 'lodash';
 
-const RestaurantMap = () => {
+interface RestaurantMapProps {
+  setClickedRestaurant: (restaurant: string) => void;
+}
+
+const RestaurantMap = ({setClickedRestaurant}) => {
   const [restaurants, setRestaurants] = useState([]);
-  const currentLocation = { lat: 40.76785648078654, lng: -73.96447914218824 };
 
-  const yelpAPIKey = config.yelpAPIKey;
+  // hard coded for now
+  const currentLocation = { lat: 40.76785648078654, lng: -73.96447914218824 };
+  const price = 1;
+
+  const [mapCenter, setMapCenter] = useState(currentLocation);
+  const mapCenterRef = useRef(mapCenter); // this is so the debounced function can access the latest mapCenter
+
+  useEffect(() => {
+    mapCenterRef.current = mapCenter; // Update ref on mapCenter change
+  }, [mapCenter]);
 
   const fetchRestaurants = async () => {
+    const { lat, lng } = mapCenterRef.current;
     try {
       const response = await fetch(`/api/v3/businesses/search?term=restaurants` +
-      `&latitude=${currentLocation.lat}`+
-      `&longitude=${currentLocation.lng}`+
-      `&radius=500`+
+      `&latitude=${lat}`+
+      `&longitude=${lng}`+
+      `&radius=1500`+
       `&sort_by=distance`+
-      `&limit=50`,
+      `&limit=50`+
+      `&price=${price}`,
         {
           method: 'GET',
       });
@@ -29,23 +43,47 @@ const RestaurantMap = () => {
     }
   }
 
+  // debounced api call so we don't make a request on every map move
+  const debouncedFetchRestaurants = useCallback(debounce(() => {
+    fetchRestaurants();
+  }, 1000), []);
+
   useEffect(() => {
     fetchRestaurants();
   }, []);
+
+  // Call debouncedFetchRestaurants on mapCenter change
+  useEffect(() => {
+    debouncedFetchRestaurants(mapCenter);
+  }, [mapCenter, debouncedFetchRestaurants]);
+
   // Function to handle marker click
-  const handleMarkerClick = (restaurantName) => {
-    console.log(restaurantName);
+  const handleMarkerClick = (restaurant) => {
+    setClickedRestaurant(restaurant);
   };
+
+
+  const updateMap = (map) => {
+    console.log(map)
+    const center = map.detail.center;
+    setMapCenter(center);
+    console.log('center:   ',center)
+  }
 
   return (
     <APIProvider apiKey={config.mapsAPIKey}>
-      <div className='w-3/4 h-full p-11'>
-        <Map zoom={17} center={currentLocation} mapId={config.mapID}>
+      <div className='w-full h-full'>
+        <Map
+          zoom={17}
+          center={mapCenter}
+          mapId={config.mapID}
+          onCenterChanged={(map) => updateMap(map)}
+        >
           {restaurants.map((restaurant, index) => (
             <Marker
               key={index}
               position={{lat:restaurant.coordinates.latitude, lng:restaurant.coordinates.longitude}}
-              onClick={() => handleMarkerClick(restaurant.name)}
+              onClick={() => handleMarkerClick(restaurant)}
             />
           ))}
           <AdvancedMarker position={currentLocation}>
