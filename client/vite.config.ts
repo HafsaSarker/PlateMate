@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': {
+      '/yelp-api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,

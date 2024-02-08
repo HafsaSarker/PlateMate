@@ -9,6 +9,7 @@ interface RestaurantMapProps {
 
 const RestaurantMap = ({setClickedRestaurant}) => {
   const [restaurants, setRestaurants] = useState([]);
+  const [address, setAddress] = useState('');
 
   // hard coded for now
   const currentLocation = { lat: 40.76785648078654, lng: -73.96447914218824 };
@@ -24,10 +25,10 @@ const RestaurantMap = ({setClickedRestaurant}) => {
   const fetchRestaurants = async () => {
     const { lat, lng } = mapCenterRef.current;
     try {
-      const response = await fetch(`/api/v3/businesses/search?term=restaurants` +
+      const response = await fetch(`/yelp-api/v3/businesses/search?term=restaurants` +
       `&latitude=${lat}`+
       `&longitude=${lng}`+
-      `&radius=1500`+
+      `&radius=40000`+
       `&sort_by=distance`+
       `&limit=50`+
       `&price=${price}`,
@@ -35,18 +36,16 @@ const RestaurantMap = ({setClickedRestaurant}) => {
           method: 'GET',
       });
       const data = await response.json();
-      console.log(data);
       setRestaurants(data.businesses);
-      console.log(data.businesses)
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
-  // debounced api call so we don't make a request on every map move
+  // debounced api call so we don't make a request on every map move, updates after 1 second
   const debouncedFetchRestaurants = useCallback(debounce(() => {
     fetchRestaurants();
-  }, 1000), []);
+  }, 700), []);
 
   useEffect(() => {
     fetchRestaurants();
@@ -57,17 +56,15 @@ const RestaurantMap = ({setClickedRestaurant}) => {
     debouncedFetchRestaurants(mapCenter);
   }, [mapCenter, debouncedFetchRestaurants]);
 
-  // Function to handle marker click
+  // pass restaurant info up to parent to use on right section
   const handleMarkerClick = (restaurant) => {
     setClickedRestaurant(restaurant);
   };
 
-
+  // updates the center of the map when it is moved
   const updateMap = (map) => {
-    console.log(map)
     const center = map.detail.center;
     setMapCenter(center);
-    console.log('center:   ',center)
   }
 
   return (
