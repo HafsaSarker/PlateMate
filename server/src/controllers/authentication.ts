@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { userAction } from "./../utils/userActions";
+import { userAction } from "../utils/userActions";
 import { hashPassword, random } from "../utils/authentication";
 
 async function register(
