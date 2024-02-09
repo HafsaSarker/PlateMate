@@ -1,7 +1,8 @@
 import React ,  { useEffect, useState, useCallback, useRef  }from 'react';
-import { APIProvider, AdvancedMarker, Map, Marker, Pin, useMap, useMapsLibrary } from '@vis.gl/react-google-maps';
+import { APIProvider, AdvancedMarker, Map, Marker, Pin } from '@vis.gl/react-google-maps';
 import { config } from '../config';
 import {debounce} from 'lodash';
+import MapSearch from './MapSearch';
 
 interface RestaurantMapProps {
   setClickedRestaurant: (restaurant: string) => void;
@@ -9,10 +10,9 @@ interface RestaurantMapProps {
 
 const RestaurantMap = ({setClickedRestaurant}) => {
   const [restaurants, setRestaurants] = useState([]);
-  const [address, setAddress] = useState('');
+  const [currentLocation, setCurrentLocation] = useState({ lat: 40.76785648078654, lng: -73.96447914218824 });
 
   // hard coded for now
-  const currentLocation = { lat: 40.76785648078654, lng: -73.96447914218824 };
   const price = 1;
 
   const [mapCenter, setMapCenter] = useState(currentLocation);
@@ -37,6 +37,7 @@ const RestaurantMap = ({setClickedRestaurant}) => {
       });
       const data = await response.json();
       setRestaurants(data.businesses);
+      console.log(data.businesses);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -68,11 +69,13 @@ const RestaurantMap = ({setClickedRestaurant}) => {
   }
 
   return (
+    <>
+    <MapSearch setCurrentLocation={setCurrentLocation}/>
     <APIProvider apiKey={config.mapsAPIKey}>
       <div className='w-full h-full'>
         <Map
           zoom={17}
-          center={mapCenter}
+          center={currentLocation}
           mapId={config.mapID}
           onCenterChanged={(map) => updateMap(map)}
         >
@@ -84,11 +87,13 @@ const RestaurantMap = ({setClickedRestaurant}) => {
             />
           ))}
           <AdvancedMarker position={currentLocation}>
-            <Pin background={'blue'} borderColor={'blue'} glyphColor={'lightblue'} scale={2}/>
+            <Pin background={'#f472b6'} borderColor={'#fb923c'} glyphColor={'#fb923c'} scale={1.3}/>
           </AdvancedMarker>
         </Map>
       </div>
     </APIProvider>
+    </>
+
   );
 };
 
