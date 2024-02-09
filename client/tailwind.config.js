@@ -24,6 +24,7 @@ export default {
         'text-primary': '#374151', // Dark gray for primary text
         'text-secondary': '#6b7280', // Lighter gray for secondary text
       },
+      error: '#ef4444',
     },
   },
   plugins: [require('@tailwindcss/forms')],
