@@ -10,7 +10,6 @@ interface RestaurantMapProps {
 
 const RestaurantMap = ({setClickedRestaurant}) => {
   const [restaurants, setRestaurants] = useState([]);
-  const [address, setAddress] = useState('');
   const [currentLocation, setCurrentLocation] = useState({ lat: 40.76785648078654, lng: -73.96447914218824 });
 
   // hard coded for now
@@ -88,7 +87,7 @@ const RestaurantMap = ({setClickedRestaurant}) => {
             />
           ))}
           <AdvancedMarker position={currentLocation}>
-            <Pin background={'blue'} borderColor={'blue'} glyphColor={'lightblue'} scale={2}/>
+            <Pin background={'#f472b6'} borderColor={'#fb923c'} glyphColor={'#fb923c'} scale={1.3}/>
           </AdvancedMarker>
         </Map>
       </div>

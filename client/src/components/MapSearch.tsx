@@ -2,7 +2,7 @@ import { useState } from "react";
 
 
 const MapSearch = ({setCurrentLocation}) => {
-  const [addressInput, setAddressInput] = useState('');
+  const [addressInput, setAddressInput] = useState('695 Park Ave, New York, NY 10065');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddressInput(e.target.value);
@@ -23,10 +23,10 @@ const MapSearch = ({setCurrentLocation}) => {
   }
 
   return (
-    <div>
+    <div className="flex ">
 
-      <input type="text" placeholder="Enter address" onChange={handleInputChange}/>
-      <button onClick={getLocation}>Search</button>
+      <input className="w-1/2" type="text" placeholder={addressInput} onChange={handleInputChange}/>
+      <button className="px-4 bg-primary" onClick={getLocation}>Search</button>
     </div>
   );
 }

@@ -16,6 +16,14 @@ export default {
           'Apple SD Gothic Neo',
         ],
       },
+      colors: {
+        'primary': '#f472b6', // A warm pink for primary buttons and highlights
+        'secondary': '#fb923c', // A complementary orange for secondary elements
+        'accent': '#facc15', // A sunny yellow for accents and call-to-actions
+        'background': '#fef3c7', // A light cream background for a warm, inviting feel
+        'text-primary': '#374151', // Dark gray for primary text
+        'text-secondary': '#6b7280', // Lighter gray for secondary text
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],
