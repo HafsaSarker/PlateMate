@@ -4,8 +4,10 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
+import router from "./routes";
 import { connectDB } from "./db/connect";
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
@@ -33,3 +35,4 @@ const boot = async () => {
 };
 
 boot();
+app.use("/", router());
