@@ -7,6 +7,7 @@ import cors from "cors";
 import router from "./routes";
 import { connectDB } from "./db/connect";
 import dotenv from "dotenv";
+import { createProxyMiddleware } from "http-proxy-middleware";
 dotenv.config();
 
 const app = express();
@@ -20,6 +21,17 @@ app.use(
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
+
+const yelpProxy = createProxyMiddleware({
+  target: "https://api.yelp.com",
+  changeOrigin: true,
+  pathRewrite: { "^/yelp-api": "" }, // Rewrite paths to match the target API
+  headers: {
+    Authorization: `Bearer ${process.env.YELP_API_KEY}`,
+  },
+});
+
+app.use("/yelp-api", yelpProxy);
 
 const server = http.createServer(app);
 
