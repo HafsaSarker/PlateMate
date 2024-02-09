@@ -1,6 +1,36 @@
-import mongoose from "mongoose";
+import { Schema, Document, model } from "mongoose";
 
-const UserSchema = new mongoose.Schema(
+// 1. Create an interface representing a document in MongoDB.
+interface UserProfile {
+  firstName: string;
+  lastName: string;
+  profileImg?: string;
+  coverImg?: string;
+  about?: string;
+  nationality?: string;
+  sex?: string;
+  height?: string;
+  age?: number;
+  lifeStyle?: string[];
+  restaurantLocation: string;
+  foodCategory: string;
+  restaurantAttributes?: string[];
+  pricePoint?: number[];
+}
+
+interface UserAuthentication {
+  password: string;
+  salt?: string;
+  sessionToken?: string;
+}
+
+interface User extends Document {
+  email: string;
+  authentication: UserAuthentication;
+  profile: UserProfile;
+}
+
+const UserSchema = new Schema<User>(
   {
     email: {
       type: String,
@@ -42,8 +72,14 @@ const UserSchema = new mongoose.Schema(
         min: 18,
       },
       lifeStyle: [String], // ["Smoke", "Drink"]
-      location: String,
-      foodCategory: String,
+      restaurantLocation: {
+        type: String,
+        required: true,
+      },
+      foodCategory: {
+        type: String,
+        required: true,
+      },
       restaurantAttributes: [String], // ["wifi_free", "parking_lot"]
       pricePoint: [Number], // [1, 2, 3] == price point $,$$,$$$
     },
@@ -53,4 +89,4 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-export const UserModel = mongoose.model("User", UserSchema);
+export const UserModel = model<User>("User", UserSchema);
