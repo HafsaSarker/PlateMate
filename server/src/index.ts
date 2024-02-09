@@ -31,8 +31,6 @@ const yelpProxy = createProxyMiddleware({
   },
 });
 
-app.use("/yelp-api", yelpProxy);
-
 const server = http.createServer(app);
 
 const boot = async () => {
@@ -47,4 +45,5 @@ const boot = async () => {
 };
 
 boot();
-app.use("/", router());
+app.use("/api", router());
+app.use("/yelp-api", yelpProxy);
