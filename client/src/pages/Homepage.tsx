@@ -22,6 +22,13 @@ const Homepage = () => {
             </div>
 
             <p className='text-sm text-gray-500'>{clickedRestaurant.location.display_address}</p>
+            <div className='flex text-gray-500'>
+              {clickedRestaurant.categories.map((category, index) => (
+              <p className='text-xs border border-gray rounded-md p-1 bg-gray-300 key={index}' key={index}>{category.title}</p>
+            ))}
+            </div>
+
+
             <img className='max-h-48 w-full object-cover' src={clickedRestaurant.image_url} alt="restaurant_img" />
           </div>
         ) : (
