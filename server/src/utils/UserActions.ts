@@ -5,7 +5,9 @@ async function getUsers(): Promise<IUser[] | null> {
 }
 
 async function getUserByEmail(email: string): Promise<IUser | null> {
-  return UserModel.findOne({ email });
+  return UserModel.findOne({ email }).select(
+    "+authentication.salt +authentication.password"
+  );
 }
 
 async function getUserBySessionToken(
