@@ -1,14 +1,11 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
   {
-    username: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     authentication: {
       password: {
@@ -26,16 +23,29 @@ const userSchema = new mongoose.Schema(
       },
     },
     profile: {
-      firstName: String,
-      lastName: String,
-      age: String,
-      gender: String,
+      firstName: {
+        type: String,
+        required: true,
+      },
+      lastName: {
+        type: String,
+        required: true,
+      },
+      profileImg: String,
+      coverImg: String,
+      about: String,
+      nationality: String,
+      sex: String,
+      height: String, // "5 ft 10 in"
+      age: {
+        type: Number,
+        min: 18,
+      },
+      lifeStyle: [String], // ["Smoke", "Drink"]
       location: String,
-      foodPreferences: Array,
-      dislikedFoods: Array,
-      interests: Array,
-      profilePicture: String,
-      pricePreference: String, // "$", "$$", or "$$$"
+      foodCategory: String,
+      restaurantAttributes: [String], // ["wifi_free", "parking_lot"]
+      pricePoint: [Number], // [1, 2, 3] == price point $,$$,$$$
     },
   },
   {
@@ -43,4 +53,4 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-export const UserModel = mongoose.model("User", userSchema);
+export const UserModel = mongoose.model("User", UserSchema);
