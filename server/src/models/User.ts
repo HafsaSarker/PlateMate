@@ -1,7 +1,7 @@
 import { Schema, Document, model } from "mongoose";
 
 // 1. Create an interface representing a document in MongoDB.
-interface UserProfile {
+interface IUserProfile {
   firstName: string;
   lastName: string;
   profileImg?: string;
@@ -18,19 +18,19 @@ interface UserProfile {
   pricePoint?: number[];
 }
 
-interface UserAuthentication {
+interface IUserAuthentication {
   password: string;
   salt?: string;
   sessionToken?: string;
 }
 
-interface User extends Document {
+export interface IUser extends Document {
   email: string;
-  authentication: UserAuthentication;
-  profile: UserProfile;
+  authentication: IUserAuthentication;
+  profile: IUserProfile;
 }
 
-const UserSchema = new Schema<User>(
+const UserSchema = new Schema<IUser>(
   {
     email: {
       type: String,
@@ -89,4 +89,4 @@ const UserSchema = new Schema<User>(
   }
 );
 
-export const UserModel = model<User>("User", UserSchema);
+export const UserModel = model<IUser>("User", UserSchema);
