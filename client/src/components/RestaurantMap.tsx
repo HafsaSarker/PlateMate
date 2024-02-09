@@ -43,7 +43,7 @@ const RestaurantMap = ({setClickedRestaurant}) => {
     }
   }
 
-  // debounced api call so we don't make a request on every map move, updates after 1 second
+  // debounced api call so we don't make a request on every map move, updates after .4 second
   const debouncedFetchRestaurants = useCallback(debounce(() => {
     fetchRestaurants();
   }, 400), []);

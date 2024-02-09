@@ -25,13 +25,13 @@ app.use(bodyParser.json());
 const yelpProxy = createProxyMiddleware({
   target: 'https://api.yelp.com',
   changeOrigin: true,
-  pathRewrite: { '^/yelp-api': '' }, // Rewrite paths to match the target API
+  pathRewrite: { '^/api': '' }, // Rewrite paths to match the target API
   headers: {
     Authorization: `Bearer ${process.env.YELP_API_KEY}`,
   },
 });
 
-app.use('/yelp-api', yelpProxy);
+app.use('/api', yelpProxy);
 
 const server = http.createServer(app);
 
