@@ -8,7 +8,7 @@ interface RestaurantMapProps {
   setClickedRestaurant: (restaurant: string) => void;
 }
 
-const RestaurantMap = ({setClickedRestaurant}) => {
+const RestaurantMap:React.FC<RestaurantMapProps> = ({setClickedRestaurant}) => {
   const [restaurants, setRestaurants] = useState([]);
   const [currentLocation, setCurrentLocation] = useState({ lat: 40.76785648078654, lng: -73.96447914218824 });
 

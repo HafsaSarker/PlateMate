@@ -1,7 +1,11 @@
 import { useState } from "react";
 
+interface MapSearchProps {
+  setCurrentLocation: (location: {lat: number, lng: number}) => void;
+}
 
-const MapSearch = ({setCurrentLocation}) => {
+
+const MapSearch: React.FC<MapSearchProps> = ({setCurrentLocation}) => {
   const [addressInput, setAddressInput] = useState('695 Park Ave, New York, NY 10065');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
