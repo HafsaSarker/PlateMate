@@ -17,7 +17,7 @@ async function getUserBySessionToken(
 }
 
 async function getUserById(id: string): Promise<IUser | null> {
-  return UserModel.findOne({ id });
+  return UserModel.findById(id);
 }
 
 async function createUser(values: Record<string, any>): Promise<IUser> {
@@ -35,7 +35,10 @@ async function updateUserById(
   values: Record<string, any>
 ): Promise<IUser | null> {
   // option "new" returns the updated doc
-  return UserModel.findByIdAndUpdate(id, values, { new: true });
+  return UserModel.findByIdAndUpdate(id, values, {
+    new: true,
+    runValidators: true,
+  });
 }
 
 export const userAction = {
