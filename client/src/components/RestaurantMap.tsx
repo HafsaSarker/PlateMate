@@ -4,12 +4,36 @@ import { config } from '../config';
 import {debounce} from 'lodash';
 import MapSearch from './MapSearch';
 
-interface RestaurantMapProps {
-  setClickedRestaurant: (restaurant: string) => void;
+interface MapEvent {
+  detail: {
+    center: {
+      lat: number;
+      lng: number;
+    };
+  };
 }
 
-const RestaurantMap = ({setClickedRestaurant}) => {
-  const [restaurants, setRestaurants] = useState([]);
+interface RestaurantMapProps {
+  setClickedRestaurant: (restaurant: Restaurant) => void;
+}
+
+interface Restaurant {
+  name: string;
+  image_url: string;
+  rating: number;
+  price: string;
+  location: string;
+  phone: string;
+  url: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  },
+  categories: [{title: string;}]
+}
+
+const RestaurantMap:React.FC<RestaurantMapProps> = ({setClickedRestaurant}) => {
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [currentLocation, setCurrentLocation] = useState({ lat: 40.76785648078654, lng: -73.96447914218824 });
 
   // hard coded for now
@@ -37,13 +61,12 @@ const RestaurantMap = ({setClickedRestaurant}) => {
       });
       const data = await response.json();
       setRestaurants(data.businesses);
-      console.log(data.businesses);
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
-  // debounced api call so we don't make a request on every map move, updates after 1 second
+  // debounced api call so we don't make a request on every map move, updates after .4 second
   const debouncedFetchRestaurants = useCallback(debounce(() => {
     fetchRestaurants();
   }, 400), []);
@@ -54,16 +77,17 @@ const RestaurantMap = ({setClickedRestaurant}) => {
 
   // Call debouncedFetchRestaurants on mapCenter change
   useEffect(() => {
-    debouncedFetchRestaurants(mapCenter);
+    debouncedFetchRestaurants();
   }, [mapCenter, debouncedFetchRestaurants]);
 
   // pass restaurant info up to parent to use on right section
-  const handleMarkerClick = (restaurant) => {
+  const handleMarkerClick = (restaurant: Restaurant) => {
     setClickedRestaurant(restaurant);
+    console.log(restaurant)
   };
 
   // updates the center of the map when it is moved
-  const updateMap = (map) => {
+  const updateMap = (map:MapEvent) => {
     const center = map.detail.center;
     setMapCenter(center);
   }
