@@ -11,4 +11,10 @@ export default (router: express.Router) => {
     isOwner,
     userController.deleteUser
   );
+  router.patch(
+    "/users/:id",
+    isAuthenticated,
+    isOwner,
+    userController.updateUser
+  );
 };

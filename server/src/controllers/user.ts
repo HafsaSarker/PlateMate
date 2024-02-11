@@ -27,7 +27,24 @@ async function deleteUser(req: Request, res: Response) {
   }
 }
 
+async function updateUser(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+
+    const updatedUser = await userAction.updateUserById(id, req.body);
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "user does not exist" });
+    }
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 export const userController = {
   getAllUsers,
   deleteUser,
+  updateUser,
 };

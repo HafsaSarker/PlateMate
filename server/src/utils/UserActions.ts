@@ -35,7 +35,10 @@ async function updateUserById(
   values: Record<string, any>
 ): Promise<IUser | null> {
   // option "new" returns the updated doc
-  return UserModel.findByIdAndUpdate(id, values, { new: true });
+  return UserModel.findByIdAndUpdate(id, values, {
+    new: true,
+    runValidators: true,
+  });
 }
 
 export const userAction = {
