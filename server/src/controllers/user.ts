@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { userAction } from "../utils/userActions";
+import { userAction } from "../utils/UserActions";
 
 async function getAllUsers(req: Request, res: Response) {
   try {

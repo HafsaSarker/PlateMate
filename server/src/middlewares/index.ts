@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { merge, get } from "lodash";
-import { userAction } from "../utils/userActions";
+import { userAction } from "../utils/UserActions";
 
 export const isAuthenticated = async (
   req: Request,
