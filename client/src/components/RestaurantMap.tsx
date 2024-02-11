@@ -61,7 +61,6 @@ const RestaurantMap:React.FC<RestaurantMapProps> = ({setClickedRestaurant}) => {
       });
       const data = await response.json();
       setRestaurants(data.businesses);
-      console.log(data.businesses);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -89,7 +88,6 @@ const RestaurantMap:React.FC<RestaurantMapProps> = ({setClickedRestaurant}) => {
 
   // updates the center of the map when it is moved
   const updateMap = (map:MapEvent) => {
-    console.log(map)
     const center = map.detail.center;
     setMapCenter(center);
   }

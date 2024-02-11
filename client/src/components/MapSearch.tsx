@@ -19,7 +19,6 @@ const MapSearch: React.FC<MapSearchProps> = ({setCurrentLocation}) => {
       `address=${address}&`+
       `key=${import.meta.env.VITE_MAPS_API}`);
       const data = await response.json();
-      console.log(data);
       setCurrentLocation(data.results[0].geometry.location);
     } catch (error) {
       console.error('Error:', error);
