@@ -17,7 +17,7 @@ async function getUserBySessionToken(
 }
 
 async function getUserById(id: string): Promise<IUser | null> {
-  return UserModel.findOne({ id });
+  return UserModel.findById(id);
 }
 
 async function createUser(values: Record<string, any>): Promise<IUser> {
