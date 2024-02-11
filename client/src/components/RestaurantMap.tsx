@@ -4,12 +4,36 @@ import { config } from '../config';
 import {debounce} from 'lodash';
 import MapSearch from './MapSearch';
 
+interface MapEvent {
+  detail: {
+    center: {
+      lat: number;
+      lng: number;
+    };
+  };
+}
+
 interface RestaurantMapProps {
-  setClickedRestaurant: (restaurant: string) => void;
+  setClickedRestaurant: (restaurant: Restaurant) => void;
+}
+
+interface Restaurant {
+  name: string;
+  image_url: string;
+  rating: number;
+  price: string;
+  location: string;
+  phone: string;
+  url: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  },
+  categories: [{title: string;}]
 }
 
 const RestaurantMap:React.FC<RestaurantMapProps> = ({setClickedRestaurant}) => {
-  const [restaurants, setRestaurants] = useState([]);
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [currentLocation, setCurrentLocation] = useState({ lat: 40.76785648078654, lng: -73.96447914218824 });
 
   // hard coded for now
@@ -54,16 +78,18 @@ const RestaurantMap:React.FC<RestaurantMapProps> = ({setClickedRestaurant}) => {
 
   // Call debouncedFetchRestaurants on mapCenter change
   useEffect(() => {
-    debouncedFetchRestaurants(mapCenter);
+    debouncedFetchRestaurants();
   }, [mapCenter, debouncedFetchRestaurants]);
 
   // pass restaurant info up to parent to use on right section
-  const handleMarkerClick = (restaurant) => {
+  const handleMarkerClick = (restaurant: Restaurant) => {
     setClickedRestaurant(restaurant);
+    console.log(restaurant)
   };
 
   // updates the center of the map when it is moved
-  const updateMap = (map) => {
+  const updateMap = (map:MapEvent) => {
+    console.log(map)
     const center = map.detail.center;
     setMapCenter(center);
   }
