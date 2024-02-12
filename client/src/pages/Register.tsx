@@ -3,6 +3,8 @@ import Lifestyle from '../components/register/Lifestyle';
 import FoodPreferences from '../components/register/FoodPreferences';
 import { FormData } from '../types/formData';
 import { ChangeEvent, FormEvent, useState } from 'react';
+import { auth_api_path } from '../api/auth';
+import axios from 'axios';
 
 export default function Register() {
   const [formData, setFormData] = useState<FormData>({
@@ -64,10 +66,16 @@ export default function Register() {
     }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Do something with the form data, e.g., send it to a server
     console.log(formData);
+
+    // Do something with the form data, e.g., send it to a server
+    try {
+      await axios.post(`${auth_api_path}register`, formData);
+    } catch (error) {
+      console.error();
+    }
   };
   return (
     <div className="h-full w-full flex items-center overflow-y-auto py-20 px-52">
