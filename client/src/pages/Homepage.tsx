@@ -1,9 +1,28 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import RestaurantMap from '../components/RestaurantMap';
+
+interface Restaurant {
+  name: string;
+  image_url: string;
+  rating: number;
+  price: string;
+  location: {
+    display_address: string;
+  };
+  phone: string;
+  url: string;
+  review_count: number;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  categories: [{ title: string }];
+
+}
 
 const Homepage = () => {
   const hunterLocation = { lat: 40.76785648078654, lng: -73.96447914218824 };
-  const [clickedRestaurant, setClickedRestaurant] = useState(null);
+  const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(null);
 
   return (
     <>
@@ -26,7 +45,7 @@ const Homepage = () => {
             </p>
             <div className="flex text-gray-500">
               {clickedRestaurant.categories.map((category, index) => (
-                <p className="text-xs border border-gray rounded-md p-1 bg-gray-300 key={index}">
+                <p key={index} className="text-xs border border-gray rounded-md p-1 bg-gray-300 key={index}">
                   {category.title}
                 </p>
               ))}
