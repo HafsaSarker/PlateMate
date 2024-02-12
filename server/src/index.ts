@@ -8,6 +8,7 @@ import router from "./routes";
 import { connectDB } from "./db/connect";
 import dotenv from "dotenv";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import { Server } from "socket.io";
 dotenv.config();
 
 const app = express();
