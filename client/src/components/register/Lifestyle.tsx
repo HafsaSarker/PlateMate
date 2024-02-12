@@ -1,4 +1,7 @@
-function Lifestyle() {
+import React from 'react';
+import { RegisterProps } from '../../types/registerProps';
+
+const Lifestyle: React.FC<RegisterProps> = ({ handleChange }) => {
   return (
     <div className="border-b border-gray-900/10 pb-12">
       <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -21,6 +24,7 @@ function Lifestyle() {
                   name="smoke"
                   type="checkbox"
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                  onChange={handleChange}
                 />
               </div>
               <div className="text-sm leading-6">
@@ -36,6 +40,7 @@ function Lifestyle() {
                   name="drink"
                   type="checkbox"
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                  onChange={handleChange}
                 />
               </div>
               <div className="text-sm leading-6">
@@ -49,6 +54,6 @@ function Lifestyle() {
       </div>
     </div>
   );
-}
+};
 
 export default Lifestyle;

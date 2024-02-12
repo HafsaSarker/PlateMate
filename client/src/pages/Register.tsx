@@ -1,11 +1,77 @@
 import PersonalInfo from '../components/register/PersonalInfo';
 import Lifestyle from '../components/register/Lifestyle';
 import FoodPreferences from '../components/register/FoodPreferences';
+import { FormData } from '../types/formData';
+import { ChangeEvent, FormEvent, useState } from 'react';
 
 export default function Register() {
+  const [formData, setFormData] = useState<FormData>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    profileImg: '',
+    coverImg: '',
+    about: '',
+    nationality: '',
+    sex: '',
+    height: '',
+    age: null,
+    smoke: false,
+    drink: false,
+    restaurantLocation: '',
+    foodCategory: '',
+    restaurantAttributes: [],
+    pricePoint: [],
+  });
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
+    const { name, value, type } = e.target;
+
+    switch (type) {
+      case 'checkbox':
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: (e.target as HTMLInputElement).checked ?? false,
+        }));
+        break;
+      case 'file':
+        // store the file itself
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: (e.target as HTMLInputElement).files?.[0] || '',
+        }));
+        break;
+      case 'select-multiple':
+        // Handling multiple select inputs
+        const selectedOptions = Array.from(
+          (e.target as HTMLSelectElement).options,
+        )
+          .filter((option) => option.selected)
+          .map((option) => option.value);
+        setFormData((prevData) => ({ ...prevData, [name]: selectedOptions }));
+        break;
+      case 'number':
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: value !== '' ? parseInt(value, 10) : null,
+        }));
+        break;
+      default:
+        setFormData((prevData) => ({ ...prevData, [name]: value }));
+    }
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Do something with the form data, e.g., send it to a server
+    console.log(formData);
+  };
   return (
     <div className="h-full w-full flex items-center overflow-y-auto py-20 px-52">
-      <form className="h-full w-full">
+      <form className="h-full w-full" onSubmit={handleSubmit}>
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
             <div className="border-b border-gray-900/10 pb-12">
@@ -19,7 +85,7 @@ export default function Register() {
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div className="sm:col-span-3">
                   <label
-                    htmlFor="first-name"
+                    htmlFor="firstName"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
                     First name*
@@ -27,19 +93,19 @@ export default function Register() {
                   <div className="mt-2">
                     <input
                       type="text"
-                      name="first-name"
-                      id="first-name"
-                      autoComplete="given-name"
+                      name="firstName"
+                      id="firstName"
                       placeholder="Jane"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       required
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
 
                 <div className="sm:col-span-3">
                   <label
-                    htmlFor="last-name"
+                    htmlFor="lastName"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
                     Last name*
@@ -47,12 +113,12 @@ export default function Register() {
                   <div className="mt-2">
                     <input
                       type="text"
-                      name="last-name"
-                      id="last-name"
+                      name="lastName"
+                      id="lastName"
                       placeholder="Doe"
-                      autoComplete="family-name"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       required
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -69,10 +135,10 @@ export default function Register() {
                       id="email"
                       name="email"
                       type="email"
-                      autoComplete="email"
                       placeholder="JaneDoe@example.com"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       required
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -92,6 +158,7 @@ export default function Register() {
                       placeholder="••••••••••••••"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       required
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -99,14 +166,14 @@ export default function Register() {
             </div>
 
             {/* PERSONAL INFO */}
-            <PersonalInfo />
+            <PersonalInfo handleChange={handleChange} />
           </div>
 
           {/* LIFESTYLE */}
-          <Lifestyle />
+          <Lifestyle handleChange={handleChange} />
 
           {/* FOOD PREFERENCES */}
-          <FoodPreferences />
+          <FoodPreferences handleChange={handleChange} />
         </div>
 
         <div className="mt-6 flex items-center justify-end gap-x-6 pb-20">
