@@ -1,4 +1,7 @@
-function FoodPreferences() {
+import React from 'react';
+import { RegisterProps } from '../../types/registerProps';
+
+const FoodPreferences: React.FC<RegisterProps> = ({ handleChange }) => {
   return (
     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
       <div className="col-span-full">
@@ -12,7 +15,7 @@ function FoodPreferences() {
 
       <div className="col-span-full">
         <label
-          htmlFor="location-preffered"
+          htmlFor="restaurantLocation"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Location Preferred*
@@ -20,18 +23,19 @@ function FoodPreferences() {
         <div className="mt-2">
           <input
             type="text"
-            name="location-preffered"
-            id="location-preffered"
+            name="restaurantLocation"
+            id="restaurantLocation"
             placeholder="NYC"
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             required
+            onChange={handleChange}
           />
         </div>
       </div>
 
       <div className="col-span-full">
         <label
-          htmlFor="food-category"
+          htmlFor="foodCategory"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Food Category*
@@ -39,10 +43,11 @@ function FoodPreferences() {
         <div className="mt-2">
           <input
             type="text"
-            name="food-category"
-            id="food-category"
+            name="foodCategory"
+            id="foodCategory"
             placeholder="Bubble Tea"
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            onChange={handleChange}
           />
         </div>
         <span className="block text-xs font-medium leading-6 text-gray-900">
@@ -59,7 +64,7 @@ function FoodPreferences() {
 
       <div className="col-span-full">
         <label
-          htmlFor="attributes"
+          htmlFor="restaurantAttributes"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Restaurant Attributes
@@ -69,11 +74,11 @@ function FoodPreferences() {
         </span>
         <div className="mt-2">
           <select
-            id="attributes"
-            name="attributes"
+            id="restaurantAttributes"
+            name="restaurantAttributes"
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
             multiple
-            required
+            onChange={handleChange}
           >
             <option value="reservation">Reservation</option>
             <option value="deals">Deals</option>
@@ -87,17 +92,18 @@ function FoodPreferences() {
 
       <div className="col-span-full">
         <label
-          htmlFor="price-point"
+          htmlFor="pricePoint"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Price Point
         </label>
         <div className="mt-2">
           <select
-            id="price-point"
-            name="price-point"
+            id="pricePoint"
+            name="pricePoint"
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
             multiple
+            onChange={handleChange}
           >
             <option value="1">$</option>
             <option value="2">$$</option>
@@ -108,6 +114,6 @@ function FoodPreferences() {
       </div>
     </div>
   );
-}
+};
 
 export default FoodPreferences;

@@ -1,17 +1,21 @@
-function Countries() {
+import React from 'react';
+import { RegisterProps } from '../../types/registerProps';
+
+const Countries: React.FC<RegisterProps> = ({ handleChange }) => {
   return (
     <div className="sm:col-span-3">
       <label
-        htmlFor="country"
+        htmlFor="nationality"
         className="block text-sm font-medium leading-6 text-gray-900"
       >
         Nationality
       </label>
       <select
-        id="country"
-        name="country"
+        id="nationality"
+        name="nationality"
         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
         required
+        onChange={handleChange}
       >
         <option value="null">Select an option</option>
         <option value="Afghanistan">Afghanistan</option>
@@ -301,6 +305,6 @@ function Countries() {
       </select>
     </div>
   );
-}
+};
 
 export default Countries;
