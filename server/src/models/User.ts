@@ -11,11 +11,12 @@ interface IUserProfile {
   sex?: string;
   height?: string;
   age?: number;
-  lifeStyle?: string[];
+  smoke?: boolean;
+  drink?: boolean;
   restaurantLocation: string;
   foodCategory: string;
   restaurantAttributes?: string[];
-  pricePoint?: number[];
+  pricePoint?: string[];
 }
 
 interface IUserAuthentication {
@@ -71,7 +72,8 @@ const UserSchema = new Schema<IUser>(
         type: Number,
         min: 18,
       },
-      lifeStyle: [String], // ["Smoke", "Drink"]
+      smoke: Boolean,
+      drink: Boolean,
       restaurantLocation: {
         type: String,
         required: true,
@@ -81,7 +83,7 @@ const UserSchema = new Schema<IUser>(
         required: true,
       },
       restaurantAttributes: [String], // ["wifi_free", "parking_lot"]
-      pricePoint: [Number], // [1, 2, 3] == price point $,$$,$$$
+      pricePoint: [String], // [1, 2, 3] == price point $,$$,$$$
     },
   },
   {
