@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import RestaurantMap from '../components/RestaurantMap';
+import RestaurantMap from '../components/map/RestaurantMap';
 
 interface Restaurant {
   name: string;
@@ -17,16 +17,17 @@ interface Restaurant {
     longitude: number;
   };
   categories: [{ title: string }];
-
 }
 
 const Homepage = () => {
   const hunterLocation = { lat: 40.76785648078654, lng: -73.96447914218824 };
-  const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(null);
+  const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
+    null,
+  );
 
   return (
-    <>
-      <div className="w-3/4 h-full p-11">
+    <div className="h-full w-full flex items-center overflow-y-auto">
+      <div className="w-8/12 h-full p-11">
         <RestaurantMap setClickedRestaurant={setClickedRestaurant} />
       </div>
 
@@ -45,7 +46,10 @@ const Homepage = () => {
             </p>
             <div className="flex text-gray-500">
               {clickedRestaurant.categories.map((category, index) => (
-                <p key={index} className="text-xs border border-gray rounded-md p-1 bg-gray-300 key={index}">
+                <p
+                  key={index}
+                  className="text-xs border border-gray rounded-md p-1 bg-gray-300 key={index}"
+                >
                   {category.title}
                 </p>
               ))}
@@ -65,7 +69,7 @@ const Homepage = () => {
 
         {/* Here is where we fetch users matched at this location then display them, prob using a component*/}
       </section>
-    </>
+    </div>
   );
 };
 
