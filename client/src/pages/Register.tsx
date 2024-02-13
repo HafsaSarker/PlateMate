@@ -4,6 +4,7 @@ import FoodPreferences from '../components/register/FoodPreferences';
 import { FormData } from '../types/formData';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { auth_api_path } from '../api/auth';
+import { destructFormData } from '../utils/destructFormData';
 import axios from 'axios';
 
 export default function Register() {
@@ -68,13 +69,15 @@ export default function Register() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
 
-    // Do something with the form data, e.g., send it to a server
+    // destructuring formData
+    const submitData = destructFormData(formData);
+
+    // send to server
     try {
-      await axios.post(`${auth_api_path}register`, formData);
+      await axios.post(`${auth_api_path}register`, submitData);
     } catch (error) {
-      console.error();
+      console.log(error);
     }
   };
   return (
