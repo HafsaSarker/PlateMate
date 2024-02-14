@@ -8,7 +8,7 @@ import router from "./routes";
 import { connectDB } from "./db/connect";
 import dotenv from "dotenv";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { Server } from "socket.io";
+import { Server, Socket } from 'socket.io';
 dotenv.config();
 
 const app = express();
@@ -33,6 +33,30 @@ const yelpProxy = createProxyMiddleware({
 });
 
 const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on('connection', (socket: Socket) => {
+  console.log('A user connected');
+
+  socket.on('join_room', (room) => {
+    socket.join(room);
+    console.log(`User ${socket.id} joined room ${room}`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+
+  socket.on('send_message', (data) => {
+    socket.to(data.room).emit('receive_message', data);
+    console.log(data);
+  });
+});
 
 const boot = async () => {
   try {
