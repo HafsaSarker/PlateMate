@@ -1,23 +1,7 @@
 import { useState } from 'react';
 import RestaurantMap from '../components/map/RestaurantMap';
-
-interface Restaurant {
-  name: string;
-  image_url: string;
-  rating: number;
-  price: string;
-  location: {
-    display_address: string;
-  };
-  phone: string;
-  url: string;
-  review_count: number;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-  categories: [{ title: string }];
-}
+import { Restaurant } from '../types/restaurant';
+import SelectedRestaurant from '../components/map/SelectedRestaurant';
 
 const Homepage = () => {
   const hunterLocation = { lat: 40.76785648078654, lng: -73.96447914218824 };
@@ -31,36 +15,9 @@ const Homepage = () => {
         <RestaurantMap setClickedRestaurant={setClickedRestaurant} />
       </div>
 
-      <section className="right flex items-center w-1/4 h-full p-2 justify-center">
+      <section className="flex-1 flex items-start h-full  pt-11 justify-start">
         {clickedRestaurant ? (
-          <div className="restaurant w-full">
-            <h2 className="font-bold text-xl">{clickedRestaurant.name}</h2>
-            <div className="flex gap-2">
-              <p>{clickedRestaurant.rating}★</p>
-              <p>({clickedRestaurant.review_count})</p>
-              <p>{clickedRestaurant.price}</p>
-            </div>
-
-            <p className="text-sm text-gray-500">
-              {clickedRestaurant.location.display_address}
-            </p>
-            <div className="flex text-gray-500">
-              {clickedRestaurant.categories.map((category, index) => (
-                <p
-                  key={index}
-                  className="text-xs border border-gray rounded-md p-1 bg-gray-300 key={index}"
-                >
-                  {category.title}
-                </p>
-              ))}
-            </div>
-
-            <img
-              className="max-h-48 w-full object-cover"
-              src={clickedRestaurant.image_url}
-              alt="restaurant_img"
-            />
-          </div>
+          <SelectedRestaurant clickedRestaurant={clickedRestaurant} />
         ) : (
           <div>
             <h2>Click on a restaurant to view details</h2>

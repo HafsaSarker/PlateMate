@@ -5,6 +5,8 @@ export interface Restaurant {
   price: string;
   location: {
     display_address: string;
+    state?: string;
+    zip_code?: string;
   };
   phone: string;
   url: string;
