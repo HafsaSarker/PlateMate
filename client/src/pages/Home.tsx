@@ -1,70 +1,35 @@
 import { useState } from 'react';
-import RestaurantMap from '../components/RestaurantMap';
-
-interface Restaurant {
-  name: string;
-  image_url: string;
-  rating: number;
-  price: string;
-  location: {
-    display_address: string;
-  };
-  phone: string;
-  url: string;
-  review_count: number;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-  categories: [{ title: string }];
-
-}
+import RestaurantMap from '../components/map/RestaurantMap';
+import { Restaurant } from '../types/restaurant';
+import SelectedRestaurant from '../components/map/SelectedRestaurant';
+import { tempUsers } from '../data/tempUsers';
+import MatchedUsers from '../components/home/MatchedUsers';
 
 const Home = () => {
-  const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(null);
+  const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
+    null,
+  );
 
   return (
-    <>
-      <div className="w-3/4 h-full p-11">
+    <div className="h-full w-full flex items-center pb-11 justify-between overflow-hidden ">
+      <div className="w-8/12 h-full pb-11 px-11 ">
         <RestaurantMap setClickedRestaurant={setClickedRestaurant} />
       </div>
 
-      <section className="right flex items-center w-1/4 h-full p-2 justify-center">
-        {clickedRestaurant ? (
-          <div className="restaurant w-full">
-            <h2 className="font-bold text-xl">{clickedRestaurant.name}</h2>
-            <div className="flex gap-2">
-              <p>{clickedRestaurant.rating}★</p>
-              <p>({clickedRestaurant.review_count})</p>
-              <p>{clickedRestaurant.price}</p>
-            </div>
+      {/* hardcoded temp users for now */}
+      {clickedRestaurant && tempUsers ? (
+        <section className="flex flex-col items-start h-full pt-11 justify-start w-[500px] max-w-[600px]">
+          <SelectedRestaurant clickedRestaurant={clickedRestaurant} />
 
-            <p className="text-sm text-gray-500">
-              {clickedRestaurant.location.display_address}
-            </p>
-            <div className="flex text-gray-500">
-              {clickedRestaurant.categories.map((category, index) => (
-                <p key={index} className="text-xs border border-gray rounded-md p-1 bg-gray-300 key={index}">
-                  {category.title}
-                </p>
-              ))}
-            </div>
-
-            <img
-              className="max-h-48 w-full object-cover"
-              src={clickedRestaurant.image_url}
-              alt="restaurant_img"
-            />
-          </div>
-        ) : (
-          <div>
-            <h2>Click on a restaurant to view details</h2>
-          </div>
-        )}
-
-        {/* Here is where we fetch users matched at this location then display them, prob using a component*/}
-      </section>
-    </>
+          <MatchedUsers users={tempUsers} />
+        </section>
+      ) : (
+        <div className="flex flex-col items-center h-full py-11 px-11 justify-center w-fit">
+          <h2>Click on a restaurant to view details</h2>
+          <img src="interaction.png" width={50} />
+        </div>
+      )}
+    </div>
   );
 };
 
