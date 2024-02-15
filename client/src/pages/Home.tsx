@@ -20,8 +20,7 @@ interface Restaurant {
 
 }
 
-const Homepage = () => {
-  const hunterLocation = { lat: 40.76785648078654, lng: -73.96447914218824 };
+const Home = () => {
   const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(null);
 
   return (
@@ -69,4 +68,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default Home;
