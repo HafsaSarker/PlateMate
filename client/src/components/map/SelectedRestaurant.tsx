@@ -6,31 +6,30 @@ const SelectedRestaurant: React.FC<SelectedRestaurantProp> = ({
 }) => {
   return (
     <a
-      className="restaurant w-full border py-2 px-2 mx-4 rounded-lg bg-gray-50 shadow-md max-w-96"
+      className="restaurant w-full border py-2 pr-48 pl-2 mx-4 rounded-lg bg-gray-100 hover:bg-gray-200"
       href={clickedRestaurant.url}
       target="_blank"
     >
-      <div className="flex flex-col gap-0.5 items-start">
+      <div className="flex flex-col gap-0.5 items-start w-full">
         {clickedRestaurant.image_url ? (
           <img
-            className="max-h-48 object-cover w-full rounded-lg"
+            className="max-h-[150px] object-cover w-full rounded-lg"
             src={clickedRestaurant.image_url}
             alt="restaurant_img"
           />
         ) : (
           <img
-            className="max-h-48 object-cover w-full rounded-lg"
+            className="max-h-[150px] object-cover w-full rounded-lg"
             src="no-image.jpg"
-            alt="restaurant_img"
+            alt="no-image"
           />
         )}
 
-        <h2 className="font-bold text-xl">{clickedRestaurant.name}</h2>
-        <div className="flex gap-2 text-sm">
-          <p>
-            {clickedRestaurant.rating}
-            <span>★</span>
-          </p>
+        <h2 className="font-bold text-xl text-orange-600">
+          {clickedRestaurant.name}
+        </h2>
+        <div className="flex gap-1 text-sm">
+          <p>{clickedRestaurant.rating}★</p>
           <p>({clickedRestaurant.review_count} review count)</p>
           <p>{clickedRestaurant.price}</p>
         </div>
@@ -55,7 +54,7 @@ const SelectedRestaurant: React.FC<SelectedRestaurantProp> = ({
           {clickedRestaurant.categories.map((category, index) => (
             <p
               key={index}
-              className="text-xs border border-gray rounded-full py-0.5 px-1 bg-gray-100 key={index}"
+              className="text-xs border border-gray rounded-full py-0.5 px-1 bg-gray-200 "
             >
               {category.title}
             </p>

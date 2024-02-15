@@ -2,6 +2,8 @@ import { useState } from 'react';
 import RestaurantMap from '../components/map/RestaurantMap';
 import { Restaurant } from '../types/restaurant';
 import SelectedRestaurant from '../components/map/SelectedRestaurant';
+import { tempUsers } from '../data/tempUsers';
+import MatchedUsers from '../components/home/MatchedUsers';
 
 const Homepage = () => {
   const hunterLocation = { lat: 40.76785648078654, lng: -73.96447914218824 };
@@ -10,22 +12,24 @@ const Homepage = () => {
   );
 
   return (
-    <div className="h-full w-full flex items-center overflow-y-auto">
-      <div className="w-8/12 h-full p-11">
+    <div className="h-full w-full flex items-center pb-11 justify-between overflow-hidden ">
+      <div className="w-8/12 h-full pb-11 px-11 ">
         <RestaurantMap setClickedRestaurant={setClickedRestaurant} />
       </div>
 
-      <section className="flex-1 flex items-start h-full  pt-11 justify-start">
-        {clickedRestaurant ? (
+      {/* hardcoded temp users for now */}
+      {clickedRestaurant && tempUsers ? (
+        <section className="flex flex-col items-start h-full pt-11 justify-start w-[500px] max-w-[600px]">
           <SelectedRestaurant clickedRestaurant={clickedRestaurant} />
-        ) : (
-          <div>
-            <h2>Click on a restaurant to view details</h2>
-          </div>
-        )}
 
-        {/* Here is where we fetch users matched at this location then display them, prob using a component*/}
-      </section>
+          <MatchedUsers users={tempUsers} />
+        </section>
+      ) : (
+        <div className="flex flex-col items-center h-full py-11 px-11 justify-center w-fit">
+          <h2>Click on a restaurant to view details</h2>
+          <img src="interaction.png" width={50} />
+        </div>
+      )}
     </div>
   );
 };
