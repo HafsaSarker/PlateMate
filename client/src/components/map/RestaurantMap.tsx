@@ -87,7 +87,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
     <>
       <MapSearch setCurrentLocation={setCurrentLocation} />
       <APIProvider apiKey={config.mapsAPIKey}>
-        <div className="w-full h-full">
+        <div className="w-full h-full pb-11">
           <Map
             zoom={17}
             center={currentLocation}

@@ -26,14 +26,17 @@ const MapSearch: React.FC<MapSearchProps> = ({ setCurrentLocation }) => {
   };
 
   return (
-    <div className="flex ">
+    <div className="flex pt-11 pb-2">
       <input
-        className="w-1/2"
+        className="w-1/2 border-indigo-600 rounded-l-lg text-sm h-8 focus:outline-none focus:border-none text-indigo-600"
         type="text"
         placeholder={addressInput}
         onChange={handleInputChange}
       />
-      <button className="px-4 bg-primary" onClick={getLocation}>
+      <button
+        className="px-4 bg-indigo-600 text-gray-50 rounded-r-lg text-sm focus:outline-none focus:border-none hover:bg-indigo-500"
+        onClick={getLocation}
+      >
         Search
       </button>
     </div>
