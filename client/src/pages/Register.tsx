@@ -75,6 +75,7 @@ export default function Register() {
 
     // send to server
     try {
+      console.log(submitData);
       await axios.post(`${auth_api_path}register`, submitData);
     } catch (error) {
       console.log(error);

@@ -7,7 +7,7 @@ interface MessageData {
   username: string;
   room: string;
   message: string;
-  time: Date;
+  time: string;
 }
 
 const Chat: React.FC = () => {
@@ -26,9 +26,9 @@ const Chat: React.FC = () => {
       console.log(messagesList)
     });
 
-    // return () => {
-    //   socket.off('receive_message');
-    // };
+    return () => {
+      socket.off('receive_message');
+    };
   }, [socket]);
 
   const sendMessage = async (): Promise<void> => {
@@ -37,7 +37,7 @@ const Chat: React.FC = () => {
       username,
       room,
       message: messageInput,
-      time: new Date(),
+      time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes(),
     };
     socket.emit('send_message', messageData);
     setMessagesList((messagesList) => [...messagesList, messageData]);
@@ -45,19 +45,45 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <div>
-      <p>room: {room}</p>
-      <input value={username} onChange={(e) => setUsername(e.target.value)} />
+    <div className='flex w-screen h-full px-20 py-10'>
+      <section className='left-section w-1/3 border-r-2 border-gray-300'>
+        <div className='user-heading flex bg-gray-500 p-2 items-center'>
+          <img className="rounded-full" src='https://via.placeholder.com/40' alt='user-pfp' />
+        </div>
+        <h1>Chats</h1>
+        <div className='p-2'>
+          <input className="w-full" placeholder='Search for a chat'/>
+        </div>
+      </section>
+      <section className='right-section chatbox w-2/3 flex flex-col'>
+        <div className='chat-heading flex bg-gray-500 p-2 items-center'>
+          <img className="rounded-full" src='https://via.placeholder.com/40' alt='user-pfp' />
+          <h3 className='pl-3'>User's Name</h3>
+        </div>
+        <p>room: {room} (this is temporary)</p>
+        <div className='message-list flex-grow p-4'>
+          {messagesList.map((messageData, index) => (
+            <div key={index}>
+              <p>{messageData.username}: {messageData.message}</p>
+              <p>{messageData.time}</p>
+            </div>
+          ))}
+        </div>
 
-      <input
-        value={messageInput}
-        onChange={(e) => setMessageInput(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' ? sendMessage() : null}
-      />
-      <button onClick={sendMessage}>Send</button>
-      {messagesList.map((messageData, index) => (
-        <p key={index}>{messageData.username}: {messageData.message}</p>
-      ))}
+        <div className='flex bg-gray-200 px-4 py-2'>
+          <input value={username} placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
+
+          <input
+            value={messageInput}
+            placeholder="Type a message"
+            onChange={(e) => setMessageInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' ? sendMessage() : null}
+            className='w-full rounded-md'
+          />
+          <button onClick={sendMessage}>Send</button>
+        </div>
+
+      </section>
     </div>
   );
 }

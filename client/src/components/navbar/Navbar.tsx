@@ -1,20 +1,21 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   const [showNavigation, setShowNavigation] = useState(false);
   return (
     <nav className=" border-b border-gray-200 bg-gray-50">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <Link to="/home" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img
-            src="https://flowbite.com/docs/images/logo.svg"
+            src={"/logo.png"}
             className="h-8"
-            alt="Flowbite Logo"
+            alt="PlateDate Logo"
           />
           <span className="self-center text-2xl font-semibold whitespace-nowrap ">
             PlateMate
           </span>
-        </a>
+        </Link>
         <button
           data-collapse-toggle="navbar-hamburger"
           type="button"
@@ -44,37 +45,37 @@ function Navbar() {
           <div className="w-full" id="navbar-hamburger">
             <ul className="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 ">
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/home"
                   className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 "
                   aria-current="page"
                 >
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/services"
                   className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 "
                 >
                   Services
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/chat"
                   className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 "
                 >
-                  Pricing
-                </a>
+                  Chat
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/contact"
                   className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 "
                 >
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
