@@ -7,7 +7,7 @@ const messageSchema = new mongoose.Schema(
       fromUserId: String,
       toUserId: String,
       message: String,
-      sentAt: String,
+      sentAt: Date,
     }
 );
 

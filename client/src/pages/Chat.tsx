@@ -7,7 +7,7 @@ interface MessageData {
   username: string;
   room: string;
   message: string;
-  time: string;
+  time: Date;
 }
 
 // TODO: Replace username with user id once avail for styling
@@ -39,7 +39,7 @@ const Chat: React.FC = () => {
       username,
       room,
       message: messageInput,
-      time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes(),
+      time: new Date(),
     };
     socket.emit('send_message', messageData);
     setMessagesList((messagesList) => [...messagesList, messageData]);
@@ -72,7 +72,7 @@ const Chat: React.FC = () => {
                 min-w-32`}>
                 <div className='message-meta flex text-sm justify-between'>
                   <p className='font-bold'>{messageData.username}</p>
-                  <p>{messageData.time}</p>
+                  <p>{messageData.time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'})}</p>
                 </div>
                 <div className='message-content'>
                   <p>{messageData.message}</p>
