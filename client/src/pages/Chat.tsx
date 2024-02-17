@@ -10,6 +10,8 @@ interface MessageData {
   time: string;
 }
 
+// TODO: Replace username with user id once avail for styling
+// room will instead be the other users id
 const Chat: React.FC = () => {
   const [messageInput, setMessageInput] = useState<string>('');
   const [messagesList, setMessagesList] = useState<MessageData[]>([]);
@@ -55,17 +57,27 @@ const Chat: React.FC = () => {
           <input className="w-full" placeholder='Search for a chat'/>
         </div>
       </section>
-      <section className='right-section chatbox w-2/3 flex flex-col'>
+      <section className='flex flex-col right-section chatbox w-2/3 '>
         <div className='chat-heading flex bg-gray-500 p-2 items-center'>
           <img className="rounded-full" src='https://via.placeholder.com/40' alt='user-pfp' />
           <h3 className='pl-3'>User's Name</h3>
         </div>
         <p>room: {room} (this is temporary)</p>
-        <div className='message-list flex-grow p-4'>
+        <div className='message-list max-h-full flex-grow overflow-auto'>
           {messagesList.map((messageData, index) => (
-            <div key={index}>
-              <p>{messageData.username}: {messageData.message}</p>
-              <p>{messageData.time}</p>
+            <div key={index} className={`message px-4 py-1 flex ${messageData.username === username ? 'justify-end' : 'justify-start'}`}>
+              <div className={`
+                message-content p-2 rounded-lg
+                ${messageData.username === username ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}
+                min-w-32`}>
+                <div className='message-meta flex text-sm justify-between'>
+                  <p className='font-bold'>{messageData.username}</p>
+                  <p>{messageData.time}</p>
+                </div>
+                <div className='message-content'>
+                  <p>{messageData.message}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>

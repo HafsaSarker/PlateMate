@@ -9,6 +9,8 @@ import { connectDB } from "./db/connect";
 import dotenv from "dotenv";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Server, Socket } from 'socket.io';
+import { Message } from './models/Message';
+
 dotenv.config();
 
 const app = express();
@@ -52,9 +54,22 @@ io.on('connection', (socket: Socket) => {
     console.log('User disconnected');
   });
 
-  socket.on('send_message', (data) => {
+  socket.on('send_message', async (data) => {
     socket.to(data.room).emit('receive_message', data);
     console.log(data);
+    const newMessage = new Message({
+      fromUserId: data.username,
+      toUserId: data.room,
+      message: data.message,
+      sentAt: data.time,
+    });
+    // add to mongoDB database
+    try {
+      await newMessage.save();
+      console.log('Message saved to database');
+    } catch (error) {
+      console.error('Error saving message to database:', error);
+    }
   });
 });
 
