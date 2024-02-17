@@ -2,12 +2,17 @@ import PersonalInfo from '../components/register/PersonalInfo';
 import Lifestyle from '../components/register/Lifestyle';
 import FoodPreferences from '../components/register/FoodPreferences';
 import { FormData } from '../types/formData';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { auth_api_path } from '../api/auth';
 import { destructFormData } from '../utils/destructFormData';
 import axios from 'axios';
+import { UserContext } from '../context/UserContext';
+import { UserContextType } from '../types/userContextType';
 
 export default function Register() {
+  const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
+  console.log(currUser);
+
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -70,12 +75,17 @@ export default function Register() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // destructuring formData
+    // modifying formData to match user model
     const submitData = destructFormData(formData);
 
     // send to server
     try {
-      await axios.post(`${auth_api_path}register`, submitData);
+      const user = await axios.post(`${auth_api_path}register`, submitData);
+
+      console.log(user);
+
+      // set registered user as current user
+      // setCurrUser()
     } catch (error) {
       console.log(error);
     }
