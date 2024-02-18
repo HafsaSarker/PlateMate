@@ -13,8 +13,6 @@ const Home = () => {
   );
   const { currUser } = useContext(UserContext) as UserContextType;
 
-  console.log(currUser);
-
   return (
     <div className="h-full w-full flex items-center pb-11 justify-between overflow-hidden ">
       <div className="w-8/12 h-full pb-11 px-11 ">
@@ -30,7 +28,9 @@ const Home = () => {
         </section>
       ) : (
         <div className="flex flex-col items-center h-full py-11 px-11 justify-center w-fit">
-          <h2>Click on a restaurant to view details</h2>
+          <h2 className="text-center">
+            Click on a restaurant to view details, {currUser?.profile.firstName}
+          </h2>
           <img src="interaction.png" width={50} />
         </div>
       )}
