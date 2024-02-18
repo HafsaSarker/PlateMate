@@ -1,14 +1,19 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import RestaurantMap from '../components/map/RestaurantMap';
 import { Restaurant } from '../types/restaurant';
 import SelectedRestaurant from '../components/map/SelectedRestaurant';
 import { tempUsers } from '../data/tempUsers';
 import MatchedUsers from '../components/home/MatchedUsers';
+import { UserContext } from '../context/UserContext';
+import { UserContextType } from '../types/userContextType';
 
 const Home = () => {
   const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
     null,
   );
+  const { currUser } = useContext(UserContext) as UserContextType;
+
+  console.log(currUser);
 
   return (
     <div className="h-full w-full flex items-center pb-11 justify-between overflow-hidden ">

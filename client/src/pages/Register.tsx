@@ -2,12 +2,18 @@ import PersonalInfo from '../components/register/PersonalInfo';
 import Lifestyle from '../components/register/Lifestyle';
 import FoodPreferences from '../components/register/FoodPreferences';
 import { FormData } from '../types/formData';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { auth_api_path } from '../api/auth';
 import { destructFormData } from '../utils/destructFormData';
 import axios from 'axios';
+import { UserContext } from '../context/UserContext';
+import { UserContextType } from '../types/userContextType';
+import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
+  const { setCurrUser } = useContext(UserContext) as UserContextType;
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -70,12 +76,22 @@ export default function Register() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // destructuring formData
+    // modifying formData to match user model
     const submitData = destructFormData(formData);
 
-    // send to server
     try {
-      await axios.post(`${auth_api_path}register`, submitData);
+      // send to server
+      const res = await axios.post(`${auth_api_path}register`, submitData);
+
+      if (res.data) {
+        // set registered user as current user
+        setCurrUser(res.data);
+
+        // set local storage
+        localStorage.setItem('user', JSON.stringify(res.data));
+      }
+      // go to home
+      navigate('/home');
     } catch (error) {
       console.log(error);
     }
