@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 
@@ -51,6 +52,9 @@ const Chat: React.FC = () => {
     setMessageInput('');
   };
 
+=======
+const Chat = () => {
+>>>>>>> origin/main
   return (
     <div className='flex w-screen h-full overflow-hidden'>
       <section className='left-section w-1/3 border-r-2 border-gray-300'>
@@ -102,6 +106,10 @@ const Chat: React.FC = () => {
       </section>
     </div>
   );
+<<<<<<< HEAD
 }
 
 export default Chat;
+=======
+};
+>>>>>>> origin/main

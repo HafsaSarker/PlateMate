@@ -50,7 +50,7 @@ async function register(
 
     // create user
     const salt = random();
-    const user = await userAction.createUser({
+    const registerUser = await userAction.createUser({
       email,
       authentication: {
         salt,
@@ -75,6 +75,9 @@ async function register(
       },
     });
 
+    // get user object without auth field
+    const user = await userAction.getUserById(registerUser._id);
+
     return res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -89,7 +92,7 @@ async function login(req: Request, res: Response) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const user = await userAction.getUserByEmail(email);
+    let user = await userAction.getUserByEmail(email);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -112,8 +115,10 @@ async function login(req: Request, res: Response) {
       domain: "localhost",
       path: "/",
     });
+    // get user object without auth field
+    const returnUser = await userAction.getUserById(user._id);
 
-    return res.status(200).json(user);
+    return res.status(201).json(returnUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

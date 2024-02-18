@@ -6,40 +6,12 @@ import {
   Marker,
   Pin,
 } from '@vis.gl/react-google-maps';
-import { config } from '../config';
+import { config } from '../../config';
 import { debounce } from 'lodash';
 import MapSearch from './MapSearch';
-
-interface MapEvent {
-  detail: {
-    center: {
-      lat: number;
-      lng: number;
-    };
-  };
-}
-
-interface RestaurantMapProps {
-  setClickedRestaurant: (restaurant: Restaurant) => void;
-}
-
-interface Restaurant {
-  name: string;
-  image_url: string;
-  rating: number;
-  price: string;
-  location: {
-    display_address: string;
-  };
-  phone: string;
-  url: string;
-  review_count: number;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-  categories: [{ title: string }];
-}
+import { Restaurant } from '../../types/restaurant';
+import { RestaurantMapProps } from '../../types/restaurantMapProps';
+import { MapEvent } from '../../types/mapEvent';
 
 const RestaurantMap: React.FC<RestaurantMapProps> = ({
   setClickedRestaurant,
@@ -115,7 +87,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
     <>
       <MapSearch setCurrentLocation={setCurrentLocation} />
       <APIProvider apiKey={config.mapsAPIKey}>
-        <div className="w-full h-full">
+        <div className="w-full h-full pb-11">
           <Map
             zoom={17}
             center={currentLocation}

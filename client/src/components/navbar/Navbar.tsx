@@ -1,17 +1,24 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../../context/UserContext';
+import { UserContextType } from '../../types/userContextType';
 
 function Navbar() {
+  const { setCurrUser } = useContext(UserContext) as UserContextType;
+
+  const logout = () => {
+    localStorage.removeItem('user');
+    setCurrUser(null);
+  };
   const [showNavigation, setShowNavigation] = useState(false);
   return (
     <nav className=" border-b border-gray-200 bg-gray-50">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link to="/home" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img
-            src={"/logo.png"}
-            className="h-8"
-            alt="PlateDate Logo"
-          />
+        <Link
+          to="/home"
+          className="flex items-center space-x-3 rtl:space-x-reverse"
+        >
+          <img src={'/logo.png'} className="h-8" alt="PlateDate Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap ">
             PlateMate
           </span>
@@ -41,6 +48,7 @@ function Navbar() {
             />
           </svg>
         </button>
+
         {showNavigation && (
           <div className="w-full" id="navbar-hamburger">
             <ul className="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 ">
@@ -72,10 +80,16 @@ function Navbar() {
               <li>
                 <Link
                   to="/contact"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 "
+                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100"
                 >
                   Contact
                 </Link>
+              </li>
+              <li
+                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 cursor-pointer"
+                onClick={logout}
+              >
+                Logout
               </li>
             </ul>
           </div>
