@@ -8,7 +8,7 @@ import { destructFormData } from '../utils/destructFormData';
 import axios from 'axios';
 import { UserContext } from '../context/UserContext';
 import { UserContextType } from '../types/userContextType';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Register() {
   const { setCurrUser } = useContext(UserContext) as UserContextType;
@@ -91,7 +91,7 @@ export default function Register() {
         localStorage.setItem('user', JSON.stringify(res.data));
       }
       // go to home
-      navigate('/home');
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
@@ -203,19 +203,23 @@ export default function Register() {
           <FoodPreferences handleChange={handleChange} />
         </div>
 
-        <div className="mt-6 flex items-center justify-end gap-x-6 pb-20">
-          <button
-            type="button"
-            className="text-sm font-semibold leading-6 text-gray-900"
-          >
-            Cancel
-          </button>
+        <div className="mt-6 flex flex-col items-end justify-end gap-x-6 pb-20">
           <button
             type="submit"
             className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Finish Sign Up
           </button>
+          <div>
+            <p className="mt-1 text-sm leading-6 text-gray-900">
+              Already have an account?{' '}
+              <Link to="/">
+                <span className="text-indigo-600 hover:font-semibold">
+                  Login here
+                </span>
+              </Link>
+            </p>
+          </div>
         </div>
       </form>
     </div>
