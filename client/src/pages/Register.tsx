@@ -11,9 +11,9 @@ import { UserContextType } from '../types/userContextType';
 import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
-  const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
-  console.log(currUser);
+  const { setCurrUser } = useContext(UserContext) as UserContextType;
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -79,13 +79,18 @@ export default function Register() {
     // modifying formData to match user model
     const submitData = destructFormData(formData);
 
-    // send to server
     try {
-      const user = await axios.post(`${auth_api_path}register`, submitData);
+      // send to server
+      const res = await axios.post(`${auth_api_path}register`, submitData);
 
-      // set registered user as current user
-      setCurrUser(user.data);
+      if (res.data) {
+        // set registered user as current user
+        setCurrUser(res.data);
 
+        // set local storage
+        localStorage.setItem('user', JSON.stringify(res.data));
+      }
+      // go to home
       navigate('/home');
     } catch (error) {
       console.log(error);
