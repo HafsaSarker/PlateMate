@@ -85,7 +85,7 @@ const Chat: React.FC = () => {
       fromUserId: currentUserData._id,
       toUserId: chatPartnerId,
       fromUsername: username,
-      toUsername: 'chatPartnerUsername',
+      toUsername: chatPartnerUsername,
       room,
       message: messageInput,
       time: new Date(),

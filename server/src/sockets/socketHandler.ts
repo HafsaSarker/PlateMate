@@ -27,6 +27,7 @@ const socketHandler = (io: Server): void => {
       socket.to(data.room).emit("receive_message", data);
       console.log("Message sent:", data);
       const newMessage = new Message({
+        room: data.room,
         fromUserId: data.fromUserId,
         toUserId: data.toUserId,
         message: data.message,
