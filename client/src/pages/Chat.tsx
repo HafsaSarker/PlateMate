@@ -5,8 +5,10 @@ import { useLocation } from 'react-router-dom';
 const socket: Socket = io('http://localhost:8080');
 
 interface MessageData {
-  userId: string;
-  name: string;
+  fromUserId: string;
+  toUserId: string;
+  fromUsername: string;
+  toUsername: string;
   room: string;
   message: string;
   time: Date;
@@ -30,11 +32,18 @@ const Chat: React.FC = () => {
 
   const [currentUserData, setCurrentUserData] = useState(null);
   const [username, setUsername] = useState<string>('');
-  const [room, setRoom] = useState<string>('123');
+  const [room, setRoom] = useState<string>('');
 
   const location = useLocation();
-  const { userId } = location.state || {};
-  console.log(userId)
+  const chatPartnerId = location.state?.userId;
+  console.log(location)
+  const chatPartnerUsername = location.state?.username;
+
+  function generateRoomId(userId1:string, userId2:string) {
+    const ids = [userId1, userId2].sort();
+    const roomId = ids.join('-');
+    return roomId;
+  }
 
   useEffect(() => {
     const userExist = localStorage.getItem('user');
@@ -42,36 +51,46 @@ const Chat: React.FC = () => {
       const user = JSON.parse(userExist);
       setCurrentUserData(user);
       setUsername(user.profile.firstName);
-      console.log(user)
+      console.log(user);
     }
+  }, []);
 
-    socket.emit('join_room', room);
+  useEffect(() => {
+    if (currentUserData && chatPartnerId) {
+      const room = generateRoomId(currentUserData._id, chatPartnerId);
+      console.log('room', room);
+      setRoom(room);
+      socket.emit('join_room', room);
 
-    socket.on('receive_message', (messageData: MessageData) => {
-      // this makes sure the time is a date object
-      const updatedMessageData = {
-        ...messageData,
-        time: new Date(messageData.time),
+      socket.on('receive_message', (messageData: MessageData) => {
+        // this makes sure the time is a date object
+        const updatedMessageData = {
+          ...messageData,
+          time: new Date(messageData.time),
+        };
+        console.log('received message', messageData)
+        setMessagesList((messagesList) => [...messagesList, updatedMessageData]);
+        console.log(messagesList)
+      });
+
+      return () => {
+        socket.off('receive_message');
       };
-      console.log('received message', messageData)
-      setMessagesList((messagesList) => [...messagesList, updatedMessageData]);
-      console.log(messagesList)
-    });
-
-    return () => {
-      socket.off('receive_message');
-    };
-  }, [socket]);
+    }
+  }, [socket, currentUserData, chatPartnerId]);
 
   const sendMessage = async (): Promise<void> => {
     if (messageInput === '') return;
     const messageData: MessageData = {
-      userId: currentUserData._id,
-      name: username,
+      fromUserId: currentUserData._id,
+      toUserId: chatPartnerId,
+      fromUsername: username,
+      toUsername: 'chatPartnerUsername',
       room,
       message: messageInput,
       time: new Date(),
     };
+    console.log(messageData)
     socket.emit('send_message', messageData);
     setMessagesList((messagesList) => [...messagesList, messageData]);
     setMessageInput('');
@@ -80,7 +99,7 @@ const Chat: React.FC = () => {
   return (
     <div className='flex w-screen h-full overflow-hidden'>
       <section className='left-section w-1/3 border-r-2 border-gray-300'>
-        <div className='user-heading flex bg-secondary p-4 items-center'>
+        <div className='user-heading flex bg-gray-500 p-4 items-center'>
           <img className="rounded-full" src='https://via.placeholder.com/40' alt='user-pfp' />
           <h3 className='pl-4 font-bold'>{username}</h3>
         </div>
@@ -89,25 +108,24 @@ const Chat: React.FC = () => {
         </div>
       </section>
       <section className='flex flex-col right-section chatbox w-2/3 '>
-        <div className='chat-heading flex bg-secondary p-4 items-center'>
+        <div className='chat-heading flex bg-gray-500 p-4 items-center'>
           <img className="rounded-full" src='https://via.placeholder.com/40' alt='user-pfp' />
-          <h3 className='pl-3'>User's Name</h3>
+          <h3 className='pl-3'>{chatPartnerUsername}</h3>
         </div>
         <p>room: {room} (this is temporary)</p>
         <div className='message-list max-h-full flex-grow overflow-auto'>
           {messagesList.map((messageData, index) => (
-            <div key={index} className={`message px-4 py-1 flex ${messageData.userId === currentUserData._id ? 'justify-end' : 'justify-start'}`}>
+            <div key={index} className={`message px-4 py-1 flex ${messageData.fromUserId === currentUserData._id ? 'justify-end' : 'justify-start'}`}>
               <div className={`
                 message-content p-2 rounded-lg
-                ${messageData.userId === currentUserData._id ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}
+                ${messageData.fromUserId === currentUserData._id ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}
                 min-w-32`}>
-                <div className='message-meta flex text-sm justify-between'>
-                  <p className='font-bold'>{messageData.userId}</p>
-                  <p>{messageData.time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'})}</p>
-                </div>
                 <div className='message-content'>
                   <p>{messageData.message}</p>
                 </div>
+                <p className='flex justify-end text-xs'>
+                  {messageData.time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'})}
+                </p>
               </div>
             </div>
           ))}

@@ -56,13 +56,14 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('send_message', async (data) => {
     socket.to(data.room).emit('receive_message', data);
-    console.log(data);
+    console.log('Message sent:', data);
     const newMessage = new Message({
-      fromUserId: data.username,
-      toUserId: data.room,
+      fromUserId: data.fromUserId,
+      toUserId: data.toUserId,
       message: data.message,
       sentAt: data.time,
     });
+    console.log(newMessage);
     // add to mongoDB database
     try {
       await newMessage.save();
