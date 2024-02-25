@@ -7,7 +7,7 @@ interface MessageData {
   toUserId: string;
   message: string;
   room: string;
-  time: Date;
+  sentAt: Date;
 }
 
 const socketHandler = (io: Server): void => {
@@ -31,7 +31,7 @@ const socketHandler = (io: Server): void => {
         fromUserId: data.fromUserId,
         toUserId: data.toUserId,
         message: data.message,
-        sentAt: data.time,
+        sentAt: data.sentAt,
       });
       console.log(newMessage);
       // Add to MongoDB database

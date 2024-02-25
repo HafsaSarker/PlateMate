@@ -7,11 +7,9 @@ const socket: Socket = io('http://localhost:8080');
 interface MessageData {
   fromUserId: string;
   toUserId: string;
-  fromUsername: string;
-  toUsername: string;
   room: string;
   message: string;
-  time: Date;
+  sentAt: Date;
 }
 
 interface UserData {
@@ -36,14 +34,27 @@ const Chat: React.FC = () => {
 
   const location = useLocation();
   const chatPartnerId = location.state?.userId;
-  console.log(location)
   const chatPartnerUsername = location.state?.username;
 
-  function generateRoomId(userId1:string, userId2:string) {
+  const generateRoomId = (userId1:string, userId2:string) => {
     const ids = [userId1, userId2].sort();
     const roomId = ids.join('-');
     return roomId;
   }
+
+  const fetchMessages = async (roomId: string) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/messages/${roomId}`);
+      const data = await response.json();
+      const messagesWithDates = data.map((message) => ({
+        ...message,
+        sentAt: new Date(message.sentAt),
+      }));
+      setMessagesList(messagesWithDates); // Update state with fetched messages
+    } catch (error) {
+      console.error("Failed to fetch messages:", error);
+    }
+  };
 
   useEffect(() => {
     const userExist = localStorage.getItem('user');
@@ -62,16 +73,19 @@ const Chat: React.FC = () => {
       setRoom(room);
       socket.emit('join_room', room);
 
+      fetchMessages(room);
+
       socket.on('receive_message', (messageData: MessageData) => {
         // this makes sure the time is a date object
         const updatedMessageData = {
           ...messageData,
-          time: new Date(messageData.time),
+          sentAt: new Date(messageData.sentAt),
         };
         console.log('received message', messageData)
         setMessagesList((messagesList) => [...messagesList, updatedMessageData]);
         console.log(messagesList)
       });
+
 
       return () => {
         socket.off('receive_message');
@@ -88,7 +102,7 @@ const Chat: React.FC = () => {
       toUsername: chatPartnerUsername,
       room,
       message: messageInput,
-      time: new Date(),
+      sentAt: new Date(),
     };
     console.log(messageData)
     socket.emit('send_message', messageData);
@@ -114,7 +128,9 @@ const Chat: React.FC = () => {
         </div>
         <p>room: {room} (this is temporary)</p>
         <div className='message-list max-h-full flex-grow overflow-auto'>
-          {messagesList.map((messageData, index) => (
+        {messagesList.map((messageData, index) => {
+          console.log(messageData.sentAt); // Check if this logs a valid Date object
+          return (
             <div key={index} className={`message px-4 py-1 flex ${messageData.fromUserId === currentUserData._id ? 'justify-end' : 'justify-start'}`}>
               <div className={`
                 message-content p-2 rounded-lg
@@ -124,11 +140,12 @@ const Chat: React.FC = () => {
                   <p>{messageData.message}</p>
                 </div>
                 <p className='flex justify-end text-xs'>
-                  {messageData.time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'})}
+                  {messageData.sentAt?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'})}
                 </p>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
 
         <div className='flex bg-gray-200 p-4 gap-2'>
