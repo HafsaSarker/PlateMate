@@ -2,14 +2,28 @@ import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
+import axios from 'axios';
+import { auth_api_path } from '../../api/auth';
 
 function Navbar() {
   const { setCurrUser } = useContext(UserContext) as UserContextType;
 
-  const logout = () => {
-    localStorage.removeItem('user');
-    setCurrUser(null);
+  const logout = async () => {
+    // remove auth cookie
+    try {
+      await axios.get(`${auth_api_path}logout`, {
+        withCredentials: true,
+      });
+
+      // remove user from localStorage
+      localStorage.removeItem('user');
+
+      setCurrUser(null);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   const [showNavigation, setShowNavigation] = useState(false);
   return (
     <nav className=" border-b border-gray-200 bg-gray-50">
