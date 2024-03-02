@@ -86,6 +86,9 @@ export default function Register() {
       if (res.data) {
         // set registered user as current user
         setCurrUser(res.data);
+
+        // set local storage
+        localStorage.setItem('user', JSON.stringify(res.data));
       }
       // go to home
       navigate('/');

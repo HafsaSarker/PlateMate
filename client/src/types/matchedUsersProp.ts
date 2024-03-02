@@ -1,5 +1,5 @@
 import { User } from './user';
 
 export interface MatchedUsersProp {
-  users: User[];
+  users: User[] | null;
 }

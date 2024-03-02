@@ -26,11 +26,16 @@ function Login() {
 
     try {
       // send to server
-      const res = await axios.post(`${auth_api_path}login`, formData);
+      const res = await axios.post(`${auth_api_path}login`, formData, {
+        withCredentials: true,
+      });
 
       if (res.data) {
         // set registered user as current user
         setCurrUser(res.data);
+
+        // set local storage
+        localStorage.setItem('user', JSON.stringify(res.data));
       }
       // go to home
       navigate('/');

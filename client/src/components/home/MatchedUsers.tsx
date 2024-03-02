@@ -1,6 +1,8 @@
 import { MatchedUsersProp } from '../../types/matchedUsersProp';
 
 const MatchedUsers: React.FC<MatchedUsersProp> = ({ users }) => {
+  console.log(users);
+
   return (
     <div className="flex flex-col items-start w-full mt-5 py-2 px-2 mx-4 overflow-auto">
       <h1 className="font-semibold text-center w-full pb-3 text-gray-800 tracking-wide">
@@ -8,7 +10,7 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({ users }) => {
       </h1>
 
       {/* map over all users */}
-      <div className="flex flex-col w-full gap-3 pr-8">
+      {/* <div className="flex flex-col w-full gap-3 pr-8">
         {users.map((user) => (
           <a href="" key={user._id}>
             <div className="flex items-center h-full w-full py-3 px-2 gap-3 rounded-lg bg-gray-100 hover:bg-gray-200">
@@ -28,7 +30,7 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({ users }) => {
             </div>
           </a>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -106,15 +106,21 @@ async function login(req: Request, res: Response) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
+    // generate and set session token
     const salt = random();
     user.authentication.sessionToken = hashPassword(salt, user._id.toString());
     await user.save();
+
+    // 15 days in milliseconds
+    const expirationDuration = 15 * 24 * 60 * 60 * 1000;
 
     // create session cookie
     res.cookie("AUTH", user.authentication.sessionToken, {
       domain: "localhost",
       path: "/",
+      maxAge: expirationDuration,
     });
+
     // get user object without auth field
     const returnUser = await userAction.getUserById(user._id);
 
@@ -124,7 +130,22 @@ async function login(req: Request, res: Response) {
   }
 }
 
+async function logout(req: Request, res: Response) {
+  try {
+    // Clear 'AUTH' cookie
+    res.clearCookie("AUTH", {
+      domain: "localhost",
+      path: "/",
+    });
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 export const authController = {
   register,
   login,
+  logout,
 };
