@@ -9,14 +9,7 @@ import { UserContext } from './context/UserContext';
 import { UserContextType } from './types/userContextType';
 
 function App() {
-  const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
-
-  useEffect(() => {
-    const userExist = localStorage.getItem('user');
-    if (userExist && !currUser) {
-      setCurrUser(JSON.parse(userExist));
-    }
-  }, [currUser]);
+  const { currUser } = useContext(UserContext) as UserContextType;
 
   return (
     <Routes>
