@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { Message } from '../models/Message';
 
 async function getMessages(req: Request, res: Response): Promise<void> {
-  console.log('test')
   try {
     const roomId = req.params.roomId;
     const messages = await Message.find({ room: roomId }).sort({ sentAt: 1 });
@@ -12,6 +11,60 @@ async function getMessages(req: Request, res: Response): Promise<void> {
   }
 };
 
+async function getChatPartners(req: Request, res: Response): Promise<void> {
+  console.log('getChatPartners');
+  const userId = req.params.userId;
+  try {
+    const results = await Message.aggregate([
+      {
+        $match: {
+          $or: [{ fromUserId: userId }, { toUserId: userId }],
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          fromUsers: { $addToSet: "$fromUserId" },
+          toUsers: { $addToSet: "$toUserId" },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          uniqueUsers: { $setUnion: ["$fromUsers", "$toUsers"] },
+        },
+      },
+      {
+        $unwind: "$uniqueUsers",
+      },
+      {
+        $match: {
+          uniqueUsers: { $ne: userId }, // Exclude the user's own ID from the result
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          users: { $addToSet: "$uniqueUsers" },
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Exclude the _id field from the result
+          users: 1, // Include the users array in the result
+        },
+      },
+    ]);
+
+    console.log('results', results);
+    res.json(results);
+  } catch (error) {
+    console.error("Error fetching messaged users:", error);
+    throw error;
+  }
+}
+
 export const messageController = {
   getMessages,
+  getChatPartners,
 };

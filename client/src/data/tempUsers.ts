@@ -1,7 +1,7 @@
 import { User } from '../types/user';
 export const tempUsers: User[] = [
   {
-    _id: '65c59ba67ee9265ada25a482',
+    _id: '65d1c2cf4c14a3d8c292f58d',
     email: 'user1@example.com',
     createdAt: '2022-01-01T00:00:00.000Z',
     updatedAt: '2022-01-01T00:00:00.000Z',
@@ -24,13 +24,13 @@ export const tempUsers: User[] = [
     },
   },
   {
-    _id: '2',
+    _id: '65dbfa902998e391ec1d1a71',
     email: 'user2@example.com',
     createdAt: '2022-01-02T00:00:00.000Z',
     updatedAt: '2022-01-02T00:00:00.000Z',
     profile: {
-      firstName: 'Alice',
-      lastName: 'Smith',
+      firstName: 'David',
+      lastName: 'Blaine',
       profileImg: '',
       coverImg: 'cover2.jpg',
       about: 'I am another user.',
