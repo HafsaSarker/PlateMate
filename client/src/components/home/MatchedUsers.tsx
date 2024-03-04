@@ -1,4 +1,5 @@
 import { MatchedUsersProp } from '../../types/matchedUsersProp';
+import { Link } from 'react-router-dom';
 
 const MatchedUsers: React.FC<MatchedUsersProp> = ({ users }) => {
   console.log(users);
@@ -12,7 +13,7 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({ users }) => {
       {/* map over all users */}
       {/* <div className="flex flex-col w-full gap-3 pr-8">
         {users.map((user) => (
-          <a href="" key={user._id}>
+          <Link to="">
             <div className="flex items-center h-full w-full py-3 px-2 gap-3 rounded-lg bg-gray-100 hover:bg-gray-200">
               {user.profile.profileImg ? (
                 <img className="w-10" src={user.profile.profileImg} />
@@ -27,8 +28,16 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({ users }) => {
 
                 <p className="text-xs">{user.profile.age}</p>
               </div>
+              <Link
+                to='/chat'
+                state= {{ userId: user._id, username: user.profile.firstName + " " + user.profile.lastName }} // Passing user ID in state
+                key={user._id}
+              >
+                <button className=''>Chat</button>
+              </Link>
+
             </div>
-          </a>
+          </Link>
         ))}
       </div> */}
     </div>
