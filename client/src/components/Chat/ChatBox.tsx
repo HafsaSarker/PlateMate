@@ -1,35 +1,8 @@
 import React, { useEffect, useState } from 'react';
-
-interface MessageData {
-  fromUserId: string;
-  toUserId: string;
-  room: string;
-  message: string;
-  sentAt: Date;
-}
-
-interface UserData {
-  email: string;
-  profile: {
-    username: string;
-    profileImg: string;
-  };
-  pricePoint: string[];
-  profileImg: string;
-  _id:string;
-}
-
-interface ChatBoxProps {
-  messagesList: MessageData[];
-  messageInput: string;
-  setMessageInput: React.Dispatch<React.SetStateAction<string>>;
-  sendMessage: () => Promise<void>;
-  currentUserData: UserData;
-  chatPartnerUsername: string;
-  room: string;
-}
+import { ChatBoxProps } from '../../types/chatBoxProps';
 
 const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessageInput, sendMessage, currentUserData, chatPartnerUsername, room }) => {
+
   return (
     <section className='flex flex-col right-section chatbox w-2/3 '>
       <div className='chat-heading flex bg-gray-500 p-4 items-center'>

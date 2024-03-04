@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
+interface ChatListProps {
+  userId: string;
+}
 
-const ChatList = ({userId}) => {
+const ChatList:React.FC<ChatListProps> = ({userId}) => {
   const [partnerIds, setPartnerIds] = useState([]);
 
 
-  async function getPastPartnersId(userId) {
+  async function getPastPartnersId(userId:string) {
     // fetch request to get past partners
     try {
       const response = await fetch(`http://localhost:8080/api/chat-partners/${userId}`);

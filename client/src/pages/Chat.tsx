@@ -4,37 +4,18 @@ import { useLocation } from 'react-router-dom';
 import ChatBox from '../components/Chat/ChatBox';
 import ChatList from '../components/Chat/ChatList';
 
+import { User } from '../types/user'
+import { MessageData } from '../types/messageData';
 
 const socket: Socket = io('http://localhost:8080');
 
-interface MessageData {
-  fromUserId: string;
-  toUserId: string;
-  room: string;
-  message: string;
-  sentAt: Date;
-}
-
-interface UserData {
-  email: string;
-  profile: {
-    username: string;
-    profileImg: string;
-  };
-  pricePoint: string[];
-  profileImg: string;
-  _id:string;
-}
-// TODO: Replace username with user id once avail for styling
-// room will instead be the other users id
 const Chat: React.FC = () => {
   const [messageInput, setMessageInput] = useState<string>('');
   const [messagesList, setMessagesList] = useState<MessageData[]>([]);
 
-  const [currentUserData, setCurrentUserData] = useState<UserData|null>(null);
+  const [currentUserData, setCurrentUserData] = useState<User | null>(null);
   const [username, setUsername] = useState<string>('');
   const [room, setRoom] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
 
   const location = useLocation();
   const chatPartnerId: string = location.state?.userId;
@@ -67,7 +48,6 @@ const Chat: React.FC = () => {
       setCurrentUserData(user);
       setUsername(user.profile.firstName);
       console.log(user);
-      setLoading(false);
     }
     // else redirect to login
   }, []);
@@ -115,8 +95,9 @@ const Chat: React.FC = () => {
     setMessageInput('');
   };
 
-  if (currentUserData === null || loading) {
-    return <div>Loading...</div>; // Show a loading indicator while loading
+  // ensures currentUser exists
+  if (currentUserData === null) {
+    return <div>Loading...</div>;
   }
 
   return (
