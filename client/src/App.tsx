@@ -8,16 +8,23 @@ import Chat from './pages/Chat';
 import { useContext, useEffect } from 'react';
 import { UserContext } from './context/UserContext';
 import { UserContextType } from './types/userContextType';
+import { useCookies } from 'react-cookie';
 
 function App() {
   const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
+  const [authCookie] = useCookies(['AUTH']);
 
   useEffect(() => {
-    const userExist = localStorage.getItem('user');
-    if (userExist && !currUser) {
-      setCurrUser(JSON.parse(userExist));
+    // Access 'AUTH' cookie
+    const authToken = authCookie.AUTH;
+
+    // get user info from localStorage
+    const user = localStorage.getItem('user');
+
+    if (authToken && user) {
+      setCurrUser(JSON.parse(user));
     }
-  }, [currUser]);
+  }, [authCookie]);
 
   return (
     <Routes>
