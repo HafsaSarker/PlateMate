@@ -8,7 +8,10 @@ import router from "./routes";
 import { connectDB } from "./db/connect";
 import dotenv from "dotenv";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { Server } from "socket.io";
+import { Server, Socket } from 'socket.io';
+import { Message } from './models/Message';
+import socketHandler from "./sockets/socketHandler";
+
 dotenv.config();
 
 const app = express();
@@ -34,6 +37,14 @@ const yelpProxy = createProxyMiddleware({
 });
 
 const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+  },
+});
+
+socketHandler(io);
 
 const boot = async () => {
   try {
