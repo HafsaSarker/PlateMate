@@ -1,38 +1,35 @@
 import { MatchedUsersProp } from '../../types/matchedUsersProp';
 import { Link } from 'react-router-dom';
+import { IoIosChatbubbles } from 'react-icons/io';
+import { User } from '../../types/user';
 
-const MatchedUsers: React.FC<MatchedUsersProp> = ({ users }) => {
-  console.log(users);
+const MatchedUsers: React.FC<MatchedUsersProp> = ({
+  users,
+  setShowProfile,
+  setUser,
+}) => {
+  function onClickActions(user: User) {
+    setUser(user);
+    setShowProfile(true);
+  }
 
   return (
-    <div className="flex flex-col items-start w-full mt-5 py-2 px-2 mx-4 overflow-auto">
-      <h1 className="font-semibold text-center w-full pb-3 text-gray-800 tracking-wide">
-        Users With Similar Preferences
-      </h1>
-
+    <div className="flex flex-col items-start w-full py-2 px-2 mx-4 overflow-auto">
       {/* map over all users */}
-<<<<<<< HEAD
       {users ? (
-        <div className="flex flex-col w-full gap-3 pr-8">
+        <div className="flex flex-col w-full gap-3 pr-8 hover:cursor-pointer">
           {users.map((user) => (
-            <a href="" key={user._id}>
-              <div className="flex items-center h-full w-full py-3 px-2 gap-3 rounded-lg bg-gray-100 hover:bg-gray-200">
+            <div
+              key={user._id}
+              onClick={() => onClickActions(user)}
+              className="flex items-center h-full w-full py-3 px-2 gap-3 rounded-lg bg-gray-100 hover:bg-gray-200 border justify-between"
+            >
+              <div className="flex items-center gap-2">
                 {user.profile.profileImg ? (
                   <img className="w-10" src={user.profile.profileImg} />
                 ) : (
                   <img className="w-10" src="user.png" />
                 )}
-=======
-      {/* <div className="flex flex-col w-full gap-3 pr-8">
-        {users.map((user) => (
-          <Link to="">
-            <div className="flex items-center h-full w-full py-3 px-2 gap-3 rounded-lg bg-gray-100 hover:bg-gray-200">
-              {user.profile.profileImg ? (
-                <img className="w-10" src={user.profile.profileImg} />
-              ) : (
-                <img className="w-10" src="user.png" />
-              )}
->>>>>>> 8718391da94c0e03ab5218491c8f8b9bcec18ef1
 
                 <div className="flex flex-col">
                   <p className="text-sm">
@@ -42,29 +39,28 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({ users }) => {
                   <p className="text-xs">{user.profile.age}</p>
                 </div>
               </div>
-<<<<<<< HEAD
-            </a>
+
+              <Link
+                to="/chat"
+                state={{
+                  userId: user._id,
+                  username:
+                    user.profile.firstName + ' ' + user.profile.lastName,
+                }} // Passing user ID in state
+                key={user._id}
+              >
+                <button className="px-3 text-xl hover:text-pink-600 text-pink-500">
+                  <IoIosChatbubbles />
+                </button>
+              </Link>
+            </div>
           ))}
         </div>
       ) : (
         <div>
-          <h1>No users found, try using different filters</h1>
+          <p>No users found, try using different filters</p>
         </div>
       )}
-=======
-              <Link
-                to='/chat'
-                state= {{ userId: user._id, username: user.profile.firstName + " " + user.profile.lastName }} // Passing user ID in state
-                key={user._id}
-              >
-                <button className=''>Chat</button>
-              </Link>
-
-            </div>
-          </Link>
-        ))}
-      </div> */}
->>>>>>> 8718391da94c0e03ab5218491c8f8b9bcec18ef1
     </div>
   );
 };
