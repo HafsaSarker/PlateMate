@@ -68,7 +68,7 @@ function Navbar() {
             <ul className="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 ">
               <li>
                 <Link
-                  to="/home"
+                  to="/"
                   className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 "
                   aria-current="page"
                 >

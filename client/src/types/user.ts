@@ -18,6 +18,6 @@ export interface User {
     restaurantLocation: string;
     foodCategory: string;
     restaurantAttributes?: string[];
-    pricePoint?: number[];
+    pricePoint?: string[];
   };
 }
