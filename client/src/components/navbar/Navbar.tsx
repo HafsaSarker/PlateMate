@@ -29,7 +29,7 @@ function Navbar() {
     <nav className=" border-b border-gray-200 bg-gray-50">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
-          to="/home"
+          to="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <img src={'/logo.png'} className="h-8" alt="PlateDate Logo" />
@@ -93,10 +93,10 @@ function Navbar() {
               </li>
               <li>
                 <Link
-                  to="/contact"
+                  to="/settings"
                   className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100"
                 >
-                  Contact
+                  Settings
                 </Link>
               </li>
               <li

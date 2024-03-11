@@ -15,5 +15,5 @@ export interface FormData {
   restaurantLocation: string;
   foodCategory: string;
   restaurantAttributes?: string[];
-  pricePoint?: number[];
+  pricePoint?: string[];
 }
