@@ -17,9 +17,10 @@ const Chat: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [room, setRoom] = useState<string>('');
 
+  const [chatPartnerId, setChatPartnerId] = useState<string | null>(null);
+  const [chatPartnerUsername, setChatPartnerUsername] = useState<string | null>(null);
+
   const location = useLocation();
-  const chatPartnerId: string = location.state?.userId;
-  const chatPartnerUsername: string = location.state?.username;
 
   const generateRoomId = (userId1:string, userId2:string) => {
     const ids = [userId1, userId2].sort();
@@ -34,54 +35,64 @@ const Chat: React.FC = () => {
       const messagesWithDates = data.map((message: MessageData) => ({
         ...message,
         sentAt: new Date(message.sentAt),
-      }));
+      })).reverse();;
       setMessagesList(messagesWithDates); // Update state with fetched messages
     } catch (error) {
       console.error("Failed to fetch messages:", error);
     }
   };
 
+  // if from home page, get chat partner id from state
+  useEffect(() => {
+    if(location.state?.userId && location.state?.username) {
+      setChatPartnerId(location.state.userId);
+      setChatPartnerUsername(location.state.username);
+    }
+  }, [location.state]);
+
   useEffect(() => {
     const userExist = localStorage.getItem('user');
     if (userExist) {
       const user = JSON.parse(userExist);
       setCurrentUserData(user);
-      setUsername(user.profile.firstName);
+      setUsername(user.profile.firstName + ' ' + user.profile.lastName);
       console.log(user);
     }
     // else redirect to login
   }, []);
 
   useEffect(() => {
-    if (!currentUserData || !chatPartnerId) return;
+    if (currentUserData && chatPartnerId) {
+      const newRoom = generateRoomId(currentUserData._id, chatPartnerId);
+      if (newRoom !== room) {
+        setRoom(newRoom);
+      }
+    }
+  }, [currentUserData, chatPartnerId]); // update the room when currentUserData or chatPartnerId changes
 
-    const room = generateRoomId(currentUserData._id, chatPartnerId);
-    console.log('room', room);
-    setRoom(room);
-    socket.emit('join_room', room);
+  useEffect(() => {
+    if (room) {
+      fetchMessages(room);
+      socket.emit('join_room', room);
 
-    fetchMessages(room);
-
-    socket.on('receive_message', (messageData: MessageData) => {
-      // this makes sure the time is a date object
-      const updatedMessageData = {
-        ...messageData,
-        sentAt: new Date(messageData.sentAt),
+      const receiveMessage = (messageData: MessageData) => {
+        setMessagesList(prevMessages => [...prevMessages, {
+          ...messageData,
+          sentAt: new Date(messageData.sentAt)
+        }]);
       };
-      console.log('received message', messageData)
-      setMessagesList((messagesList) => [...messagesList, updatedMessageData]);
-      console.log(messagesList)
-    });
 
+      socket.on('receive_message', receiveMessage);
 
-    return () => {
-      socket.off('receive_message');
-    };
+      return () => {
+        socket.off('receive_message', receiveMessage);
+      };
+    }
+  }, [room]); // Fetch messages and set up socket listeners whenever the room changes
 
-  }, [socket, currentUserData, chatPartnerId]);
 
   const sendMessage = async (): Promise<void> => {
-    if (messageInput === '' || !currentUserData) return;
+    if (messageInput === '' || !currentUserData || !chatPartnerId) return;
     const messageData: MessageData = {
       fromUserId: currentUserData._id,
       toUserId: chatPartnerId,
@@ -96,7 +107,7 @@ const Chat: React.FC = () => {
   };
 
   // ensures currentUser exists
-  if (currentUserData === null) {
+  if (currentUserData === null || chatPartnerId === null) {
     return <div>Loading...</div>;
   }
 
@@ -107,10 +118,11 @@ const Chat: React.FC = () => {
           <img className="rounded-full" src='https://via.placeholder.com/40' alt='user-pfp' />
           <h3 className='pl-4 font-bold'>{username}</h3>
         </div>
-        <div className='p-4'>
-          <input className="w-full rounded-md" placeholder='Search for a chat'/>
-        </div>
-        <ChatList userId={currentUserData._id}/>
+        <ChatList userId={currentUserData._id}
+          generateRoomId={generateRoomId}
+          setChatPartnerId={setChatPartnerId}
+          setChatPartnerUsername={setChatPartnerUsername}
+        />
       </section>
 
       <ChatBox

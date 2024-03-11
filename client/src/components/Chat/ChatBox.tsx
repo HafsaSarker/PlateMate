@@ -11,21 +11,21 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
       </div>
       <p>room: {room} (this is temporary)</p>
       <div className='message-list max-h-full flex-grow overflow-auto'>
-      {messagesList.map((messageData, index) => (
-        <div key={index} className={`message px-4 py-1 flex ${messageData.fromUserId === currentUserData._id ? 'justify-end' : 'justify-start'}`}>
-          <div className={`
-            message-content p-2 rounded-lg
-            ${messageData.fromUserId === currentUserData._id ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}
-            min-w-32`}>
-            <div className='message-content'>
-              <p>{messageData.message}</p>
+        {messagesList.map((messageData, index) => (
+          <div key={index} className={`message px-4 py-1 flex ${messageData.fromUserId === currentUserData._id ? 'justify-end' : 'justify-start'}`}>
+            <div className={`
+              message-content p-2 rounded-lg
+              ${messageData.fromUserId === currentUserData._id ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}
+              min-w-32`}>
+              <div className='message-content'>
+                <p>{messageData.message}</p>
+              </div>
+              <p className='flex justify-end text-xs'>
+                {messageData.sentAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'})}
+              </p>
             </div>
-            <p className='flex justify-end text-xs'>
-              {messageData.sentAt?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'})}
-            </p>
           </div>
-        </div>
-      ))}
+        ))}
       </div>
 
       <div className='flex bg-gray-200 p-4 gap-2'>
