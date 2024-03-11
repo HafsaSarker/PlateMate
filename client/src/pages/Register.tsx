@@ -84,14 +84,9 @@ export default function Register() {
       const res = await axios.post(`${auth_api_path}register`, submitData);
 
       if (res.data) {
-        // set registered user as current user
-        setCurrUser(res.data);
-
-        // set local storage
-        localStorage.setItem('user', JSON.stringify(res.data));
+        // go to login
+        navigate('/');
       }
-      // go to home
-      navigate('/');
     } catch (error) {
       console.log(error);
     }
