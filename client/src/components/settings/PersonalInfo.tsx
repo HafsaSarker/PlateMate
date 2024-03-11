@@ -1,10 +1,13 @@
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import Countries from './Countries';
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { SettingsProps } from '../../types/settingsProps';
+import { UserContext } from '../../context/UserContext';
+import { UserContextType } from '../../types/userContextType';
 
 const PersonalInfo: React.FC<SettingsProps> = ({ handleChange, formData }) => {
+  const { currUser } = useContext(UserContext) as UserContextType;
   return (
     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
       <div className="col-span-full">
@@ -147,32 +150,18 @@ const PersonalInfo: React.FC<SettingsProps> = ({ handleChange, formData }) => {
         >
           Age
         </label>
-        {formData.age ? (
-          <div className="mt-2">
-            <input
-              type="number"
-              name="age"
-              value={formData.age}
-              id="age"
-              min="18"
-              max="90"
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              onChange={handleChange}
-            />
-          </div>
-        ) : (
-          <div className="mt-2">
-            <input
-              type="number"
-              name="age"
-              id="age"
-              min="18"
-              max="90"
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              onChange={handleChange}
-            />
-          </div>
-        )}
+        <div className="mt-2">
+          <input
+            type="number"
+            name="age"
+            id="age"
+            min="18"
+            max="90"
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            onChange={handleChange}
+            value={formData.age || ''}
+          />
+        </div>
       </div>
     </div>
   );

@@ -30,7 +30,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        {authCookie && currUser ? (
+        {currUser ? (
           <>
             <Route index element={<Home />} />
             <Route path="/chat" element={<Chat />} />
