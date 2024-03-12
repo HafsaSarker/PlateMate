@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ChatBoxProps } from '../../types/chatBoxProps';
 
 const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessageInput, sendMessage, currentUserData, chatPartnerUsername, room }) => {
+  const messagesEndRef = useRef(null);
 
   if (chatPartnerUsername === null) {
     return (
@@ -22,6 +23,14 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
 
     return time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   }
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messagesList]);
 
   return (
     <section className='flex flex-col right-section chatbox w-2/3 '>
@@ -46,6 +55,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       <div className='flex bg-gray-200 p-4 gap-2'>
