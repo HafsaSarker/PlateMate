@@ -7,6 +7,8 @@ import ChatList from '../components/Chat/ChatList';
 import { User } from '../types/user'
 import { MessageData } from '../types/messageData';
 
+import { message_api_path } from '../api/message';
+
 const socket: Socket = io('http://localhost:8080');
 
 const Chat: React.FC = () => {
@@ -15,11 +17,16 @@ const Chat: React.FC = () => {
 
   const [currentUserData, setCurrentUserData] = useState<User | null>(null);
   const [username, setUsername] = useState<string>('');
+
+  const [currPartnerId, setCurrPartnerId] = useState<string | null>(null);
+  const [currPartnerUsername, setCurrPartnerUsername] = useState<string | null>(null);
+
   const [room, setRoom] = useState<string>('');
 
+  const [partnerList, setPartnerList] = useState<{user: User, room:string,
+    lastMessage: string , lastMessageTime: number }[]>([]);
+
   const location = useLocation();
-  const chatPartnerId: string = location.state?.userId;
-  const chatPartnerUsername: string = location.state?.username;
 
   const generateRoomId = (userId1:string, userId2:string) => {
     const ids = [userId1, userId2].sort();
@@ -29,62 +36,89 @@ const Chat: React.FC = () => {
 
   const fetchMessages = async (roomId: string) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/messages/${roomId}`);
+      const response = await fetch(`${message_api_path}/${roomId}`);
       const data = await response.json();
       const messagesWithDates = data.map((message: MessageData) => ({
         ...message,
         sentAt: new Date(message.sentAt),
-      }));
+      })).reverse();
       setMessagesList(messagesWithDates); // Update state with fetched messages
     } catch (error) {
       console.error("Failed to fetch messages:", error);
     }
   };
 
+  // if from home page, get chat partner id from state
+  useEffect(() => {
+    if(location.state?.userId && location.state?.username) {
+      setCurrPartnerId(location.state.userId);
+      setCurrPartnerUsername(location.state.username);
+    }
+  }, [location.state]);
+
   useEffect(() => {
     const userExist = localStorage.getItem('user');
     if (userExist) {
       const user = JSON.parse(userExist);
       setCurrentUserData(user);
-      setUsername(user.profile.firstName);
+      setUsername(user.profile.firstName + ' ' + user.profile.lastName);
       console.log(user);
     }
     // else redirect to login
   }, []);
 
   useEffect(() => {
-    if (!currentUserData || !chatPartnerId) return;
+    if (currentUserData && currPartnerId) {
+      const newRoom = generateRoomId(currentUserData._id, currPartnerId);
+      if (newRoom !== room) {
+        setRoom(newRoom);
+      }
+    }
+  }, [currentUserData, currPartnerId]); // update the room when currentUserData or chatPartnerId changes
 
-    const room = generateRoomId(currentUserData._id, chatPartnerId);
-    console.log('room', room);
-    setRoom(room);
-    socket.emit('join_room', room);
+  useEffect(() => {
+    if (room) {
+      fetchMessages(room);
+      socket.emit('join_room', room);
 
-    fetchMessages(room);
-
-    socket.on('receive_message', (messageData: MessageData) => {
-      // this makes sure the time is a date object
-      const updatedMessageData = {
-        ...messageData,
-        sentAt: new Date(messageData.sentAt),
+      const receiveMessage = (messageData: MessageData) => {
+        setMessagesList(prevMessages => [...prevMessages, {
+          ...messageData,
+          sentAt: new Date(messageData.sentAt)
+        }]);
       };
-      console.log('received message', messageData)
-      setMessagesList((messagesList) => [...messagesList, updatedMessageData]);
-      console.log(messagesList)
-    });
+
+      socket.on('receive_message', receiveMessage);
+
+      return () => {
+        socket.off('receive_message', receiveMessage);
+      };
+    }
+  }, [room]); // Fetch messages and set up socket listeners whenever the room changes
+
+  const updatePartnerList = (messageData: MessageData) => {
+
+    //TODO: If not found, add the partner to the list
 
 
-    return () => {
-      socket.off('receive_message');
-    };
-
-  }, [socket, currentUserData, chatPartnerId]);
+    setPartnerList(partnerList.map(partner => {
+      if (partner.user._id === currPartnerId) {
+        return {
+          ...partner, // Copy all existing partner properties
+          lastMessage: messageInput, // Set the new last message
+          lastMessageTime: Date.now(), // Set the new last message time, assuming you want the current time
+        };
+      } else {
+        return partner; // Return the unchanged partner object
+      }
+    }).sort((a, b) => b.lastMessageTime - a.lastMessageTime));
+  };
 
   const sendMessage = async (): Promise<void> => {
-    if (messageInput === '' || !currentUserData) return;
+    if (messageInput === '' || !currentUserData || !currPartnerId) return;
     const messageData: MessageData = {
       fromUserId: currentUserData._id,
-      toUserId: chatPartnerId,
+      toUserId: currPartnerId,
       room,
       message: messageInput,
       sentAt: new Date(),
@@ -93,6 +127,7 @@ const Chat: React.FC = () => {
     socket.emit('send_message', messageData);
     setMessagesList((messagesList) => [...messagesList, messageData]);
     setMessageInput('');
+    updatePartnerList(messageData);
   };
 
   // ensures currentUser exists
@@ -104,13 +139,17 @@ const Chat: React.FC = () => {
     <div className='flex w-screen h-full overflow-hidden'>
       <section className='left-section w-1/3 border-r-2 border-gray-300'>
         <div className='user-heading flex bg-gray-500 p-4 items-center'>
-          <img className="rounded-full" src='https://via.placeholder.com/40' alt='user-pfp' />
+          <img className="rounded-full" src='https://via.placeholder.com/55' alt='user-pfp' />
           <h3 className='pl-4 font-bold'>{username}</h3>
         </div>
-        <div className='p-4'>
-          <input className="w-full rounded-md" placeholder='Search for a chat'/>
-        </div>
-        <ChatList userId={currentUserData._id}/>
+        <ChatList
+          partnerList={partnerList}
+          setPartnerList={setPartnerList}
+          userId={currentUserData._id}
+          generateRoomId={generateRoomId}
+          setChatPartnerId={setCurrPartnerId}
+          setChatPartnerUsername={setCurrPartnerUsername}
+        />
       </section>
 
       <ChatBox
@@ -119,7 +158,7 @@ const Chat: React.FC = () => {
         setMessageInput={setMessageInput}
         sendMessage={sendMessage}
         currentUserData={currentUserData}
-        chatPartnerUsername={chatPartnerUsername}
+        chatPartnerUsername={currPartnerUsername}
         room={room}
       />
     </div>

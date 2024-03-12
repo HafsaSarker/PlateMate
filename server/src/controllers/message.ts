@@ -2,9 +2,14 @@ import { Request, Response } from 'express';
 import { Message } from '../models/Message';
 
 async function getMessages(req: Request, res: Response): Promise<void> {
+  const roomId = req.params.roomId;
+  const limitString = typeof req.query.limit === 'string' ? req.query.limit : undefined;
+  const limit = parseInt(limitString) || 0;
   try {
-    const roomId = req.params.roomId;
-    const messages = await Message.find({ room: roomId }).sort({ sentAt: 1 });
+
+    const messages = await Message.find({ room: roomId })
+                                  .sort({ sentAt: -1 })
+                                  .limit(limit);
     res.json(messages);
   } catch (error) {
     res.status(500).json({ message: error.message });

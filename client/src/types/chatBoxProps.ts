@@ -7,6 +7,6 @@ export interface ChatBoxProps {
   setMessageInput: React.Dispatch<React.SetStateAction<string>>;
   sendMessage: () => Promise<void>;
   currentUserData: User;
-  chatPartnerUsername: string;
+  chatPartnerUsername: string | null;
   room: string;
 }
