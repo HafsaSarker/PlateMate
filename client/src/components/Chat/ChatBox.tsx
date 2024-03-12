@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { ChatBoxProps } from '../../types/chatBoxProps';
 
 const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessageInput, sendMessage, currentUserData, chatPartnerUsername, room }) => {
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   if (chatPartnerUsername === null) {
     return (
