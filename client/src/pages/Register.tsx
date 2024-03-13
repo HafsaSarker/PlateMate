@@ -2,16 +2,13 @@ import PersonalInfo from '../components/register/PersonalInfo';
 import Lifestyle from '../components/register/Lifestyle';
 import FoodPreferences from '../components/register/FoodPreferences';
 import { FormData } from '../types/formData';
-import { ChangeEvent, FormEvent, useContext, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { auth_api_path } from '../api/auth';
 import { destructFormData } from '../utils/destructFormData';
 import axios from 'axios';
-import { UserContext } from '../context/UserContext';
-import { UserContextType } from '../types/userContextType';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Register() {
-  const { setCurrUser } = useContext(UserContext) as UserContextType;
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>({

@@ -51,7 +51,6 @@ const Home = () => {
           <MatchedUsers
             users={users}
             setShowProfile={setShowProfile}
-            setUid={setUid}
             setUser={setUser}
           />
         </section>
@@ -67,8 +66,6 @@ const Home = () => {
       {showProfile && (
         <div className="border block text-sm text-center">
           <UserInfo
-            setUid={setUid}
-            uid={uid}
             setShowProfile={setShowProfile}
             user={user}
             setUser={setUser}
