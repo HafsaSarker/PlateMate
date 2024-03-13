@@ -9,6 +9,8 @@ import { User } from '../types/user';
 import axios from 'axios';
 import { user_api_path } from '../api/user';
 import UserInfo from '../components/home/UserInfo';
+import { VscSettings } from 'react-icons/vsc';
+import Filter from '../components/home/Filter';
 
 const Home = () => {
   const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
@@ -17,8 +19,8 @@ const Home = () => {
   const [users, setUsers] = useState<User[] | null>(null);
   const { currUser } = useContext(UserContext) as UserContextType;
   const [showProfile, setShowProfile] = useState<boolean>(false);
-  const [uid, setUid] = useState<string>('');
   const [user, setUser] = useState<User | null>(null);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
 
   // load similar users everytime clicked restaurant changes
   useEffect(() => {
@@ -45,9 +47,19 @@ const Home = () => {
       {clickedRestaurant && users ? (
         <section className="flex flex-col items-start h-full pt-11 justify-start w-[500px] max-w-[600px]">
           <SelectedRestaurant clickedRestaurant={clickedRestaurant} />
-          <h1 className="mt-5 font-semibold text-center w-full pb-3 text-gray-800 tracking-wide">
-            Users With Similar Preferences
-          </h1>
+
+          <div className="flex w-full items-center justify-center gap-1 mt-5 pb-3 font-semibold text-gray-800">
+            <h1>Users With Similar Preferences</h1>
+            <span
+              className="p-1 rounded-md bg-indigo-600 text-white hover:bg-indigo-500 cursor-pointer"
+              onClick={() => setShowFilters(true)}
+            >
+              <VscSettings />
+            </span>
+          </div>
+
+          {showFilters && <Filter setShowFilters={setShowFilters} />}
+
           <MatchedUsers
             users={users}
             setShowProfile={setShowProfile}
