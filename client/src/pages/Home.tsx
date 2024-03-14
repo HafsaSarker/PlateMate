@@ -10,7 +10,7 @@ import axios from 'axios';
 import { user_api_path } from '../api/user';
 import UserInfo from '../components/home/UserInfo';
 import { VscSettings } from 'react-icons/vsc';
-import Filter from '../components/home/Filter';
+import Filter from '../components/filter/Filter';
 
 const Home = () => {
   const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
