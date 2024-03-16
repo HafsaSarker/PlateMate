@@ -34,17 +34,16 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
 
   return (
     <section className='flex flex-col right-section chatbox w-2/3 '>
-      <div className='chat-heading flex bg-gray-500 p-4 items-center'>
+      <div className='chat-heading flex bg-primary p-4 items-center'>
         <img className="rounded-full" src='https://via.placeholder.com/55' alt='user-pfp' />
         <h3 className='pl-3'>{chatPartnerUsername}</h3>
       </div>
-      <p>room: {room} (this is temporary)</p>
       <div className='message-list max-h-full flex-grow overflow-auto'>
         {messagesList.map((messageData, index) => (
           <div key={index} className={`message px-4 py-1 flex ${messageData.fromUserId === currentUserData._id ? 'justify-end' : 'justify-start'}`}>
             <div className={`
               message-content p-2 rounded-lg
-              ${messageData.fromUserId === currentUserData._id ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}
+              ${messageData.fromUserId === currentUserData._id ? 'bg-secondary text-white' : 'bg-gray-300 text-black'}
               min-w-32`}>
               <div className='message-content'>
                 <p>{messageData.message}</p>
@@ -66,7 +65,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
           className='w-full rounded-md p-2'
           placeholder="Type a message"
         />
-        <button className='px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-150' onClick={sendMessage}>Send</button>
+        <button className='px-4 py-2 bg-accent text-white rounded-md hover:bg-blue-600 transition duration-150' onClick={sendMessage}>Send</button>
       </div>
     </section>
   );
