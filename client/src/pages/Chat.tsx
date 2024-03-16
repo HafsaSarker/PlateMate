@@ -8,8 +8,9 @@ import { User } from '../types/user'
 import { MessageData } from '../types/messageData';
 
 import { message_api_path } from '../api/message';
+import { user_api_path } from '../api/user';
 
-const socket: Socket = io('http://localhost:8080');
+const socket: Socket = io(import.meta.env.BACKEND_URL);
 
 const Chat: React.FC = () => {
   const [messageInput, setMessageInput] = useState<string>('');
@@ -47,6 +48,19 @@ const Chat: React.FC = () => {
       console.error("Failed to fetch messages:", error);
     }
   };
+
+  const getUserProfile = async (userId:string) => {
+    try {
+      const response = await fetch(`${user_api_path}/${userId}`, {
+        credentials: 'include', // This is equivalent to withCredentials: true in axios
+      });
+      const userData = await response.json(); // This gets the JSON body from the response
+      return userData;
+    } catch (error) {
+      console.error("Failed to fetch user profile:", error);
+      return null;
+    }
+  }
 
   // if from home page, get chat partner id from state
   useEffect(() => {
@@ -96,22 +110,41 @@ const Chat: React.FC = () => {
     }
   }, [room]); // Fetch messages and set up socket listeners whenever the room changes
 
-  const updatePartnerList = (messageData: MessageData) => {
-
-    //TODO: If not found, add the partner to the list
-
-
-    setPartnerList(partnerList.map(partner => {
-      if (partner.user._id === currPartnerId) {
-        return {
-          ...partner, // Copy all existing partner properties
-          lastMessage: messageInput, // Set the new last message
-          lastMessageTime: Date.now(), // Set the new last message time, assuming you want the current time
-        };
-      } else {
-        return partner; // Return the unchanged partner object
+  const updatePartnerList = async (messageData: MessageData) => {
+    // Check if the message receiver is not in the current partner list
+    if (!partnerList.some(partner => partner.user._id === messageData.toUserId)) {
+      try {
+        // Fetch user profile data of the message receiver
+        const partnerProfile = await getUserProfile(messageData.toUserId);
+        if (partnerProfile) {
+          // Create new partner data
+          const newPartnerData = {
+            user: partnerProfile,
+            room: messageData.room,
+            lastMessage: messageData.message,
+            lastMessageTime: Date.now(),
+          };
+          // Update the partner list by adding the new partner
+          setPartnerList(oldList => [newPartnerData, ...oldList]);
+        }
+      } catch (error) {
+        console.error("Error updating partner list:", error);
       }
-    }).sort((a, b) => b.lastMessageTime - a.lastMessageTime));
+    } else {
+      console.log('user exists')
+      // If the user already exists in the partner list, update their last message and time
+      setPartnerList(partnerList.map(partner => {
+        if (partner.user._id === currPartnerId) {
+          return {
+            ...partner, // Copy all existing partner properties
+            lastMessage: messageInput, // Set the new last message
+            lastMessageTime: Date.now(), // Set the new last message time, assuming you want the current time
+          };
+        } else {
+          return partner; // Return the unchanged partner object
+        }
+      }).sort((a, b) => b.lastMessageTime - a.lastMessageTime));
+    }
   };
 
   const sendMessage = async (): Promise<void> => {
@@ -137,9 +170,9 @@ const Chat: React.FC = () => {
 
   return (
     <div className='flex w-screen h-full overflow-hidden'>
-      <section className='left-section w-1/3 border-r-2 border-gray-300'>
-        <div className='user-heading flex bg-gray-500 p-4 items-center'>
-          <img className="rounded-full" src='https://via.placeholder.com/55' alt='user-pfp' />
+      <section className='left-section w-1/3 border-r-2 border-gray-300 flex flex-col h-full'>
+        <div className='user-heading flex bg-primary p-4 items-center'>
+          <img className="rounded-full" src='https://via.placeholder.com/50' alt='user-pfp' />
           <h3 className='pl-4 font-bold'>{username}</h3>
         </div>
         <ChatList
@@ -149,6 +182,7 @@ const Chat: React.FC = () => {
           generateRoomId={generateRoomId}
           setChatPartnerId={setCurrPartnerId}
           setChatPartnerUsername={setCurrPartnerUsername}
+          getUserProfile={getUserProfile}
         />
       </section>
 

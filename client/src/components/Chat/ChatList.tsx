@@ -2,7 +2,6 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { User } from '../../types/user';
 import { message_api_path } from '../../api/message';
-import { user_api_path } from '../../api/user';
 
 interface ChatListProps {
   partnerList: {user: User, room:string, lastMessage: string, lastMessageTime: number }[];
@@ -11,9 +10,10 @@ interface ChatListProps {
   generateRoomId: (userId1:string, userId2:string) => string;
   setChatPartnerId: React.Dispatch<React.SetStateAction<string | null>>;
   setChatPartnerUsername: React.Dispatch<React.SetStateAction<string | null>>;
+  getUserProfile: (userId:string) => Promise<User>;
 }
 
-const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, generateRoomId, setChatPartnerId, setChatPartnerUsername}) => {
+const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, generateRoomId, setChatPartnerId, setChatPartnerUsername, getUserProfile}) => {
   const [searchInput, setSearchInput] = useState('');
   const getMostRecentMessage = async (roomId:string) => {
     try {
@@ -37,19 +37,6 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
       return partnerIds;
     } catch (error) {
       console.error("Failed to fetch partner IDs:", error);
-    }
-  }
-
-  const getUserProfile = async (userId:string) => {
-    try {
-      const response = await axios.get(`${user_api_path}/${userId}`, {
-        withCredentials: true,
-      });
-      const userData = await response.data;
-      return userData;
-    } catch (error) {
-      console.error("Failed to fetch user profile:", error);
-      return null;
     }
   }
 
@@ -119,25 +106,28 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
   }, []);
 
   return (
-    <div>
+    <div className='h-full overflow-hidden'>
       <div className='p-4'>
         <input
           className="w-full rounded-md"
           placeholder='Search for a chat'
           onChange={(e) => setSearchInput(e.target.value)}/>
       </div>
-      {partnerList.filter(username => (username.user.profile.firstName + username.user.profile.lastName)
-        .includes(searchInput)).map(({user, lastMessage, lastMessageTime}) => (
-        <div className='flex p-4 cursor-pointer hover:bg-gray-400' key={user._id}
-          onClick={() => updatePartner(user._id, user.profile.firstName + ' ' + user.profile.lastName)}>
-          <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full'/>
-          <div className='px-4'>
-            <div className='font-bold'>{user.profile.firstName + ' ' + user.profile.lastName }</div>
-            <p className='text-xs'>{truncateMessage(lastMessage)} •
-            {displayTime(lastMessageTime)}</p>
+      <div className='partner-list max-h-full overflow-auto'>
+        {partnerList.filter(username => (username.user.profile.firstName + username.user.profile.lastName)
+          .includes(searchInput)).map(({user, lastMessage, lastMessageTime}) => (
+          <div className='flex p-4 cursor-pointer hover:bg-background-hover' key={user._id}
+            onClick={() => updatePartner(user._id, user.profile.firstName + ' ' + user.profile.lastName)}>
+            <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full'/>
+            <div className='px-4'>
+              <div className='font-bold'>{user.profile.firstName + ' ' + user.profile.lastName }</div>
+              <p className='text-xs'>{truncateMessage(lastMessage)} •
+              {displayTime(lastMessageTime)}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+
     </div>
 
   );
