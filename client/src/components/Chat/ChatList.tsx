@@ -106,25 +106,28 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
   }, []);
 
   return (
-    <div>
+    <div className='h-full overflow-hidden'>
       <div className='p-4'>
         <input
           className="w-full rounded-md"
           placeholder='Search for a chat'
           onChange={(e) => setSearchInput(e.target.value)}/>
       </div>
-      {partnerList.filter(username => (username.user.profile.firstName + username.user.profile.lastName)
-        .includes(searchInput)).map(({user, lastMessage, lastMessageTime}) => (
-        <div className='flex p-4 cursor-pointer hover:bg-gray-400' key={user._id}
-          onClick={() => updatePartner(user._id, user.profile.firstName + ' ' + user.profile.lastName)}>
-          <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full'/>
-          <div className='px-4'>
-            <div className='font-bold'>{user.profile.firstName + ' ' + user.profile.lastName }</div>
-            <p className='text-xs'>{truncateMessage(lastMessage)} •
-            {displayTime(lastMessageTime)}</p>
+      <div className='partner-list max-h-full overflow-auto'>
+        {partnerList.filter(username => (username.user.profile.firstName + username.user.profile.lastName)
+          .includes(searchInput)).map(({user, lastMessage, lastMessageTime}) => (
+          <div className='flex p-4 cursor-pointer hover:bg-background-hover' key={user._id}
+            onClick={() => updatePartner(user._id, user.profile.firstName + ' ' + user.profile.lastName)}>
+            <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full'/>
+            <div className='px-4'>
+              <div className='font-bold'>{user.profile.firstName + ' ' + user.profile.lastName }</div>
+              <p className='text-xs'>{truncateMessage(lastMessage)} •
+              {displayTime(lastMessageTime)}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+
     </div>
 
   );

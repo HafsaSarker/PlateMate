@@ -35,7 +35,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
   return (
     <section className='flex flex-col right-section chatbox w-2/3 '>
       <div className='chat-heading flex bg-primary p-4 items-center'>
-        <img className="rounded-full" src='https://via.placeholder.com/55' alt='user-pfp' />
+        <img className="rounded-full" src='https://via.placeholder.com/50' alt='user-pfp' />
         <h3 className='pl-3'>{chatPartnerUsername}</h3>
       </div>
       <div className='message-list max-h-full flex-grow overflow-auto'>
@@ -57,7 +57,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
         <div ref={messagesEndRef} />
       </div>
 
-      <div className='flex bg-gray-200 p-4 gap-2'>
+      <div className='flex bg-background-hover p-4 gap-2'>
         <input
           value={messageInput}
           onChange={(e) => setMessageInput(e.target.value)}
@@ -65,7 +65,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
           className='w-full rounded-md p-2'
           placeholder="Type a message"
         />
-        <button className='px-4 py-2 bg-accent text-white rounded-md hover:bg-blue-600 transition duration-150' onClick={sendMessage}>Send</button>
+        <button className='px-4 py-2 bg-accent text-white rounded-md hover:bg-accent-hover transition duration-150' onClick={sendMessage}>Send</button>
       </div>
     </section>
   );

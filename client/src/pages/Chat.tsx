@@ -10,7 +10,7 @@ import { MessageData } from '../types/messageData';
 import { message_api_path } from '../api/message';
 import { user_api_path } from '../api/user';
 
-const socket: Socket = io('http://localhost:8080');
+const socket: Socket = io(import.meta.env.BACKEND_URL);
 
 const Chat: React.FC = () => {
   const [messageInput, setMessageInput] = useState<string>('');
@@ -170,9 +170,9 @@ const Chat: React.FC = () => {
 
   return (
     <div className='flex w-screen h-full overflow-hidden'>
-      <section className='left-section w-1/3 border-r-2 border-gray-300'>
-        <div className='user-heading flex bg-gray-500 p-4 items-center'>
-          <img className="rounded-full" src='https://via.placeholder.com/55' alt='user-pfp' />
+      <section className='left-section w-1/3 border-r-2 border-gray-300 flex flex-col h-full'>
+        <div className='user-heading flex bg-primary p-4 items-center'>
+          <img className="rounded-full" src='https://via.placeholder.com/50' alt='user-pfp' />
           <h3 className='pl-4 font-bold'>{username}</h3>
         </div>
         <ChatList
