@@ -14,7 +14,7 @@ interface ChatListProps {
 }
 
 const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, generateRoomId, setChatPartnerId, setChatPartnerUsername}) => {
-
+  const [searchInput, setSearchInput] = useState('');
   const getMostRecentMessage = async (roomId:string) => {
     try {
       const response = await axios.get(`${message_api_path}/${roomId}?limit=1`);
@@ -110,9 +110,10 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
     } else {
       return '1min';
     }
-
-
   }
+
+
+
   useEffect(() => {
     getPastPartners(userId);
   }, []);
@@ -120,9 +121,13 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
   return (
     <div>
       <div className='p-4'>
-        <input className="w-full rounded-md" placeholder='Search for a chat'/>
+        <input
+          className="w-full rounded-md"
+          placeholder='Search for a chat'
+          onChange={(e) => setSearchInput(e.target.value)}/>
       </div>
-      {partnerList.map(({user, lastMessage, lastMessageTime}) => (
+      {partnerList.filter(username => (username.user.profile.firstName + username.user.profile.lastName)
+        .includes(searchInput)).map(({user, lastMessage, lastMessageTime}) => (
         <div className='flex p-4 cursor-pointer hover:bg-gray-400' key={user._id}
           onClick={() => updatePartner(user._id, user.profile.firstName + ' ' + user.profile.lastName)}>
           <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full'/>
