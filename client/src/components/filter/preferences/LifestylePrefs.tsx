@@ -1,6 +1,7 @@
 import React from 'react';
+import { FilterData } from '../../../types/filterData';
 
-function LifestylePrefs() {
+const LifestylePrefs: React.FC<FilterData> = ({ handleChange, filters }) => {
   return (
     <div className="flex flex-col p-4 w-full  items-center justify-center">
       <div>
@@ -13,8 +14,9 @@ function LifestylePrefs() {
                 id="smoke"
                 name="smoke"
                 type="checkbox"
+                value={filters.smoke}
                 className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-indigo-600 focus:ring-indigo-600 focus:ring-2"
-                // onChange={handleChange}
+                onChange={handleChange}
               />
             </div>
             <div className="text-sm leading-6">
@@ -29,8 +31,9 @@ function LifestylePrefs() {
                 id="drink"
                 name="drink"
                 type="checkbox"
+                value={filters.drink}
                 className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-indigo-600 focus:ring-indigo-600 focus:ring-2"
-                // onChange={handleChange}
+                onChange={handleChange}
               />
             </div>
             <div className="text-sm leading-6">
@@ -43,6 +46,6 @@ function LifestylePrefs() {
       </div>
     </div>
   );
-}
+};
 
 export default LifestylePrefs;

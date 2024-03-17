@@ -74,7 +74,6 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
   // pass restaurant info up to parent to use on right section
   const handleMarkerClick = (restaurant: Restaurant) => {
     setClickedRestaurant(restaurant);
-    console.log(restaurant);
   };
 
   // updates the center of the map when it is moved

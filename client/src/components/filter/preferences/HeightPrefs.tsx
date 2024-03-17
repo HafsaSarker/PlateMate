@@ -1,6 +1,7 @@
 import React from 'react';
+import { FilterData } from '../../../types/filterData';
 
-function HeightPrefs() {
+const HeightPrefs: React.FC<FilterData> = ({ handleChange, filters }) => {
   return (
     <div className="flex flex-col p-4 w-full border-b border-gray-100 items-center justify-center">
       <div>
@@ -19,8 +20,9 @@ function HeightPrefs() {
                 name="height_from"
                 id="height_from"
                 placeholder="e.g. 5 ft 10 in"
+                value={filters.height_from}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                // onChange={handleChange}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -37,8 +39,9 @@ function HeightPrefs() {
                 name="height_to"
                 id="height_to"
                 placeholder="e.g. 5 ft 10 in"
+                value={filters.height_to}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                // onChange={handleChange}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -46,6 +49,6 @@ function HeightPrefs() {
       </div>
     </div>
   );
-}
+};
 
 export default HeightPrefs;
