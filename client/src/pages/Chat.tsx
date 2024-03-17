@@ -10,7 +10,8 @@ import { MessageData } from '../types/messageData';
 import { message_api_path } from '../api/message';
 import { user_api_path } from '../api/user';
 
-const socket: Socket = io(import.meta.env.BACKEND_URL);
+const backend_url = import.meta.env.VITE_BACKEND_URL;
+const socket: Socket = io(backend_url);
 
 const Chat: React.FC = () => {
   const [messageInput, setMessageInput] = useState<string>('');
