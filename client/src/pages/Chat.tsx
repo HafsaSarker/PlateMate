@@ -66,7 +66,6 @@ const Chat: React.FC = () => {
   // if from home page, get chat partner id from state
   useEffect(() => {
     if(location.state?.userId && location.state?.username) {
-      console.log(location.state.userId);
       setCurrPartnerId(location.state.userId);
       setCurrPartnerUsername(location.state.username);
     }
@@ -78,7 +77,6 @@ const Chat: React.FC = () => {
       const user = JSON.parse(userExist);
       setCurrentUserData(user);
       setUsername(user.profile.firstName + ' ' + user.profile.lastName);
-      console.log(user);
     }
     // else redirect to login
   }, []);
@@ -94,9 +92,7 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     if (room) {
-      console.log('test')
       fetchMessages(room);
-      console.log('joining room')
       socket.emit('join_room', room);
 
       const receiveMessage = (messageData: MessageData) => {
@@ -135,7 +131,6 @@ const Chat: React.FC = () => {
         console.error("Error updating partner list:", error);
       }
     } else {
-      console.log('user exists')
       // If the user already exists in the partner list, update their last message and time
       setPartnerList(partnerList.map(partner => {
         if (partner.user._id === currPartnerId) {
@@ -153,7 +148,6 @@ const Chat: React.FC = () => {
 
   const sendMessage = async (): Promise<void> => {
     if (messageInput === '' || !currentUserData || !currPartnerId) return;
-    console.log('sentMessage')
     const messageData: MessageData = {
       fromUserId: currentUserData._id,
       toUserId: currPartnerId,
@@ -161,9 +155,7 @@ const Chat: React.FC = () => {
       message: messageInput,
       sentAt: new Date(),
     };
-    console.log(messageData)
     socket.emit('send_message', messageData);
-    console.log('test')
     setMessagesList((messagesList) => [...messagesList, messageData]);
     setMessageInput('');
     updatePartnerList(messageData);

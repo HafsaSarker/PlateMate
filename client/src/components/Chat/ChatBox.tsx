@@ -34,7 +34,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
 
   return (
     <section className='flex flex-col right-section chatbox w-2/3 '>
-      <div>room: {room}</div>
       <div className='chat-heading flex bg-primary p-4 items-center'>
         <img className="rounded-full" src='https://via.placeholder.com/50' alt='user-pfp' />
         <h3 className='pl-3'>{chatPartnerUsername}</h3>
