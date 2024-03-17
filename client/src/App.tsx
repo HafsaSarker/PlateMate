@@ -30,7 +30,7 @@ function App() {
   }, [authCookie, setCurrUser]);
 
   if (isLoading) {
-    return <div></div>;
+    return <></>;
   }
 
   return (

@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { User } from '../../types/user';
 import { message_api_path } from '../../api/message';
-import { chat_partner_api_path } from '../../api/chat-partner';
+import { chat_partner_api_path } from '../../api/chat-partners';
 
 interface ChatListProps {
   partnerList: {user: User, room:string, lastMessage: string, lastMessageTime: number }[];

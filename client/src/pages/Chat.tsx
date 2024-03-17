@@ -93,7 +93,9 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     if (room) {
+      console.log('test')
       fetchMessages(room);
+      console.log('joining room')
       socket.emit('join_room', room);
 
       const receiveMessage = (messageData: MessageData) => {
@@ -150,6 +152,7 @@ const Chat: React.FC = () => {
 
   const sendMessage = async (): Promise<void> => {
     if (messageInput === '' || !currentUserData || !currPartnerId) return;
+    console.log('sentMessage')
     const messageData: MessageData = {
       fromUserId: currentUserData._id,
       toUserId: currPartnerId,
@@ -159,6 +162,7 @@ const Chat: React.FC = () => {
     };
     console.log(messageData)
     socket.emit('send_message', messageData);
+    console.log('test')
     setMessagesList((messagesList) => [...messagesList, messageData]);
     setMessageInput('');
     updatePartnerList(messageData);
