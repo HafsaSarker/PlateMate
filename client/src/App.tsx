@@ -5,7 +5,7 @@ import Login from './pages/Login';
 import Layout from './layout/Layout';
 import Home from './pages/Home';
 import Chat from './pages/Chat';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { UserContext } from './context/UserContext';
 import { UserContextType } from './types/userContextType';
 import { useCookies } from 'react-cookie';
@@ -14,6 +14,7 @@ import Settings from './pages/Settings';
 function App() {
   const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
   const [authCookie] = useCookies(['AUTH']);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Access 'AUTH' cookie
@@ -25,7 +26,12 @@ function App() {
     if (authToken && user) {
       setCurrUser(JSON.parse(user));
     }
+    setIsLoading(false);
   }, [authCookie, setCurrUser]);
+
+  if (isLoading) {
+    return <div></div>;
+  }
 
   return (
     <Routes>

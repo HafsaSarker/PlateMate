@@ -65,6 +65,7 @@ const Chat: React.FC = () => {
   // if from home page, get chat partner id from state
   useEffect(() => {
     if(location.state?.userId && location.state?.username) {
+      console.log(location.state.userId);
       setCurrPartnerId(location.state.userId);
       setCurrPartnerUsername(location.state.username);
     }
