@@ -5,11 +5,66 @@ import SexPrefs from './preferences/SexPrefs';
 import AgePrefs from './preferences/AgePrefs';
 import HeightPrefs from './preferences/HeightPrefs';
 import LifestylePrefs from './preferences/LifestylePrefs';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { FilterForm } from '../../types/filterForm';
 
 const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
-  const saveFilters = () => {
+  const [filters, setFilters] = useState<FilterForm>({
+    nationalities: [],
+    male: false,
+    female: false,
+    other: false,
+    age_from: 18,
+    age_to: 18, // will start at age_from later
+    height_from: '',
+    height_to: '',
+    smoke: false,
+    drink: false,
+  });
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
+    const { name, value, type } = e.target;
+
+    switch (type) {
+      case 'checkbox':
+        setFilters((prevFilters) => ({
+          ...prevFilters,
+          [name]: (e.target as HTMLInputElement).checked,
+        }));
+        break;
+      case 'number':
+        setFilters((prevFilters) => ({
+          ...prevFilters,
+          [name]: value !== '' ? parseInt(value, 10) : undefined,
+        }));
+        break;
+      case 'select-multiple':
+        const selectedOptions = Array.from(
+          (e.target as HTMLSelectElement).options,
+        )
+          .filter((option) => option.selected)
+          .map((option) => option.value);
+        setFilters((prevFilters) => ({
+          ...prevFilters,
+          [name]: selectedOptions,
+        }));
+        break;
+      default:
+        setFilters((prevFilters) => ({
+          ...prevFilters,
+          [name]: value,
+        }));
+    }
+  };
+
+  const saveFilters = (e: FormEvent<HTMLFormElement>) => {
     // save filters to database in
     // user model
+    e.preventDefault();
+
+    console.log(filters);
   };
   return (
     <div
@@ -32,46 +87,53 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
           </div>
 
           {/* <!-- Modal header --> */}
-          <div className="flex flex-col items-center justify-between p-4 md:p-5 border-b rounded-t">
+          <div className="flex flex-col items-center justify-between p-4 md:p-5 border-b-4 rounded-t">
             <h3 className="text-xl font-semibold text-gray-900 ">
               Filter Users
             </h3>
           </div>
 
           {/* <!-- Modal body --> */}
-          <form className="flex flex-col justify-center gap-4 w-full border items-start px-8 md:px-14">
+          <form
+            className="flex flex-col justify-center gap-4 w-full  items-start"
+            onSubmit={saveFilters}
+          >
             {/* nationality preferences */}
-            <CountriesPrefs />
+            <CountriesPrefs
+              handleChange={handleChange}
+              filters={filters}
+              setFilters={setFilters}
+            />
 
             {/* sex preferences */}
-            <SexPrefs />
+            <SexPrefs filters={filters} handleChange={handleChange} />
 
             {/* age preferences */}
-            <AgePrefs />
+            <AgePrefs filters={filters} handleChange={handleChange} />
 
             {/* height preferences */}
-            <HeightPrefs />
+            <HeightPrefs filters={filters} handleChange={handleChange} />
 
             {/* lifestyle preferences */}
-            <LifestylePrefs />
-          </form>
+            <LifestylePrefs filters={filters} handleChange={handleChange} />
 
-          {/* <!-- Modal footer --> */}
-          <div className="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b ">
-            <button
-              data-modal-hide="default-modal"
-              type="button"
-              className="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => setShowFilters(false)}
-              className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-indigo-600 focus:z-10 focus:ring-4 focus:ring-gray-100"
-            >
-              Go Back
-            </button>
-          </div>
+            {/* <!-- Modal footer --> */}
+            <div className="flex w-full items-center justify-end p-4 md:p-5 border-t-4 border-gray-200 rounded-b">
+              <button
+                type="submit"
+                className="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setShowFilters(false)}
+                type="button"
+                className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-indigo-600 focus:z-10 focus:ring-4 focus:ring-gray-100"
+              >
+                Go Back
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

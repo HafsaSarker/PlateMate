@@ -1,18 +1,22 @@
-const Countries = () => {
+import React from 'react';
+import { FilterData } from '../../../types/filterData';
+
+const Countries: React.FC<FilterData> = ({ handleChange, filters }) => {
   return (
     <div className="flex flex-col items-start">
       <label
-        htmlFor="nationality"
+        htmlFor="nationalities"
         className="block text-sm font-medium leading-6 text-gray-900"
       >
         NATIONALITY
       </label>
       <select
-        id="nationality"
-        name="nationality"
+        id="nationalities"
+        name="nationalities"
         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-        required
-        // onChange={handleChange}
+        multiple
+        value={filters.nationalities}
+        onChange={handleChange}
       >
         <option value="null">Select an option</option>
         <option value="Afghanistan">Afghanistan</option>
