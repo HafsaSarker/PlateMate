@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
 import ChatBox from '../components/Chat/ChatBox';
@@ -10,15 +10,17 @@ import { MessageData } from '../types/messageData';
 import { message_api_path } from '../api/message';
 import { user_api_path } from '../api/user';
 
+import { UserContext } from '../context/UserContext';
+import { UserContextType } from '../types/userContextType';
+
 const backend_url = import.meta.env.VITE_BACKEND_URL;
 const socket: Socket = io(backend_url);
 
 const Chat: React.FC = () => {
+  const { currUser } = useContext(UserContext) as UserContextType;
+
   const [messageInput, setMessageInput] = useState<string>('');
   const [messagesList, setMessagesList] = useState<MessageData[]>([]);
-
-  const [currentUserData, setCurrentUserData] = useState<User | null>(null);
-  const [username, setUsername] = useState<string>('');
 
   const [currPartnerId, setCurrPartnerId] = useState<string | null>(null);
   const [currPartnerUsername, setCurrPartnerUsername] = useState<string | null>(null);
@@ -71,24 +73,15 @@ const Chat: React.FC = () => {
     }
   }, [location.state]);
 
-  useEffect(() => {
-    const userExist = localStorage.getItem('user');
-    if (userExist) {
-      const user = JSON.parse(userExist);
-      setCurrentUserData(user);
-      setUsername(user.profile.firstName + ' ' + user.profile.lastName);
-    }
-    // else redirect to login
-  }, []);
 
   useEffect(() => {
-    if (currentUserData && currPartnerId) {
-      const newRoom = generateRoomId(currentUserData._id, currPartnerId);
+    if (currUser && currPartnerId) {
+      const newRoom = generateRoomId(currUser._id, currPartnerId);
       if (newRoom !== room) {
         setRoom(newRoom);
       }
     }
-  }, [currentUserData, currPartnerId]); // update the room when currentUserData or chatPartnerId changes
+  }, [currUser, currPartnerId]); // update the room when currentUserData or chatPartnerId changes
 
   useEffect(() => {
     if (room) {
@@ -147,9 +140,9 @@ const Chat: React.FC = () => {
   };
 
   const sendMessage = async (): Promise<void> => {
-    if (messageInput === '' || !currentUserData || !currPartnerId) return;
+    if (messageInput === '' || !currUser || !currPartnerId) return;
     const messageData: MessageData = {
-      fromUserId: currentUserData._id,
+      fromUserId: currUser._id,
       toUserId: currPartnerId,
       room,
       message: messageInput,
@@ -162,7 +155,7 @@ const Chat: React.FC = () => {
   };
 
   // ensures currentUser exists
-  if (currentUserData === null) {
+  if (currUser === null) {
     return <div>Loading...</div>;
   }
 
@@ -171,12 +164,12 @@ const Chat: React.FC = () => {
       <section className='left-section w-1/3 border-r-2 border-gray-300 flex flex-col h-full'>
         <div className='user-heading flex bg-primary p-4 items-center'>
           <img className="rounded-full" src='https://via.placeholder.com/50' alt='user-pfp' />
-          <h3 className='pl-4 font-bold'>{username}</h3>
+          <h3 className='pl-4 font-bold'></h3>
         </div>
         <ChatList
           partnerList={partnerList}
           setPartnerList={setPartnerList}
-          userId={currentUserData._id}
+          userId={currUser._id}
           generateRoomId={generateRoomId}
           currPartnerId={currPartnerId}
           setCurrPartnerId={setCurrPartnerId}
@@ -190,7 +183,7 @@ const Chat: React.FC = () => {
         messageInput={messageInput}
         setMessageInput={setMessageInput}
         sendMessage={sendMessage}
-        currentUserData={currentUserData}
+        currentUserData={currUser}
         chatPartnerUsername={currPartnerUsername}
         room={room}
       />

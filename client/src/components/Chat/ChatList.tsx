@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { User } from '../../types/user';
 import { message_api_path } from '../../api/message';
 import { chat_partner_api_path } from '../../api/chat-partners';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 interface ChatListProps {
   partnerList: {user: User, room:string, lastMessage: string, lastMessageTime: number }[];
@@ -107,9 +108,11 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
 
   return (
     <div className='h-full overflow-hidden'>
-      <div className='p-4'>
+      <h1 className='py-2 px-6 text-2xl font-bold'>Chats</h1>
+      <div className='py-3 px-6 gap-4 flex justify-center items-center bg-background-hover mx-4 my-2 rounded-full'>
+        <MagnifyingGlassIcon className='h-5 w-5'/>
         <input
-          className="w-full rounded-md"
+          className="w-full bg-transparent border-none focus:ring-0 p-0"
           placeholder='Search for a chat'
           onChange={(e) => setSearchInput(e.target.value)}/>
       </div>
