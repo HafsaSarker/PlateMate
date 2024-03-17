@@ -44,8 +44,8 @@ function Login() {
     }
   };
   return (
-    <div className="h-full w-full flex items-center overflow-y-auto py-20 px-52">
-      <form className="h-full w-full" onSubmit={handleSubmit}>
+    <div className="h-full w-full flex items-center lg:justify-center overflow-y-auto py-20 px-52">
+      <form className="h-full w-full max-w-[700px]" onSubmit={handleSubmit}>
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
             <div className="border-gray-900/10">
