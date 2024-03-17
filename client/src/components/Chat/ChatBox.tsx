@@ -4,14 +4,6 @@ import { ChatBoxProps } from '../../types/chatBoxProps';
 const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessageInput, sendMessage, currentUserData, chatPartnerUsername, room }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  if (chatPartnerUsername === null) {
-    return (
-      <section className='flex items-center justify-center w-2/3 font-bold text-xl'>
-        <div>Select a chat to start</div>
-      </section>
-    );
-  }
-
   const timeDisplay = (time: Date) => {
     const currDate = new Date();
     const datesAreDifferent = time.getFullYear() !== currDate.getFullYear() ||
@@ -31,6 +23,14 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
   useEffect(() => {
     scrollToBottom();
   }, [messagesList]);
+
+  if (chatPartnerUsername === null) {
+    return (
+      <section className='flex items-center justify-center w-2/3 font-bold text-xl'>
+        <div>Select a chat to start</div>
+      </section>
+    );
+  }
 
   return (
     <section className='flex flex-col right-section chatbox w-2/3 '>

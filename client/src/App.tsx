@@ -43,7 +43,7 @@ function App() {
           </>
         )}
         {/* Add a fallback route to handle cases where no routes match */}
-        <Route path="*" element={<Navigate to="/" />} />
+        {/* <Route path="*" element={<Navigate to="/" />} /> */}
       </Route>
     </Routes>
   );
