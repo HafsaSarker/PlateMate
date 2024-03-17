@@ -34,7 +34,6 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
     try {
       const response = await axios.get(`${chat_partner_api_path}/${userId}`);
       const partnerIds = response.data[0].users;
-      console.log(partnerIds);
       return partnerIds;
     } catch (error) {
       console.error("Failed to fetch partner IDs:", error);
@@ -115,7 +114,7 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
           onChange={(e) => setSearchInput(e.target.value)}/>
       </div>
       <div className='partner-list max-h-full overflow-auto'>
-        {partnerList.filter(username => (username.user.profile.firstName + username.user.profile.lastName)
+        {partnerList.filter(username => (username.user.profile.firstName + " " + username.user.profile.lastName)
           .includes(searchInput)).map(({user, lastMessage, lastMessageTime}) => (
           <div className={`flex p-4 cursor-pointer hover:bg-background-hover ${user._id === currPartnerId ? 'bg-background-hover' : ''}`} key={user._id}
             onClick={() => updatePartner(user._id, user.profile.firstName + ' ' + user.profile.lastName)}>

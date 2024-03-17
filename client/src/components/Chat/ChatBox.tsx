@@ -42,7 +42,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
         {messagesList.map((messageData, index) => (
           <div key={index} className={`message px-4 py-1 flex ${messageData.fromUserId === currentUserData._id ? 'justify-end' : 'justify-start'}`}>
             <div className={`
-              message-content p-2 rounded-lg
+              message-content p-2 rounded-lg whitespace-pre-wrap
               ${messageData.fromUserId === currentUserData._id ? 'bg-secondary text-white' : 'bg-gray-300 text-black'}
               min-w-32`}>
               <div className='message-content'>
