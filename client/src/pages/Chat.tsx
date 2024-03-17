@@ -180,8 +180,9 @@ const Chat: React.FC = () => {
           setPartnerList={setPartnerList}
           userId={currentUserData._id}
           generateRoomId={generateRoomId}
-          setChatPartnerId={setCurrPartnerId}
-          setChatPartnerUsername={setCurrPartnerUsername}
+          currPartnerId={currPartnerId}
+          setCurrPartnerId={setCurrPartnerId}
+          setCurrPartnerUsername={setCurrPartnerUsername}
           getUserProfile={getUserProfile}
         />
       </section>
