@@ -1,22 +1,26 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { User } from '../../types/user';
 import { message_api_path } from '../../api/message';
 import { chat_partner_api_path } from '../../api/chat-partners';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
+
+import { UserContext } from '../../context/UserContext';
+import { UserContextType } from '../../types/userContextType';
+
 interface ChatListProps {
   partnerList: {user: User, room:string, lastMessage: string, lastMessageTime: number }[];
   setPartnerList: React.Dispatch<React.SetStateAction<{user: User, room:string, lastMessage: string , lastMessageTime: number}[]>>;
-  userId: string;
   generateRoomId: (userId1:string, userId2:string) => string;
-  currPartnerId: string | null;
-  setCurrPartnerId: React.Dispatch<React.SetStateAction<string | null>>;
-  setCurrPartnerUsername: React.Dispatch<React.SetStateAction<string | null>>;
+  currPartner: User | null;
+  setCurrPartner: React.Dispatch<React.SetStateAction<User | null>>;
   getUserProfile: (userId:string) => Promise<User>;
 }
 
-const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, generateRoomId, currPartnerId, setCurrPartnerId, setCurrPartnerUsername, getUserProfile}) => {
+const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, generateRoomId, currPartner, setCurrPartner, getUserProfile}) => {
+  const { currUser } = useContext(UserContext) as UserContextType;
+
   const [searchInput, setSearchInput] = useState('');
   const getMostRecentMessage = async (roomId:string) => {
     try {
@@ -68,9 +72,8 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
     return message.length > maxLength ? message.substring(0, maxLength) + '...' : message;
   }
 
-  const updatePartner = (id:string, username:string) => {
-    setCurrPartnerId(id);
-    setCurrPartnerUsername(username);
+  const updatePartner = (partnerData:User) => {
+    setCurrPartner(partnerData);
   }
 
   const displayTime = (time:number) => {
@@ -100,10 +103,12 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
     }
   }
 
-
+  if (currUser === null) {
+    return <></>
+  }
 
   useEffect(() => {
-    getPastPartners(userId);
+    getPastPartners(currUser._id);
   }, []);
 
   return (
@@ -117,10 +122,10 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
           onChange={(e) => setSearchInput(e.target.value)}/>
       </div>
       <div className='partner-list max-h-full overflow-auto'>
-        {partnerList.filter(username => (username.user.profile.firstName + " " + username.user.profile.lastName)
+        {partnerList.filter(partnerData => (partnerData.user.profile.firstName + " " + partnerData.user.profile.lastName)
           .includes(searchInput)).map(({user, lastMessage, lastMessageTime}) => (
-          <div className={`flex p-4 cursor-pointer hover:bg-background-hover ${user._id === currPartnerId ? 'bg-background-hover' : ''}`} key={user._id}
-            onClick={() => updatePartner(user._id, user.profile.firstName + ' ' + user.profile.lastName)}>
+          <div className={`flex p-4 cursor-pointer hover:bg-background-hover ${user._id === currPartner?._id ? 'bg-background-hover' : ''}`} key={user._id}
+            onClick={() => updatePartner(user)}>
             <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full'/>
             <div className='px-4'>
               <div className='font-bold'>{user.profile.firstName + ' ' + user.profile.lastName }</div>

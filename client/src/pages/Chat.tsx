@@ -22,8 +22,7 @@ const Chat: React.FC = () => {
   const [messageInput, setMessageInput] = useState<string>('');
   const [messagesList, setMessagesList] = useState<MessageData[]>([]);
 
-  const [currPartnerId, setCurrPartnerId] = useState<string | null>(null);
-  const [currPartnerUsername, setCurrPartnerUsername] = useState<string | null>(null);
+  const [currPartner, setCurrPartner] = useState<User | null>(null);
 
   const [room, setRoom] = useState<string>('');
 
@@ -67,21 +66,20 @@ const Chat: React.FC = () => {
 
   // if from home page, get chat partner id from state
   useEffect(() => {
-    if(location.state?.userId && location.state?.username) {
-      setCurrPartnerId(location.state.userId);
-      setCurrPartnerUsername(location.state.username);
+    if(location.state?.user) {
+      setCurrPartner(location.state.user);
     }
   }, [location.state]);
 
 
   useEffect(() => {
-    if (currUser && currPartnerId) {
-      const newRoom = generateRoomId(currUser._id, currPartnerId);
+    if (currUser && currPartner) {
+      const newRoom = generateRoomId(currUser._id, currPartner._id);
       if (newRoom !== room) {
         setRoom(newRoom);
       }
     }
-  }, [currUser, currPartnerId]); // update the room when currentUserData or chatPartnerId changes
+  }, [currUser, currPartner]); // update the room when currentUserData or chatPartnerId changes
 
   useEffect(() => {
     if (room) {
@@ -126,7 +124,7 @@ const Chat: React.FC = () => {
     } else {
       // If the user already exists in the partner list, update their last message and time
       setPartnerList(partnerList.map(partner => {
-        if (partner.user._id === currPartnerId) {
+        if (partner.user._id === currPartner?._id) {
           return {
             ...partner, // Copy all existing partner properties
             lastMessage: messageInput, // Set the new last message
@@ -140,10 +138,10 @@ const Chat: React.FC = () => {
   };
 
   const sendMessage = async (): Promise<void> => {
-    if (messageInput === '' || !currUser || !currPartnerId) return;
+    if (messageInput === '' || !currUser || !currPartner) return;
     const messageData: MessageData = {
       fromUserId: currUser._id,
-      toUserId: currPartnerId,
+      toUserId: currPartner._id,
       room,
       message: messageInput,
       sentAt: new Date(),
@@ -156,7 +154,7 @@ const Chat: React.FC = () => {
 
   // ensures currentUser exists
   if (currUser === null) {
-    return <div>Loading...</div>;
+    return <></>;
   }
 
   return (
@@ -169,11 +167,9 @@ const Chat: React.FC = () => {
         <ChatList
           partnerList={partnerList}
           setPartnerList={setPartnerList}
-          userId={currUser._id}
           generateRoomId={generateRoomId}
-          currPartnerId={currPartnerId}
-          setCurrPartnerId={setCurrPartnerId}
-          setCurrPartnerUsername={setCurrPartnerUsername}
+          currPartner={currPartner}
+          setCurrPartner={setCurrPartner}
           getUserProfile={getUserProfile}
         />
       </section>
@@ -183,9 +179,7 @@ const Chat: React.FC = () => {
         messageInput={messageInput}
         setMessageInput={setMessageInput}
         sendMessage={sendMessage}
-        currentUserData={currUser}
-        chatPartnerUsername={currPartnerUsername}
-        room={room}
+        currPartner={currPartner}
       />
     </div>
   );

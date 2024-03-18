@@ -31,9 +31,8 @@ const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
   return (
     <div className={`message px-4 py-1 flex ${messageData.fromUserId === currUser._id ? 'justify-end' : 'justify-start'}`}>
       <div className={`
-        message-content p-2 rounded-lg whitespace-pre-wrap
-        ${messageData.fromUserId === currUser._id ? 'bg-secondary text-white' : 'bg-gray-300 text-black'}
-        min-w-32`}>
+        message-content p-2 rounded-lg whitespace-pre-wrap min-w-32
+        ${messageData.fromUserId === currUser._id ? 'bg-secondary text-white' : 'bg-gray-300 text-black'}`}>
         <div className='message-content'>
           <p>{messageData.message}</p>
         </div>

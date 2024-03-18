@@ -5,8 +5,9 @@ import MessageItem from './MessageItem';
 import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
 
-const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessageInput, sendMessage, chatPartnerUsername}) => {
+const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessageInput, sendMessage, currPartner}) => {
   const { currUser } = useContext(UserContext) as UserContextType;
+  const partnerUsername = currPartner ? currPartner.profile.firstName + " " + currPartner.profile.lastName : null;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -18,9 +19,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
     scrollToBottom();
   }, [messagesList]);
 
-  if (chatPartnerUsername === null) {
+  if (currPartner === null) {
     return (
-      <section className='flex items-center justify-center w-2/3 font-bold text-xl'>
+      <section className='flex items-center justify-center w-2/3 font-bold text-xl bg-background'>
         <div>Select a chat to start</div>
       </section>
     );
@@ -34,7 +35,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessag
     <section className='flex flex-col right-section chatbox w-2/3 '>
       <div className='chat-heading flex bg-primary p-4 items-center'>
         <img className="rounded-full" src='https://via.placeholder.com/50' alt='user-pfp' />
-        <h3 className='pl-3'>{chatPartnerUsername}</h3>
+        <h3 className='pl-3'>{partnerUsername}</h3>
       </div>
       <div className='message-list max-h-full flex-grow overflow-auto bg-background'>
         {messagesList.map((messageData, index) => (

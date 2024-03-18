@@ -43,9 +43,7 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({
               <Link
                 to="/chat"
                 state={{
-                  userId: user._id,
-                  username:
-                    user.profile.firstName + ' ' + user.profile.lastName,
+                  user: user,
                 }} // Passing user ID in state
                 key={user._id}
               >
