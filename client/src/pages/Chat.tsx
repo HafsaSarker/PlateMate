@@ -15,6 +15,7 @@ import { UserContextType } from '../types/userContextType';
 
 import { ChatContext } from '../context/ChatContext';
 import { ChatContextType } from '../types/chatContextType';
+import Sidebar from '../components/Chat/SideBar';
 
 const backend_url = import.meta.env.VITE_BACKEND_URL;
 const socket: Socket = io(backend_url);
@@ -161,18 +162,14 @@ const Chat: React.FC = () => {
 
   return (
     <div className='flex w-screen h-full overflow-hidden'>
-      <section className='left-section w-1/3 border-r-2 border-gray-300 flex flex-col h-full'>
-        <div className='user-heading flex bg-primary p-4 items-center'>
-          <img className="rounded-full" src='https://via.placeholder.com/50' alt='user-pfp' />
-          <h3 className='pl-4 font-bold'></h3>
-        </div>
-        <ChatList
-          chatList={chatList}
-          setChatList={setChatList}
-          generateRoomId={generateRoomId}
-          getUserProfile={getUserProfile}
-        />
-      </section>
+      <Sidebar />
+
+      <ChatList
+        chatList={chatList}
+        setChatList={setChatList}
+        generateRoomId={generateRoomId}
+        getUserProfile={getUserProfile}
+      />
 
       <ChatBox
         messagesList={messagesList}
