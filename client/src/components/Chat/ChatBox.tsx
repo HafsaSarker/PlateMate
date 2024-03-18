@@ -4,9 +4,12 @@ import MessageItem from './MessageItem';
 
 import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
+import { ChatContext } from '../../context/ChatContext';
 
-const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessageInput, sendMessage, currPartner}) => {
+const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessageInput, sendMessage}) => {
   const { currUser } = useContext(UserContext) as UserContextType;
+  const { currPartner, setCurrPartner } = useContext(ChatContext)!;
+
   const partnerUsername = currPartner ? currPartner.profile.firstName + " " + currPartner.profile.lastName : null;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);

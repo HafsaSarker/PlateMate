@@ -8,17 +8,18 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
+import { ChatContext } from '../../context/ChatContext';
+import { ChatContextType } from '../../types/chatContextType';
+import ChatListItem from './ChatListItem';
 
 interface ChatListProps {
-  partnerList: {user: User, room:string, lastMessage: string, lastMessageTime: number }[];
-  setPartnerList: React.Dispatch<React.SetStateAction<{user: User, room:string, lastMessage: string , lastMessageTime: number}[]>>;
+  chatList: {user: User, room:string, lastMessage: string, lastMessageTime: number }[];
+  setChatList: React.Dispatch<React.SetStateAction<{user: User, room:string, lastMessage: string , lastMessageTime: number}[]>>;
   generateRoomId: (userId1:string, userId2:string) => string;
-  currPartner: User | null;
-  setCurrPartner: React.Dispatch<React.SetStateAction<User | null>>;
   getUserProfile: (userId:string) => Promise<User>;
 }
 
-const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, generateRoomId, currPartner, setCurrPartner, getUserProfile}) => {
+const ChatList:React.FC<ChatListProps> = ({chatList, setChatList, generateRoomId, getUserProfile}) => {
   const { currUser } = useContext(UserContext) as UserContextType;
 
   const [searchInput, setSearchInput] = useState('');
@@ -46,9 +47,9 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, generate
   }
 
   const getPastPartners = async (userId:string) => {
-    setPartnerList([]);
+    setChatList([]);
     const partnerIds = await getPastPartnersId(userId);
-    const newPartnerList = [];
+    const newChatList = [];
 
     // for each old chat partner, get their profile and most recent message and add to the list
     for (let partnerId of partnerIds) {
@@ -58,49 +59,18 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, generate
           getMostRecentMessage(roomId)
         ]);
         if (partnerProfile) { // Only add to the list if the profile is not null
-          newPartnerList.push({ user: partnerProfile, room: roomId,
+          newChatList.push({ user: partnerProfile, room: roomId,
               lastMessage: messageData.message, lastMessageTime: new Date(messageData.sentAt).getTime() });
         }
     }
     // sort the list by most recent message
-    newPartnerList.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+    newChatList.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
 
-    setPartnerList(newPartnerList);
+    setChatList(newChatList);
   }
 
   const truncateMessage = (message:string, maxLength = 35) => {
     return message.length > maxLength ? message.substring(0, maxLength) + '...' : message;
-  }
-
-  const updatePartner = (partnerData:User) => {
-    setCurrPartner(partnerData);
-  }
-
-  const displayTime = (time:number) => {
-    const currentTime = new Date().getTime();
-    const difference = currentTime - time;
-    const minutes = Math.floor(difference / (1000 * 60));
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const weeks = Math.floor(days / 7);
-    const months = Math.floor(weeks / 4);
-    const years = Math.floor(months / 12);
-
-    if (years > 0) {
-      return years + 'y';
-    } else if (months > 0) {
-      return months + 'mo';
-    } else if (weeks > 0) {
-      return weeks + 'w';
-    } else if (days > 0) {
-      return days + 'd';
-    } else if (hours > 0) {
-      return hours + 'h';
-    } else if (minutes > 0) {
-      return minutes + 'min';
-    } else {
-      return '1min';
-    }
   }
 
   if (currUser === null) {
@@ -122,17 +92,9 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, generate
           onChange={(e) => setSearchInput(e.target.value)}/>
       </div>
       <div className='partner-list max-h-full overflow-auto'>
-        {partnerList.filter(partnerData => (partnerData.user.profile.firstName + " " + partnerData.user.profile.lastName)
+        {chatList.filter(chatData => (chatData.user.profile.firstName + " " + chatData.user.profile.lastName)
           .includes(searchInput)).map(({user, lastMessage, lastMessageTime}) => (
-          <div className={`flex p-4 cursor-pointer hover:bg-background-hover ${user._id === currPartner?._id ? 'bg-background-hover' : ''}`} key={user._id}
-            onClick={() => updatePartner(user)}>
-            <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full'/>
-            <div className='px-4'>
-              <div className='font-bold'>{user.profile.firstName + ' ' + user.profile.lastName }</div>
-              <p className='text-xs'>{truncateMessage(lastMessage)} •
-              {displayTime(lastMessageTime)}</p>
-            </div>
-          </div>
+            <ChatListItem user={user} lastMessage={truncateMessage(lastMessage)} lastMessageTime={lastMessageTime} key={user._id}/>
         ))}
       </div>
 
