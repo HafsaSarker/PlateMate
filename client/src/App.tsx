@@ -10,6 +10,7 @@ import { UserContext } from './context/UserContext';
 import { UserContextType } from './types/userContextType';
 import { useCookies } from 'react-cookie';
 import Settings from './pages/Settings';
+import { ChatContextProvider } from './context/ChatContext';
 
 function App() {
   const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
@@ -30,7 +31,7 @@ function App() {
   }, [authCookie, setCurrUser]);
 
   if (isLoading) {
-    return <div></div>;
+    return <></>;
   }
 
   return (
@@ -39,7 +40,11 @@ function App() {
         {currUser ? (
           <>
             <Route index element={<Home />} />
-            <Route path="/chat" element={<Chat />} />
+            <Route path="/chat" element={
+              <ChatContextProvider>
+                <Chat />
+              </ChatContextProvider>
+            } />
             <Route path="/settings" element={<Settings />} />
           </>
         ) : (

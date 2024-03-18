@@ -1,21 +1,27 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { User } from '../../types/user';
 import { message_api_path } from '../../api/message';
-import { chat_partner_api_path } from '../../api/chat-partner';
+import { chat_partner_api_path } from '../../api/chat-partners';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+
+
+import { UserContext } from '../../context/UserContext';
+import { UserContextType } from '../../types/userContextType';
+import { ChatContext } from '../../context/ChatContext';
+import { ChatContextType } from '../../types/chatContextType';
+import ChatListItem from './ChatListItem';
 
 interface ChatListProps {
-  partnerList: {user: User, room:string, lastMessage: string, lastMessageTime: number }[];
-  setPartnerList: React.Dispatch<React.SetStateAction<{user: User, room:string, lastMessage: string , lastMessageTime: number}[]>>;
-  userId: string;
+  chatList: {user: User, room:string, lastMessage: string, lastMessageTime: number }[];
+  setChatList: React.Dispatch<React.SetStateAction<{user: User, room:string, lastMessage: string , lastMessageTime: number}[]>>;
   generateRoomId: (userId1:string, userId2:string) => string;
-  currPartnerId: string | null;
-  setCurrPartnerId: React.Dispatch<React.SetStateAction<string | null>>;
-  setCurrPartnerUsername: React.Dispatch<React.SetStateAction<string | null>>;
   getUserProfile: (userId:string) => Promise<User>;
 }
 
-const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, generateRoomId, currPartnerId, setCurrPartnerId, setCurrPartnerUsername, getUserProfile}) => {
+const ChatList:React.FC<ChatListProps> = ({chatList, setChatList, generateRoomId, getUserProfile}) => {
+  const { currUser } = useContext(UserContext) as UserContextType;
+
   const [searchInput, setSearchInput] = useState('');
   const getMostRecentMessage = async (roomId:string) => {
     try {
@@ -34,7 +40,6 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
     try {
       const response = await axios.get(`${chat_partner_api_path}/${userId}`);
       const partnerIds = response.data[0].users;
-      console.log(partnerIds);
       return partnerIds;
     } catch (error) {
       console.error("Failed to fetch partner IDs:", error);
@@ -42,9 +47,9 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
   }
 
   const getPastPartners = async (userId:string) => {
-    setPartnerList([]);
+    setChatList([]);
     const partnerIds = await getPastPartnersId(userId);
-    const newPartnerList = [];
+    const newChatList = [];
 
     // for each old chat partner, get their profile and most recent message and add to the list
     for (let partnerId of partnerIds) {
@@ -54,78 +59,42 @@ const ChatList:React.FC<ChatListProps> = ({partnerList, setPartnerList, userId, 
           getMostRecentMessage(roomId)
         ]);
         if (partnerProfile) { // Only add to the list if the profile is not null
-          newPartnerList.push({ user: partnerProfile, room: roomId,
+          newChatList.push({ user: partnerProfile, room: roomId,
               lastMessage: messageData.message, lastMessageTime: new Date(messageData.sentAt).getTime() });
         }
     }
     // sort the list by most recent message
-    newPartnerList.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+    newChatList.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
 
-    setPartnerList(newPartnerList);
+    setChatList(newChatList);
   }
 
   const truncateMessage = (message:string, maxLength = 35) => {
     return message.length > maxLength ? message.substring(0, maxLength) + '...' : message;
   }
 
-  const updatePartner = (id:string, username:string) => {
-    setCurrPartnerId(id);
-    setCurrPartnerUsername(username);
+  if (currUser === null) {
+    return <></>
   }
-
-  const displayTime = (time:number) => {
-    const currentTime = new Date().getTime();
-    const difference = currentTime - time;
-    const minutes = Math.floor(difference / (1000 * 60));
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const weeks = Math.floor(days / 7);
-    const months = Math.floor(weeks / 4);
-    const years = Math.floor(months / 12);
-
-    if (years > 0) {
-      return years + 'y';
-    } else if (months > 0) {
-      return months + 'mo';
-    } else if (weeks > 0) {
-      return weeks + 'w';
-    } else if (days > 0) {
-      return days + 'd';
-    } else if (hours > 0) {
-      return hours + 'h';
-    } else if (minutes > 0) {
-      return minutes + 'min';
-    } else {
-      return '1min';
-    }
-  }
-
-
 
   useEffect(() => {
-    getPastPartners(userId);
+    getPastPartners(currUser._id);
   }, []);
 
   return (
     <div className='h-full overflow-hidden'>
-      <div className='p-4'>
+      <h1 className='py-2 px-6 text-2xl font-bold'>Chats</h1>
+      <div className='py-3 px-6 gap-4 flex justify-center items-center bg-background-hover mx-4 my-2 rounded-full'>
+        <MagnifyingGlassIcon className='h-5 w-5'/>
         <input
-          className="w-full rounded-md"
+          className="w-full bg-transparent border-none focus:ring-0 p-0"
           placeholder='Search for a chat'
           onChange={(e) => setSearchInput(e.target.value)}/>
       </div>
       <div className='partner-list max-h-full overflow-auto'>
-        {partnerList.filter(username => (username.user.profile.firstName + username.user.profile.lastName)
+        {chatList.filter(chatData => (chatData.user.profile.firstName + " " + chatData.user.profile.lastName)
           .includes(searchInput)).map(({user, lastMessage, lastMessageTime}) => (
-          <div className={`flex p-4 cursor-pointer hover:bg-background-hover ${user._id === currPartnerId ? 'bg-background-hover' : ''}`} key={user._id}
-            onClick={() => updatePartner(user._id, user.profile.firstName + ' ' + user.profile.lastName)}>
-            <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full'/>
-            <div className='px-4'>
-              <div className='font-bold'>{user.profile.firstName + ' ' + user.profile.lastName }</div>
-              <p className='text-xs'>{truncateMessage(lastMessage)} •
-              {displayTime(lastMessageTime)}</p>
-            </div>
-          </div>
+            <ChatListItem user={user} lastMessage={truncateMessage(lastMessage)} lastMessageTime={lastMessageTime} key={user._id}/>
         ))}
       </div>
 

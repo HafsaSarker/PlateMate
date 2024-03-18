@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
 import ChatBox from '../components/Chat/ChatBox';
@@ -10,21 +10,25 @@ import { MessageData } from '../types/messageData';
 import { message_api_path } from '../api/message';
 import { user_api_path } from '../api/user';
 
-const socket: Socket = io(import.meta.env.BACKEND_URL);
+import { UserContext } from '../context/UserContext';
+import { UserContextType } from '../types/userContextType';
+
+import { ChatContext } from '../context/ChatContext';
+import { ChatContextType } from '../types/chatContextType';
+
+const backend_url = import.meta.env.VITE_BACKEND_URL;
+const socket: Socket = io(backend_url);
 
 const Chat: React.FC = () => {
+  const { currUser } = useContext(UserContext) as UserContextType;
+  const { currPartner, setCurrPartner } = useContext(ChatContext) as ChatContextType;
+
   const [messageInput, setMessageInput] = useState<string>('');
   const [messagesList, setMessagesList] = useState<MessageData[]>([]);
 
-  const [currentUserData, setCurrentUserData] = useState<User | null>(null);
-  const [username, setUsername] = useState<string>('');
-
-  const [currPartnerId, setCurrPartnerId] = useState<string | null>(null);
-  const [currPartnerUsername, setCurrPartnerUsername] = useState<string | null>(null);
-
   const [room, setRoom] = useState<string>('');
 
-  const [partnerList, setPartnerList] = useState<{user: User, room:string,
+  const [chatList, setChatList] = useState<{user: User, room:string,
     lastMessage: string , lastMessageTime: number }[]>([]);
 
   const location = useLocation();
@@ -64,32 +68,20 @@ const Chat: React.FC = () => {
 
   // if from home page, get chat partner id from state
   useEffect(() => {
-    if(location.state?.userId && location.state?.username) {
-      console.log(location.state.userId);
-      setCurrPartnerId(location.state.userId);
-      setCurrPartnerUsername(location.state.username);
+    if(location.state?.user) {
+      setCurrPartner(location.state.user);
     }
   }, [location.state]);
 
-  useEffect(() => {
-    const userExist = localStorage.getItem('user');
-    if (userExist) {
-      const user = JSON.parse(userExist);
-      setCurrentUserData(user);
-      setUsername(user.profile.firstName + ' ' + user.profile.lastName);
-      console.log(user);
-    }
-    // else redirect to login
-  }, []);
 
   useEffect(() => {
-    if (currentUserData && currPartnerId) {
-      const newRoom = generateRoomId(currentUserData._id, currPartnerId);
+    if (currUser && currPartner) {
+      const newRoom = generateRoomId(currUser._id, currPartner._id);
       if (newRoom !== room) {
         setRoom(newRoom);
       }
     }
-  }, [currentUserData, currPartnerId]); // update the room when currentUserData or chatPartnerId changes
+  }, [currUser, currPartner]); // update the room when currentUserData or chatPartnerId changes
 
   useEffect(() => {
     if (room) {
@@ -111,9 +103,9 @@ const Chat: React.FC = () => {
     }
   }, [room]); // Fetch messages and set up socket listeners whenever the room changes
 
-  const updatePartnerList = async (messageData: MessageData) => {
+  const updateChatList = async (messageData: MessageData) => {
     // Check if the message receiver is not in the current partner list
-    if (!partnerList.some(partner => partner.user._id === messageData.toUserId)) {
+    if (!chatList.some(partner => partner.user._id === messageData.toUserId)) {
       try {
         // Fetch user profile data of the message receiver
         const partnerProfile = await getUserProfile(messageData.toUserId);
@@ -126,16 +118,15 @@ const Chat: React.FC = () => {
             lastMessageTime: Date.now(),
           };
           // Update the partner list by adding the new partner
-          setPartnerList(oldList => [newPartnerData, ...oldList]);
+          setChatList(oldList => [newPartnerData, ...oldList]);
         }
       } catch (error) {
         console.error("Error updating partner list:", error);
       }
     } else {
-      console.log('user exists')
       // If the user already exists in the partner list, update their last message and time
-      setPartnerList(partnerList.map(partner => {
-        if (partner.user._id === currPartnerId) {
+      setChatList(chatList.map(partner => {
+        if (partner.user._id === currPartner?._id) {
           return {
             ...partner, // Copy all existing partner properties
             lastMessage: messageInput, // Set the new last message
@@ -149,24 +140,23 @@ const Chat: React.FC = () => {
   };
 
   const sendMessage = async (): Promise<void> => {
-    if (messageInput === '' || !currentUserData || !currPartnerId) return;
+    if (messageInput === '' || !currUser || !currPartner) return;
     const messageData: MessageData = {
-      fromUserId: currentUserData._id,
-      toUserId: currPartnerId,
+      fromUserId: currUser._id,
+      toUserId: currPartner._id,
       room,
       message: messageInput,
       sentAt: new Date(),
     };
-    console.log(messageData)
     socket.emit('send_message', messageData);
     setMessagesList((messagesList) => [...messagesList, messageData]);
     setMessageInput('');
-    updatePartnerList(messageData);
+    updateChatList(messageData);
   };
 
   // ensures currentUser exists
-  if (currentUserData === null) {
-    return <div>Loading...</div>;
+  if (currUser === null) {
+    return <></>;
   }
 
   return (
@@ -174,16 +164,12 @@ const Chat: React.FC = () => {
       <section className='left-section w-1/3 border-r-2 border-gray-300 flex flex-col h-full'>
         <div className='user-heading flex bg-primary p-4 items-center'>
           <img className="rounded-full" src='https://via.placeholder.com/50' alt='user-pfp' />
-          <h3 className='pl-4 font-bold'>{username}</h3>
+          <h3 className='pl-4 font-bold'></h3>
         </div>
         <ChatList
-          partnerList={partnerList}
-          setPartnerList={setPartnerList}
-          userId={currentUserData._id}
+          chatList={chatList}
+          setChatList={setChatList}
           generateRoomId={generateRoomId}
-          currPartnerId={currPartnerId}
-          setCurrPartnerId={setCurrPartnerId}
-          setCurrPartnerUsername={setCurrPartnerUsername}
           getUserProfile={getUserProfile}
         />
       </section>
@@ -193,9 +179,6 @@ const Chat: React.FC = () => {
         messageInput={messageInput}
         setMessageInput={setMessageInput}
         sendMessage={sendMessage}
-        currentUserData={currentUserData}
-        chatPartnerUsername={currPartnerUsername}
-        room={room}
       />
     </div>
   );
