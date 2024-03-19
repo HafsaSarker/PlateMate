@@ -23,6 +23,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "aws-sdk": "^2.1580.0",
     "body-parser": "^1.20.2",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",

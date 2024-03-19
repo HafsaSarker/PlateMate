@@ -11,8 +11,16 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import { Server, Socket } from 'socket.io';
 import { Message } from './models/Message';
 import socketHandler from "./sockets/socketHandler";
+import AWS from 'aws-sdk';
 
 dotenv.config();
+
+// AWS Configuration
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_BUCKET_REGION,
+});
 
 const app = express();
 
