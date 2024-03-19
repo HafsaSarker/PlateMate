@@ -1,23 +1,38 @@
 import { Request, Response } from 'express';
 import AWS from 'aws-sdk';
+import multer from 'multer';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
-// Make sure AWS was configured somewhere previously, like in your main server file
-const s3 = new AWS.S3();
+const s3 = new S3Client({
+  region: process.env.AWS_BUCKET_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
 
-// Function to generate a pre-signed URL
-export const generatePresignedUrl = (req: Request, res:Response) => {
-  const params = {
-    Bucket: 'YOUR_BUCKET_NAME',
-    Key: `uploads/${Date.now()}_${req.query.fileName}`,
-    Expires: 60, // URL expiration time
-    ContentType: 'image/jpeg', // Adjust based on actual content type or parameterize
-  };
+async function uploadImage(req: Request, res: Response) {
+  try {
+    console.log('req.body:', req.body);
+    console.log('req.file:', req.file);
 
-  s3.getSignedUrl('putObject', params, (err, url) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send('Could not generate a pre-signed URL');
-    }
-    res.json({ url });
-  });
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: req.file.originalname,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype,
+    };
+    const command = new PutObjectCommand(params);
+
+    await s3.send(command);
+
+    res.send({});
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+export const s3Controller = {
+  uploadImage,
 };

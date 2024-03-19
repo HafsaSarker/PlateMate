@@ -6,6 +6,7 @@ interface MessageData {
   fromUserId: string;
   toUserId: string;
   message: string;
+  imageUrl: string | null;
   room: string;
   sentAt: Date;
 }
@@ -31,6 +32,7 @@ const socketHandler = (io: Server): void => {
         fromUserId: data.fromUserId,
         toUserId: data.toUserId,
         message: data.message,
+        imageUrl: data.imageUrl,
         sentAt: data.sentAt,
       });
       console.log(newMessage);
