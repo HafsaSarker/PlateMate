@@ -24,7 +24,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.536.0",
+    "@aws-sdk/client-s3": "^3.537.0",
+    "@aws-sdk/s3-request-presigner": "^3.537.0",
     "aws-sdk": "^2.1580.0",
     "body-parser": "^1.20.2",
     "compression": "^1.7.4",
