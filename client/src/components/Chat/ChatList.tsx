@@ -12,14 +12,7 @@ import { ChatContext } from '../../context/ChatContext';
 import { ChatContextType } from '../../types/chatContextType';
 import ChatListItem from './ChatListItem';
 
-interface ChatListProps {
-  chatList: {user: User, room:string, lastMessage: string, lastMessageTime: number }[];
-  setChatList: React.Dispatch<React.SetStateAction<{user: User, room:string, lastMessage: string , lastMessageTime: number}[]>>;
-  generateRoomId: (userId1:string, userId2:string) => string;
-  getUserProfile: (userId:string) => Promise<User>;
-}
-
-const ChatList:React.FC<ChatListProps> = () => {
+const ChatList:React.FC = () => {
   const { currUser } = useContext(UserContext) as UserContextType;
   const {chatList, setChatList} = useContext(ChatContext) as ChatContextType;
   const {generateRoomId, getUserProfile} = useContext(ChatContext) as ChatContextType;

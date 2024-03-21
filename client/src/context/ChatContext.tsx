@@ -94,7 +94,6 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const sendMessage = async (): Promise<void> => {
-    console.log('tyest')
     if (messageInput === '' || !currUser || !currPartner) return;
 
     let imageUrl = null;
@@ -114,8 +113,6 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     socket.emit('send_message', messageData);
     setMessagesList((messagesList) => [...messagesList, messageData]);
     setMessageInput('');
-    setImageFile(null);
-    console.log('test')
     console.log(messagesList)
     updateChatList(messageData);
   };

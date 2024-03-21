@@ -30,7 +30,12 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
     if (fileInputRef.current) {
         fileInputRef.current.value = "";
     }
-};
+  };
+
+  const onSendImage = () => {
+    handleReset();
+    sendMessage();
+  }
 
   useEffect(() => {
     scrollToBottom();
@@ -86,11 +91,11 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
           <input
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' ? sendMessage() : null}
+            onKeyDown={(e) => e.key === 'Enter' ? onSendImage() : null}
             className='w-full rounded-md p-2'
             placeholder="Type a message"
           />
-          <button className='px-4 py-2 bg-accent text-white rounded-md hover:bg-accent-hover transition duration-150' onClick={sendMessage}><PaperAirplaneIcon className='w-6 h-6' /></button>
+          <button className='px-4 py-2 bg-accent text-white rounded-md hover:bg-accent-hover transition duration-150' onClick={onSendImage}><PaperAirplaneIcon className='w-6 h-6' /></button>
 
         </section>
 
