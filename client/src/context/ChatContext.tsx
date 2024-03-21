@@ -94,7 +94,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const sendMessage = async (): Promise<void> => {
-    if (messageInput === '' || !currUser || !currPartner) return;
+    if ((messageInput === '' && imageFile === null) || !currUser || !currPartner) return;
 
     let imageUrl = null;
     if (imageFile) {
