@@ -153,6 +153,16 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [room]); // Fetch messages and set up socket listeners whenever the room changes
 
+  useEffect(() => {
+    if (currUser && currPartner) {
+      const newRoom = generateRoomId(currUser._id, currPartner._id);
+      if (newRoom !== room) {
+        setRoom(newRoom);
+      }
+    }
+  }, [currUser, currPartner]); // update the room when currentUserData or chatPartnerId changes
+
+
   return (
     <ChatContext.Provider value={{
       currPartner,
