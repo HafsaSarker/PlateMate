@@ -29,13 +29,14 @@ const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
   }
 
   return (
-    <div className={`message px-4 py-1 flex ${messageData.fromUserId === currUser._id ? 'justify-end' : 'justify-start'}`}>
-      <div className={`
+    <div className={`message px-4 py-1 flex flex-col ${messageData.fromUserId === currUser._id ? 'items-end' : 'items-start'}`}>
+      <div className={` max-w-full
         message-content p-2 rounded-lg whitespace-pre-wrap min-w-32
         ${messageData.fromUserId === currUser._id ? 'bg-secondary text-white' : 'bg-gray-300 text-black'}`}>
-        <div className='message-content'>
+        <div className='max-w-[500px] break-words'>
           <p>{messageData.message}</p>
         </div>
+        {messageData.imageUrl && <img src={messageData.imageUrl} alt='sentImage' className='max-w-[500px] max-h-[500px]' />}
         <p className='flex justify-end text-xs'>
           {timeDisplay(new Date(messageData.sentAt))}
         </p>

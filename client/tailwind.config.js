@@ -22,7 +22,8 @@ export default {
         accent: '#FF408C', // A vibrant pink for accents and calls-to-action, adding energy and contrast
         'accent-hover': '#E63682',
         background: '#FFF4E5', // A light cream background for a warm, inviting feel, echoing the warmth of shared meals
-        'background-hover': '#EDE0D4',
+        'background-dark': '#EDE0D4',
+        'background-darker': '#DDC6B0',
         'text-primary': '#404040', // Dark gray for primary text, ensuring readability and contrast
         'text-secondary': '#787878', // Lighter gray for secondary text, maintaining clarity while being softer than primary text
         error: '#dc3545', // A strong red for errors, alerting users effectively

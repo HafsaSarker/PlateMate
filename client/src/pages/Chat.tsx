@@ -23,6 +23,7 @@ const socket: Socket = io(backend_url);
 const Chat: React.FC = () => {
   const { currUser } = useContext(UserContext) as UserContextType;
   const { currPartner, setCurrPartner } = useContext(ChatContext) as ChatContextType;
+  const {imageFile, setImageFile} = useContext(ChatContext) as ChatContextType;
 
   const [messageInput, setMessageInput] = useState<string>('');
   const [messagesList, setMessagesList] = useState<MessageData[]>([]);
@@ -66,44 +67,6 @@ const Chat: React.FC = () => {
       return null;
     }
   }
-
-  // if from home page, get chat partner id from state
-  useEffect(() => {
-    if(location.state?.user) {
-      setCurrPartner(location.state.user);
-    }
-  }, [location.state]);
-
-
-  useEffect(() => {
-    if (currUser && currPartner) {
-      const newRoom = generateRoomId(currUser._id, currPartner._id);
-      if (newRoom !== room) {
-        setRoom(newRoom);
-      }
-    }
-  }, [currUser, currPartner]); // update the room when currentUserData or chatPartnerId changes
-
-  useEffect(() => {
-    if (room) {
-      fetchMessages(room);
-      socket.emit('join_room', room);
-
-      const receiveMessage = (messageData: MessageData) => {
-        setMessagesList(prevMessages => [...prevMessages, {
-          ...messageData,
-          sentAt: new Date(messageData.sentAt)
-        }]);
-      };
-
-      socket.on('receive_message', receiveMessage);
-
-      return () => {
-        socket.off('receive_message', receiveMessage);
-      };
-    }
-  }, [room]); // Fetch messages and set up socket listeners whenever the room changes
-
   const updateChatList = async (messageData: MessageData) => {
     // Check if the message receiver is not in the current partner list
     if (!chatList.some(partner => partner.user._id === messageData.toUserId)) {
@@ -142,23 +105,86 @@ const Chat: React.FC = () => {
 
   const sendMessage = async (): Promise<void> => {
     if (messageInput === '' || !currUser || !currPartner) return;
+
+    let imageUrl = null;
+    if (imageFile) {
+      console.log('Uploading image')
+      imageUrl = await uploadImage(imageFile);
+      console.log(imageUrl)
+    }
     const messageData: MessageData = {
       fromUserId: currUser._id,
       toUserId: currPartner._id,
       room,
       message: messageInput,
+      imageUrl: imageUrl,
       sentAt: new Date(),
     };
     socket.emit('send_message', messageData);
     setMessagesList((messagesList) => [...messagesList, messageData]);
     setMessageInput('');
+    setImageFile(null);
     updateChatList(messageData);
   };
+
+  async function uploadImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await fetch(`${backend_url}/api/s3`, {
+      method: 'POST',
+      body: formData, // Send formData instead of raw file
+    });
+    const data = await response.json();
+    console.log('data:', data);
+    return data.imageUrl;
+  }
+
+  // if from home page, get chat partner id from state
+  useEffect(() => {
+    if(location.state?.user) {
+      setCurrPartner(location.state.user);
+    }
+  }, [location.state]);
+
+
+  useEffect(() => {
+    if (currUser && currPartner) {
+      const newRoom = generateRoomId(currUser._id, currPartner._id);
+      if (newRoom !== room) {
+        setRoom(newRoom);
+      }
+    }
+  }, [currUser, currPartner]); // update the room when currentUserData or chatPartnerId changes
+
+  useEffect(() => {
+    if (room) {
+      fetchMessages(room);
+      socket.emit('join_room', room);
+
+      const receiveMessage = (messageData: MessageData) => {
+        setMessagesList(prevMessages => [...prevMessages, {
+          ...messageData,
+          sentAt: new Date(messageData.sentAt)
+        }]);
+      };
+
+      socket.on('receive_message', receiveMessage);
+
+      return () => {
+        socket.off('receive_message', receiveMessage);
+      };
+    }
+  }, [room]); // Fetch messages and set up socket listeners whenever the room changes
 
   // ensures currentUser exists
   if (currUser === null) {
     return <></>;
   }
+
+  useEffect(() => {
+    console.log(imageFile)
+  }
+  , [imageFile]);
 
   return (
     <div className='flex w-screen h-full overflow-hidden'>

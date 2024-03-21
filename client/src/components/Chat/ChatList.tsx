@@ -85,7 +85,7 @@ const ChatList:React.FC<ChatListProps> = ({chatList, setChatList, generateRoomId
     <section className='left-section w-1/3 border-x-2 border-gray-300 flex flex-col h-full'>
       <div className='h-full overflow-hidden pt-5'>
         <h1 className='py-2 px-6 text-2xl font-bold'>Chats</h1>
-        <div className='py-3 px-6 gap-4 flex justify-center items-center bg-background-hover mx-4 my-2 rounded-full'>
+        <div className='py-3 px-6 gap-4 flex justify-center items-center bg-background-dark mx-4 my-2 rounded-full'>
           <MagnifyingGlassIcon className='h-5 w-5'/>
           <input
             className="w-full bg-transparent border-none focus:ring-0 p-0"
