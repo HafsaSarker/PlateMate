@@ -19,13 +19,13 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
   const partnerUsername = currPartner ? currPartner.profile.firstName + " " + currPartner.profile.lastName : null;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleReset = () => {
+  const handleFileReset = () => {
     setImageFile(null);
     if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -33,7 +33,7 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
   };
 
   const onSendImage = () => {
-    handleReset();
+    handleFileReset();
     sendMessage();
   }
 
@@ -41,16 +41,16 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
     scrollToBottom();
   }, [messagesList]);
 
+  if (currUser === null) {
+    return <></>
+  }
+
   if (currPartner === null) {
     return (
       <section className='flex items-center justify-center w-2/3 font-bold text-xl bg-background'>
         <div>Select a chat to start</div>
       </section>
     );
-  }
-
-  if (currUser === null) {
-    return <></>
   }
 
   return (
@@ -76,12 +76,16 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
             type="file"
             id='image-upload'
             accept="image/*"
-            onChange={(e) => setImageFile(e.target.files[0])} // Assuming setImageFile is the function to handle the selected file
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                setImageFile(e.target.files[0]);
+              }
+            }}
             className='hidden'
             ref={fileInputRef}
           />
           {imageFile
-            ? <button onClick={handleReset}><XCircleIcon className='h-10 w-10 text-red-500 hover:text-red-700' /></button>
+            ? <button onClick={handleFileReset}><XCircleIcon className='h-10 w-10 text-red-500 hover:text-red-700' /></button>
             :
             <label htmlFor="image-upload" className="file-input-icon">
               <PhotoIcon className="h-8 w-8 text-accent hover:cursor-pointer hover:bg-background-darker" />

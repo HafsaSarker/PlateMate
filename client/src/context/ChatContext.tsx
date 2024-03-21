@@ -1,4 +1,4 @@
-import { createContext, useState, Dispatch, SetStateAction, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import io, { Socket } from 'socket.io-client';
 
 import { User } from '../types/user';
@@ -179,11 +179,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       getUserProfile,
       updateChatList,
       sendMessage,
-      uploadImage
-
-
-
-
+      uploadImage,
       }}>
       {children}
     </ChatContext.Provider>
