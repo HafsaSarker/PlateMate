@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 import ChatBox from '../components/Chat/ChatBox';
 import ChatList from '../components/Chat/ChatList';
 
-import { User } from '../types/user'
 import { MessageData } from '../types/messageData';
 
 import { message_api_path } from '../api/message';
@@ -25,13 +24,11 @@ const Chat: React.FC = () => {
   const { currPartner, setCurrPartner } = useContext(ChatContext) as ChatContextType;
   const {imageFile, setImageFile} = useContext(ChatContext) as ChatContextType;
 
-  const [messageInput, setMessageInput] = useState<string>('');
-  const [messagesList, setMessagesList] = useState<MessageData[]>([]);
+  const { messageInput, setMessageInput } = useContext(ChatContext) as ChatContextType;
+  const { messagesList, setMessagesList } = useContext(ChatContext) as ChatContextType;
+  const {room, setRoom} = useContext(ChatContext) as ChatContextType;
 
-  const [room, setRoom] = useState<string>('');
-
-  const [chatList, setChatList] = useState<{user: User, room:string,
-    lastMessage: string , lastMessageTime: number }[]>([]);
+  const { chatList , setChatList } = useContext(ChatContext) as ChatContextType;
 
   const location = useLocation();
 
@@ -127,7 +124,7 @@ const Chat: React.FC = () => {
     updateChatList(messageData);
   };
 
-  async function uploadImage(file) {
+  async function uploadImage(file: File) {
     const formData = new FormData();
     formData.append('image', file);
     const response = await fetch(`${backend_url}/api/s3`, {
@@ -156,51 +153,20 @@ const Chat: React.FC = () => {
     }
   }, [currUser, currPartner]); // update the room when currentUserData or chatPartnerId changes
 
-  useEffect(() => {
-    if (room) {
-      fetchMessages(room);
-      socket.emit('join_room', room);
 
-      const receiveMessage = (messageData: MessageData) => {
-        setMessagesList(prevMessages => [...prevMessages, {
-          ...messageData,
-          sentAt: new Date(messageData.sentAt)
-        }]);
-      };
-
-      socket.on('receive_message', receiveMessage);
-
-      return () => {
-        socket.off('receive_message', receiveMessage);
-      };
-    }
-  }, [room]); // Fetch messages and set up socket listeners whenever the room changes
 
   // ensures currentUser exists
   if (currUser === null) {
     return <></>;
   }
-
-  useEffect(() => {
-    console.log(imageFile)
-  }
-  , [imageFile]);
-
   return (
     <div className='flex w-screen h-full overflow-hidden'>
       <Sidebar />
 
       <ChatList
-        chatList={chatList}
-        setChatList={setChatList}
-        generateRoomId={generateRoomId}
-        getUserProfile={getUserProfile}
       />
 
       <ChatBox
-        messagesList={messagesList}
-        messageInput={messageInput}
-        setMessageInput={setMessageInput}
         sendMessage={sendMessage}
       />
     </div>

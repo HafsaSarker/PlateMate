@@ -9,11 +9,13 @@ import { ChatContextType } from '../../types/chatContextType';
 
 import { PhotoIcon, XCircleIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
-const ChatBox: React.FC<ChatBoxProps> = ({ messagesList, messageInput, setMessageInput, sendMessage}) => {
+const ChatBox: React.FC<ChatBoxProps> = () => {
   const { currUser } = useContext(UserContext) as UserContextType;
   const { currPartner } = useContext(ChatContext) as ChatContextType;
   const { imageFile, setImageFile } = useContext(ChatContext) as ChatContextType;
+  const { messageInput, setMessageInput, messagesList } = useContext(ChatContext) as ChatContextType;
 
+  const {sendMessage} = useContext(ChatContext) as ChatContextType;
   const partnerUsername = currPartner ? currPartner.profile.firstName + " " + currPartner.profile.lastName : null;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);

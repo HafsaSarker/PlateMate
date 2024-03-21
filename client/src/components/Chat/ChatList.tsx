@@ -19,8 +19,10 @@ interface ChatListProps {
   getUserProfile: (userId:string) => Promise<User>;
 }
 
-const ChatList:React.FC<ChatListProps> = ({chatList, setChatList, generateRoomId, getUserProfile}) => {
+const ChatList:React.FC<ChatListProps> = () => {
   const { currUser } = useContext(UserContext) as UserContextType;
+  const {chatList, setChatList} = useContext(ChatContext) as ChatContextType;
+  const {generateRoomId, getUserProfile} = useContext(ChatContext) as ChatContextType;
 
   const [searchInput, setSearchInput] = useState('');
   const getMostRecentMessage = async (roomId:string) => {
