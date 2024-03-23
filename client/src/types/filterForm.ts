@@ -5,8 +5,10 @@ export interface FilterForm {
   other?: boolean;
   age_from?: number;
   age_to?: number;
-  height_from?: string;
-  height_to?: string;
+  height_from_ft?: number;
+  height_from_in?: number;
+  height_to_ft?: number;
+  height_to_in?: number;
   smoke?: boolean;
   drink?: boolean;
 }
