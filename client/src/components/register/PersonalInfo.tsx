@@ -126,15 +126,31 @@ const PersonalInfo: React.FC<RegisterProps> = ({ handleChange }) => {
         >
           Height
         </label>
-        <div className="mt-2">
-          <input
-            type="text"
-            name="height"
-            id="height"
-            placeholder="e.g. 5 ft 10 in"
-            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            onChange={handleChange}
-          />
+        <div className="mt-2 flex items-center gap-1 ">
+          <div className="flex items-center gap-1">
+            <input
+              type="number"
+              name="height_ft"
+              id="height_ft"
+              min="1"
+              max="12"
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              onChange={handleChange}
+            />
+            <span>ft</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <input
+              type="number"
+              name="height_in"
+              id="height_in"
+              min="0"
+              max="12"
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              onChange={handleChange}
+            />
+            <span>in</span>
+          </div>
         </div>
       </div>
       <div className="sm:col-span-2">

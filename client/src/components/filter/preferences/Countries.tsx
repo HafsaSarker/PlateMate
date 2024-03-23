@@ -18,7 +18,6 @@ const Countries: React.FC<FilterData> = ({ handleChange, filters }) => {
         value={filters.nationalities}
         onChange={handleChange}
       >
-        <option value="null">Select an option</option>
         <option value="Afghanistan">Afghanistan</option>
         <option value="Åland Islands">Åland Islands</option>
         <option value="Albania">Albania</option>

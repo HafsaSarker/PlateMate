@@ -9,7 +9,8 @@ interface IUserProfile {
   about?: string;
   nationality?: string;
   sex?: string;
-  height?: string;
+  height_ft?: number;
+  height_in?: number;
   age?: number;
   smoke?: boolean;
   drink?: boolean;
@@ -67,7 +68,8 @@ const UserSchema = new Schema<IUser>(
       about: String,
       nationality: String,
       sex: String,
-      height: String, // "5 ft 10 in"
+      height_ft: Number,
+      height_in: Number,
       age: {
         type: Number,
         min: 18,

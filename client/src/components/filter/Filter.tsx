@@ -16,8 +16,10 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
     other: false,
     age_from: 18,
     age_to: 18, // will start at age_from later
-    height_from: '',
-    height_to: '',
+    height_from_ft: undefined,
+    height_from_in: undefined,
+    height_to_ft: undefined,
+    height_to_in: undefined,
     smoke: false,
     drink: false,
   });

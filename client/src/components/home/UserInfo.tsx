@@ -8,12 +8,18 @@ const UserInfo: React.FC<UserInfoProps> = ({
   user,
   setUser,
 }) => {
-  const { about, age, firstName, lastName, height, nationality, profileImg } =
-    { ...user?.profile } || ({} as User);
+  const {
+    about,
+    age,
+    firstName,
+    lastName,
+    height_ft,
+    height_in,
+    nationality,
+    profileImg,
+  } = { ...user?.profile } || ({} as User);
 
   function onClickActions() {
-    console.log(user);
-
     setUser(null);
     setShowProfile(false);
   }
@@ -73,9 +79,14 @@ const UserInfo: React.FC<UserInfoProps> = ({
             <div className="flex flex-col items-center gap-2 justify-center">
               <div>
                 <span className="text-gray-500 text-xs px-2">Height</span>
-                <p className=" leading-relaxed text-gray-500 w-full px-2 py-1">
-                  {height ? height : 'N/A'}
-                </p>
+                <div className="flex items-center">
+                  <p className=" leading-relaxed text-gray-500 w-full ">
+                    {height_ft ? `${height_ft} ft` : 'N/A'}
+                  </p>
+                  <p className=" leading-relaxed text-gray-500 w-full ">
+                    {height_in ? `${height_in} in` : ''}
+                  </p>
+                </div>
               </div>
 
               <div>

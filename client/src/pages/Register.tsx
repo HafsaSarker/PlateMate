@@ -21,7 +21,8 @@ export default function Register() {
     about: '',
     nationality: '',
     sex: '',
-    height: '',
+    height_ft: null,
+    height_in: null,
     age: null,
     smoke: false,
     drink: false,
@@ -75,6 +76,8 @@ export default function Register() {
 
     // modifying formData to match user model
     const submitData = destructFormData(formData);
+
+    console.log(submitData);
 
     try {
       // send to server
