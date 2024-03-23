@@ -9,8 +9,9 @@ import { connectDB } from "./db/connect";
 import dotenv from "dotenv";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { Server, Socket } from 'socket.io';
-import { Message } from './models/Message';
 import socketHandler from "./sockets/socketHandler";
+import AWS from 'aws-sdk';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 dotenv.config();
 

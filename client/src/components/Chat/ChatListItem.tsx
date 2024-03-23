@@ -45,7 +45,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
 
   
   return (
-    <div className={`flex p-4 cursor-pointer hover:bg-background-hover ${user._id === currPartner?._id ? 'bg-background-hover' : ''}`} key={user._id}
+    <div className={`flex p-4 cursor-pointer hover:bg-background-dark ${user._id === currPartner?._id ? 'bg-background-dark' : ''}`} key={user._id}
       onClick={() => setCurrPartner(user)}>
       <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full'/>
       <div className='px-4'>

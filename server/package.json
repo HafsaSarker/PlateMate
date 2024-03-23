@@ -18,11 +18,15 @@
     "@types/express": "^4.17.21",
     "@types/lodash": "^4.14.202",
     "@types/mongoose": "^5.11.97",
+    "@types/multer": "^1.4.11",
     "nodemon": "^3.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.537.0",
+    "@aws-sdk/s3-request-presigner": "^3.537.0",
+    "aws-sdk": "^2.1580.0",
     "body-parser": "^1.20.2",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
@@ -32,6 +36,7 @@
     "http-proxy-middleware": "^2.0.6",
     "lodash": "^4.17.21",
     "mongoose": "^8.1.1",
+    "multer": "^1.4.5-lts.1",
     "socket.io": "^4.7.4"
   }
 }
