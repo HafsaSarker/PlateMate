@@ -77,8 +77,6 @@ export default function Register() {
     // modifying formData to match user model
     const submitData = destructFormData(formData);
 
-    console.log(submitData);
-
     try {
       // send to server
       const res = await axios.post(`${auth_api_path}register`, submitData);
