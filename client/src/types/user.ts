@@ -11,7 +11,8 @@ export interface User {
     about?: string;
     nationality?: string;
     sex?: string;
-    height?: string;
+    height_ft?: number | null;
+    height_in?: number | null;
     age?: number | null;
     smoke?: boolean;
     drink?: boolean;
