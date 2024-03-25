@@ -1,10 +1,11 @@
 from flask import Flask, jsonify
 from pymongo import MongoClient
-import certifi
 from bson import json_util, ObjectId
 import pandas as pd
 import numpy as np
+import certifi
 from sklearn.decomposition import PCA
+
 import os
 
 url = os.environ.get('MONGO_URI')
@@ -413,8 +414,6 @@ def matching_model(users):
     cluster_ids = {}
     for cluster, _ in new_dem_display.items():
         cluster_ids[cluster] = users.index[distance == cluster].tolist()
-    print("Cluster IDs:")
-    print(new_dem_display)
     return cluster_ids
 
 @app.route('/')
