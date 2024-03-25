@@ -2,8 +2,10 @@ In order to run, I used a virtual environment (venv.) However due to the extreme
 
 The requirements are already displayed in the requirements.txt file. There, you will be able to download and run all specific versions.
 
-Make sure Flask is downloaded.
+Keep in mind that bson is from pymongo itself.
 
-In order to run the code itself, simply type:
+python3 -m venv venv
 
-python3 app.py
+Requirements: pip install Flask==3.0.2 pymongo==4.6.2 certifi==2023.11.17 pandas==2.1.4 numpy==1.26.3 scikit-learn==1.3.2 python-dotenv
+
+Runs app: python3 app.py
