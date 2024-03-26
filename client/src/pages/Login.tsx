@@ -3,7 +3,7 @@ import { UserContext } from '../context/UserContext';
 import { UserContextType } from '../types/userContextType';
 import { useNavigate } from 'react-router-dom';
 import { LoginFormData } from '../types/loginFormData';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { auth_api_path } from '../api/auth';
 import { Link } from 'react-router-dom';
 
@@ -15,6 +15,8 @@ function Login() {
     email: '',
     password: '',
   });
+
+  const [err, setErr] = useState<string | null>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,7 +42,12 @@ function Login() {
       // go to home
       navigate('/');
     } catch (error) {
-      console.log(error);
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setErr('Invalid credentials');
+      } else {
+        console.log(error);
+      }
     }
   };
   return (
@@ -98,6 +105,7 @@ function Login() {
                 </div>
               </div>
             </div>
+            {err && <p className="text-sm italic text-error">{err}</p>}
           </div>
         </div>
 
