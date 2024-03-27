@@ -34,7 +34,15 @@ export const isOwner = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    let { id } = req.params;
+
+    // if isOwner is called for preference routes
+    // we have uid in req params, not id
+    if (!id) {
+      const { uid } = req.params;
+      id = uid;
+    }
+
     const currentUserId = get(req, "identity._id") as string;
 
     if (!currentUserId) {
