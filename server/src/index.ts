@@ -8,10 +8,10 @@ import router from "./routes";
 import { connectDB } from "./db/connect";
 import dotenv from "dotenv";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { Server, Socket } from 'socket.io';
+import { Server, Socket } from "socket.io";
 import socketHandler from "./sockets/socketHandler";
-import AWS from 'aws-sdk';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import AWS from "aws-sdk";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 dotenv.config();
 
@@ -47,6 +47,9 @@ const io = new Server(server, {
 
 socketHandler(io);
 
+app.use("/api", router());
+app.use("/yelp-api", yelpProxy);
+
 const boot = async () => {
   try {
     await connectDB(process.env.MONGO_URI);
@@ -59,5 +62,3 @@ const boot = async () => {
 };
 
 boot();
-app.use("/api", router());
-app.use("/yelp-api", yelpProxy);
