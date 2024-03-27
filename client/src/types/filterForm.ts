@@ -11,4 +11,8 @@ export interface FilterForm {
   height_to_in?: number;
   smoke?: boolean;
   drink?: boolean;
+  _id?: string;
+  uid?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
