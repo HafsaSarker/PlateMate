@@ -5,10 +5,18 @@ import SexPrefs from './preferences/SexPrefs';
 import AgePrefs from './preferences/AgePrefs';
 import HeightPrefs from './preferences/HeightPrefs';
 import LifestylePrefs from './preferences/LifestylePrefs';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { FilterForm } from '../../types/filterForm';
+import { PreferenceContext } from '../../context/PreferenceContext';
+import { PreferenceContextType } from '../../types/PreferenceContextType';
 
 const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
+  const { preferences } = useContext(
+    PreferenceContext,
+  ) as PreferenceContextType;
+
+  console.log(preferences);
+
   const [filters, setFilters] = useState<FilterForm>({
     nationalities: [],
     male: false,
