@@ -12,7 +12,7 @@ const SexPrefs: React.FC<FilterData> = ({ handleChange, filters }) => {
               id="male"
               type="checkbox"
               name="male"
-              value={filters.male}
+              checked={filters.male}
               onChange={handleChange}
               className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-indigo-600 focus:ring-indigo-600 focus:ring-2"
             />
@@ -30,7 +30,7 @@ const SexPrefs: React.FC<FilterData> = ({ handleChange, filters }) => {
               id="female"
               type="checkbox"
               name="female"
-              value={filters.female}
+              checked={filters.female}
               onChange={handleChange}
               className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-indigo-600 focus:ring-indigo-600 focus:ring-2"
             />
@@ -48,7 +48,7 @@ const SexPrefs: React.FC<FilterData> = ({ handleChange, filters }) => {
               type="checkbox"
               name="other"
               onChange={handleChange}
-              value={filters.other}
+              checked={filters.other}
               className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-indigo-600 focus:ring-indigo-600 focus:ring-2"
             />
 

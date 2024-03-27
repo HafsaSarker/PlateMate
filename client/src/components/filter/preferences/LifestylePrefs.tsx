@@ -14,7 +14,7 @@ const LifestylePrefs: React.FC<FilterData> = ({ handleChange, filters }) => {
                 id="smoke"
                 name="smoke"
                 type="checkbox"
-                value={filters.smoke}
+                checked={filters.smoke}
                 className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-indigo-600 focus:ring-indigo-600 focus:ring-2"
                 onChange={handleChange}
               />
@@ -31,7 +31,7 @@ const LifestylePrefs: React.FC<FilterData> = ({ handleChange, filters }) => {
                 id="drink"
                 name="drink"
                 type="checkbox"
-                value={filters.drink}
+                checked={filters.drink}
                 className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-indigo-600 focus:ring-indigo-600 focus:ring-2"
                 onChange={handleChange}
               />

@@ -11,6 +11,7 @@ import { UserContextType } from './types/userContextType';
 import { useCookies } from 'react-cookie';
 import Settings from './pages/Settings';
 import { ChatContextProvider } from './context/ChatContext';
+import { PreferenceContextProvider } from './context/PreferenceContext';
 
 function App() {
   const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
@@ -39,12 +40,22 @@ function App() {
       <Route path="/" element={<Layout />}>
         {currUser ? (
           <>
-            <Route index element={<Home />} />
-            <Route path="/chat" element={
-              <ChatContextProvider>
-                <Chat />
-              </ChatContextProvider>
-            } />
+            <Route
+              index
+              element={
+                <PreferenceContextProvider>
+                  <Home />
+                </PreferenceContextProvider>
+              }
+            />
+            <Route
+              path="/chat"
+              element={
+                <ChatContextProvider>
+                  <Chat />
+                </ChatContextProvider>
+              }
+            />
             <Route path="/settings" element={<Settings />} />
           </>
         ) : (

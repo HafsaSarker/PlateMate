@@ -11,18 +11,41 @@ import { user_api_path } from '../api/user';
 import UserInfo from '../components/home/UserInfo';
 import { VscSettings } from 'react-icons/vsc';
 import Filter from '../components/filter/Filter';
+import { PreferenceContext } from '../context/PreferenceContext';
+import { PreferenceContextType } from '../types/PreferenceContextType';
+import { preference_api_path } from '../api/preference';
 
 const Home = () => {
   const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
     null,
   );
-  const [users, setUsers] = useState<User[] | null>(null);
+
   const { currUser } = useContext(UserContext) as UserContextType;
+  const { preferences, setPreferences } = useContext(
+    PreferenceContext,
+  ) as PreferenceContextType;
+
+  const [users, setUsers] = useState<User[] | null>(null);
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
   const [showFilters, setShowFilters] = useState<boolean>(false);
 
-  // load similar users everytime clicked restaurant changes
+  useEffect(() => {
+    // get user preferences
+    async function getUserPrefs() {
+      const userPrefs = await axios.get(
+        `${preference_api_path}${currUser?._id}`,
+        {
+          withCredentials: true,
+        },
+      );
+
+      setPreferences(userPrefs.data[0]);
+    }
+    getUserPrefs();
+  }, []);
+
+  // load similar users everytime clicked restaurant and preferences change
   useEffect(() => {
     async function fetchSimilarUsers() {
       try {
@@ -36,7 +59,7 @@ const Home = () => {
       }
     }
     fetchSimilarUsers();
-  }, [clickedRestaurant]);
+  }, [clickedRestaurant, preferences]);
 
   return (
     <div className="h-full w-full flex items-center pb-11 justify-between overflow-hidden ">

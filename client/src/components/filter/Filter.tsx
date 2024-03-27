@@ -5,23 +5,42 @@ import SexPrefs from './preferences/SexPrefs';
 import AgePrefs from './preferences/AgePrefs';
 import HeightPrefs from './preferences/HeightPrefs';
 import LifestylePrefs from './preferences/LifestylePrefs';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { FilterForm } from '../../types/filterForm';
+import { PreferenceContext } from '../../context/PreferenceContext';
+import { PreferenceContextType } from '../../types/PreferenceContextType';
+import { UserContextType } from '../../types/userContextType';
+import { UserContext } from '../../context/UserContext';
+import axios from 'axios';
+import { preference_api_path } from '../../api/preference';
+import { useNavigate } from 'react-router-dom';
 
 const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
+  const { preferences, setPreferences } = useContext(
+    PreferenceContext,
+  ) as PreferenceContextType;
+  const { currUser } = useContext(UserContext) as UserContextType;
+
+  const navigate = useNavigate();
+
   const [filters, setFilters] = useState<FilterForm>({
-    nationalities: [],
-    male: false,
-    female: false,
-    other: false,
-    age_from: 18,
-    age_to: 18, // will start at age_from later
-    height_from_ft: undefined,
-    height_from_in: undefined,
-    height_to_ft: undefined,
-    height_to_in: undefined,
-    smoke: false,
-    drink: false,
+    uid: currUser?._id,
+    nationalities: preferences?.nationalities ? preferences?.nationalities : [],
+    male: preferences?.male ? preferences.male : false,
+    female: preferences?.female ? preferences.female : false,
+    other: preferences?.other ? preferences.other : false,
+    age_from: preferences?.age_from ? preferences.age_from : 18,
+    age_to: preferences?.age_to ? preferences.age_to : 90,
+    height_from_ft: preferences?.height_from_ft
+      ? preferences.height_from_ft
+      : 1,
+    height_from_in: preferences?.height_from_in
+      ? preferences.height_from_in
+      : 0,
+    height_to_ft: preferences?.height_to_ft ? preferences.height_to_ft : 12,
+    height_to_in: preferences?.height_to_in ? preferences.height_to_in : 12,
+    smoke: preferences?.smoke ? preferences.smoke : false,
+    drink: preferences?.drink ? preferences.drink : false,
   });
 
   const handleChange = (
@@ -61,12 +80,29 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
     }
   };
 
-  const saveFilters = (e: FormEvent<HTMLFormElement>) => {
-    // save filters to database in
-    // user model
+  // save filters to database
+  const saveFilters = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(filters);
+    // send to server
+    try {
+      const res = await axios.patch(
+        `${preference_api_path}${currUser?._id}`,
+        filters,
+        {
+          withCredentials: true,
+        },
+      );
+
+      if (res.data) {
+        // update user preference
+        setPreferences(res.data);
+      }
+      // remove filter pop up
+      setShowFilters(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div
