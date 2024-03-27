@@ -7,6 +7,7 @@ import { auth_api_path } from '../api/auth';
 import { destructFormData } from '../utils/destructFormData';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { initPreferences } from '../utils/initPreferences';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -80,6 +81,9 @@ export default function Register() {
     try {
       // send to server
       const res = await axios.post(`${auth_api_path}register`, submitData);
+
+      // init an empty preference
+      initPreferences(res.data._id);
 
       if (res.data) {
         // go to login
