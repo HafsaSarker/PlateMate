@@ -21,6 +21,7 @@ const Home = () => {
   );
 
   const { currUser } = useContext(UserContext) as UserContextType;
+  // user preferences to further filter matches
   const { preferences, setPreferences } = useContext(
     PreferenceContext,
   ) as PreferenceContextType;

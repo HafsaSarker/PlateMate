@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  useContext,
+} from 'react';
 import {
   APIProvider,
   AdvancedMarker,
@@ -12,43 +18,74 @@ import MapSearch from './MapSearch';
 import { Restaurant } from '../../types/restaurant';
 import { RestaurantMapProps } from '../../types/restaurantMapProps';
 import { MapEvent } from '../../types/mapEvent';
+import { UserContextType } from '../../types/userContextType';
+import { UserContext } from '../../context/UserContext';
+import { getLocationCoordinates } from '../../utils/getLocationCoordinates';
 
 const RestaurantMap: React.FC<RestaurantMapProps> = ({
   setClickedRestaurant,
 }) => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [currentLocation, setCurrentLocation] = useState({
-    lat: 40.76785648078654,
-    lng: -73.96447914218824,
-  });
+  const [mapMarkers, setMapMarkers] = useState<Restaurant[]>([]); // store map markers
 
-  // hard coded for now
-  const price = 1;
+  // initial currLocation
+  // changes after fetching currUser's location prefs
+  const [currentLocation, setCurrentLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
+  const { currUser } = useContext(UserContext) as UserContextType;
 
   const [mapCenter, setMapCenter] = useState(currentLocation);
   const mapCenterRef = useRef(mapCenter); // this is so the debounced function can access the latest mapCenter
+
+  // Get user's preffered location
+  useEffect(() => {
+    if (!currentLocation && currUser) {
+      getLocationCoordinates(currUser.profile.restaurantLocation).then(
+        (coordinates) => {
+          if (coordinates) {
+            setCurrentLocation(coordinates);
+          } else {
+            console.log('Coordinates not found');
+          }
+        },
+      );
+    }
+  }, [currentLocation]);
 
   useEffect(() => {
     mapCenterRef.current = mapCenter; // Update ref on mapCenter change
   }, [mapCenter]);
 
   const fetchRestaurants = async () => {
-    const { lat, lng } = mapCenterRef.current;
     try {
       const response = await fetch(
         `/yelp-api/v3/businesses/search?term=restaurants` +
-          `&latitude=${lat}` +
-          `&longitude=${lng}` +
+          `&location=${currUser?.profile.restaurantLocation}` +
+          `&categories=${currUser?.profile.foodCategory}` +
+          `&attributes=${currUser?.profile.restaurantAttributes}` +
           `&radius=40000` +
           `&sort_by=distance` +
           `&limit=50` +
-          `&price=${price}`,
+          `&price=${currUser?.profile.pricePoint}`,
         {
           method: 'GET',
         },
       );
       const data = await response.json();
       setRestaurants(data.businesses);
+
+      // Set markers on the map based on yelp results
+      const markers = data.businesses.map((restaurant: Restaurant) => ({
+        position: {
+          lat: restaurant.coordinates.latitude,
+          lng: restaurant.coordinates.longitude,
+        },
+        onClick: () => handleMarkerClick(restaurant),
+      }));
+      setMapMarkers(markers);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -88,20 +125,14 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
       <APIProvider apiKey={config.mapsAPIKey}>
         <div className="w-full h-full pb-11">
           <Map
-            zoom={17}
+            zoom={11}
             center={currentLocation}
             mapId={config.mapID}
             onCenterChanged={(map) => updateMap(map)}
           >
-            {restaurants.map((restaurant, index) => (
-              <Marker
-                key={index}
-                position={{
-                  lat: restaurant.coordinates.latitude,
-                  lng: restaurant.coordinates.longitude,
-                }}
-                onClick={() => handleMarkerClick(restaurant)}
-              />
+            {/* Render markers based on mapMarkers state */}
+            {mapMarkers.map((marker, index) => (
+              <Marker key={index} {...marker} />
             ))}
             <AdvancedMarker position={currentLocation}>
               <Pin
