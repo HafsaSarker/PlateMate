@@ -20,24 +20,40 @@ import { RestaurantMapProps } from '../../types/restaurantMapProps';
 import { MapEvent } from '../../types/mapEvent';
 import { UserContextType } from '../../types/userContextType';
 import { UserContext } from '../../context/UserContext';
+import { getLocationCoordinates } from '../../utils/getLocationCoordinates';
 
 const RestaurantMap: React.FC<RestaurantMapProps> = ({
   setClickedRestaurant,
 }) => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [mapMarkers, setMapMarkers] = useState<Restaurant[]>([]); // store map markers
 
-  // initial currLocation that changes after fetching restaurants from yelp api
-  const [currentLocation, setCurrentLocation] = useState({
-    lat: 40.76785648078654,
-    lng: -73.96447914218824,
-  });
+  // initial currLocation
+  // changes after fetching currUser's location prefs
+  const [currentLocation, setCurrentLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   const { currUser } = useContext(UserContext) as UserContextType;
 
   const [mapCenter, setMapCenter] = useState(currentLocation);
   const mapCenterRef = useRef(mapCenter); // this is so the debounced function can access the latest mapCenter
 
-  const [mapMarkers, setMapMarkers] = useState<Restaurant[]>([]); // store map markers
+  // Get user's preffered location
+  useEffect(() => {
+    if (!currentLocation && currUser) {
+      getLocationCoordinates(currUser.profile.restaurantLocation).then(
+        (coordinates) => {
+          if (coordinates) {
+            setCurrentLocation(coordinates);
+          } else {
+            console.log('Coordinates not found');
+          }
+        },
+      );
+    }
+  }, [currentLocation]);
 
   useEffect(() => {
     mapCenterRef.current = mapCenter; // Update ref on mapCenter change
@@ -109,7 +125,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
       <APIProvider apiKey={config.mapsAPIKey}>
         <div className="w-full h-full pb-11">
           <Map
-            zoom={17}
+            zoom={11}
             center={currentLocation}
             mapId={config.mapID}
             onCenterChanged={(map) => updateMap(map)}
