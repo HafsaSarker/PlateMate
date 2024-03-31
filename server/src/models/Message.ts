@@ -7,6 +7,7 @@ interface IMessage extends Document {
   message: string;
   imageUrl: string | null;
   sentAt: Date;
+  readStatus: boolean;
 }
 
 const messageSchema: Schema = new Schema({
@@ -16,6 +17,7 @@ const messageSchema: Schema = new Schema({
   message: { type: String, required: false },
   imageUrl: { type: String, default: null },
   sentAt: { type: Date, default: Date.now },
+  readStatus: { type: Boolean, default: false },
 });
 
 export const Message = mongoose.model<IMessage>('Message', messageSchema);
