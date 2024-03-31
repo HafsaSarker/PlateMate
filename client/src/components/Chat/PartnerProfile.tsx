@@ -14,8 +14,7 @@ const PartnerProfile: React.FC<PartnerProfileProps> = ({ toggle }) => {
 
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
-  console.log(currPartner);
-  const foodList = currPartner?.profile.foodCategory.split(",")
+
   if (!toggle || !currPartner) {
     return <></>;
   }
