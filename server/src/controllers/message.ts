@@ -4,10 +4,11 @@ import { Message } from '../models/Message';
 async function getMessages(req: Request, res: Response): Promise<void> {
   const roomId = req.params.roomId;
   const limitString = typeof req.query.limit === 'string' ? req.query.limit : undefined;
+  const searchString = typeof req.query.search === 'string' ? req.query.search : '';
+  console.log(searchString)
   const limit = parseInt(limitString) || 0;
   try {
-
-    const messages = await Message.find({ room: roomId })
+    const messages = await Message.find({ room: roomId, message: { $regex: searchString, $options: 'i' }})
                                   .sort({ sentAt: -1 })
                                   .limit(limit);
     res.json(messages);
