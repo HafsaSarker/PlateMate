@@ -68,6 +68,11 @@ const SideBar: React.FC<SideBarProps> = ({ toggle }) => {
           placeholder='Search'
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              fetchSearchMessages();
+            }
+          }}
         />
         <button onClick={fetchSearchMessages}>
           <MagnifyingGlassIcon className='h-5 w-5 hover:h-6 hover:w-6'/>
