@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { User } from '../../types/user';
 import { message_api_path } from '../../api/message';
 import { chat_partner_api_path } from '../../api/chat-partners';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { Cog8ToothIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 
 import { UserContext } from '../../context/UserContext';
@@ -77,9 +77,18 @@ const ChatList:React.FC = () => {
   }, []);
 
   return (
-    <section className='left-section w-[40%] border-x-2 border-gray-300 flex flex-col h-full'>
-      <div className='h-full overflow-hidden pt-5'>
-        <h1 className='py-2 px-6 text-2xl font-bold'>Chats</h1>
+    <section className='left-section w-[30%] border-x-2 border-gray-300 flex flex-col h-full'>
+      <div className='h-full pt-5 flex flex-col'>
+        <div className='flex py-2 px-6 items-center justify-between'>
+          <div className='flex items-center gap-5'>
+            <img className="rounded-full" src='https://via.placeholder.com/55' alt='user-pfp' />
+            <h1 className='text-2xl font-bold'>Chats</h1>
+          </div>
+          <Cog8ToothIcon className="h-9" />
+        </div>
+
+
+
         <div className='py-3 px-6 gap-4 flex justify-center items-center bg-background-dark mx-4 my-2 rounded-full'>
           <MagnifyingGlassIcon className='h-5 w-5'/>
           <input
@@ -87,7 +96,7 @@ const ChatList:React.FC = () => {
             placeholder='Search for a chat'
             onChange={(e) => setSearchInput(e.target.value)}/>
         </div>
-        <div className='partner-list max-h-full overflow-auto'>
+        <div className='flex flex-col partner-list overflow-auto'>
           {chatList.filter(chatData => (chatData.user.profile.firstName + " " + chatData.user.profile.lastName)
             .includes(searchInput)).map(({user, lastMessage, lastMessageTime}) => (
               <ChatListItem user={user} lastMessage={truncateMessage(lastMessage)} lastMessageTime={lastMessageTime} key={user._id}/>
