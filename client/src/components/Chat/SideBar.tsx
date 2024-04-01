@@ -40,11 +40,11 @@ const SideBar: React.FC<SideBarProps> = ({ toggle }) => {
     }
   }
 
-  // if currPartner changes, empty searchMessageList
-  // useEffect(() => {
-  //   setSearchMessageList([]);
-  //   setSearchInput('');
-  // }, [currPartner]);
+  //if currPartner changes, empty searchMessageList
+  useEffect(() => {
+    setSearchMessageList([]);
+    setSearchInput('');
+  }, [currPartner]);
 
   if (!toggle || !currPartner) {
     return <></>;
@@ -52,14 +52,14 @@ const SideBar: React.FC<SideBarProps> = ({ toggle }) => {
 
   return (
     <div className="flex flex-col w-[40%] p-8 items-center border-l-2 border-gray-300 gap-2">
-      <img src={currPartner.profile.profileImg} alt="profile img" className="bg-gray-500 rounded-full w-16 min-h-16 border-primary border-2 p-1"/>
+      <img src={currPartner.profile.profileImg} alt="profile img" className="bg-gray-500 rounded-full w-[80px] h-[80px] min-h-[80px] border-primary border-2 p-1"/>
       <div className="flex gap-1 items-center">
         <h2 className="font-bold text-xl">{currPartner.profile.firstName} {currPartner.profile.lastName}</h2>
         <p className="text-md">{currPartner.profile.age}</p>
       </div>
 
       <button onClick={() => setShowProfile(true)}
-        className="bg-accent rounded-lg p-2 text-white">View Full Profile</button>
+        className="bg-accent rounded-lg p-2 text-white">View Profile</button>
       <div className="w-full border-t-2 my-4 border-gray-300"></div>
 
       <div className='py-3 px-6 gap-4 flex justify-center items-center bg-background-dark mx-4 my-2 rounded-full'>
@@ -105,8 +105,8 @@ const FilteredMessagesList: React.FC<FilteredMessagesListProps> = ({ searchMessa
   return (
     <div className="filtered-message-list flex flex-col gap-2 w-full overflow-auto">
       {searchMessageList.map((message, index) => (
-        <div key={index} className="flex border-b border-black">
-          <div className="min-w-[50px] min-h-[50px] m-2 rounded">
+        <div key={index} className="flex bg-background-dark rounded-md p-2 py-3">
+          <div className="min-w-[50px] min-h-[50px] mx-2 rounded">
             {message.imageUrl ? <img src={message.imageUrl} className="rounded-full"/>
             : <img src="https://via.placeholder.com/50" alt="user-pfp" className="rounded-full"/>}
           </div>
