@@ -8,7 +8,7 @@ import { ChatContext } from '../../context/ChatContext';
 import { ChatContextType } from '../../types/chatContextType';
 
 import { PhotoIcon, XCircleIcon, PaperAirplaneIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/solid';
-import PartnerProfile from './PartnerProfile';
+import SideBar from './SideBar';
 
 const ChatBox: React.FC<ChatBoxProps> = () => {
   const { currUser } = useContext(UserContext) as UserContextType;
@@ -115,7 +115,7 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
 
         </div>
       </section>
-      <PartnerProfile toggle={partnerProfileToggle} />
+      <SideBar toggle={partnerProfileToggle} />
     </div>
   );
 }

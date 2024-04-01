@@ -9,7 +9,6 @@ import { UserContextType } from '../types/userContextType';
 
 import { ChatContext } from '../context/ChatContext';
 import { ChatContextType } from '../types/chatContextType';
-import Sidebar from '../components/Chat/SideBar';
 
 
 const Chat: React.FC = () => {
@@ -34,7 +33,6 @@ const Chat: React.FC = () => {
   }
   return (
     <div className='flex w-screen h-full overflow-hidden'>
-      <Sidebar />
       <ChatList/>
       <ChatBox/>
     </div>
