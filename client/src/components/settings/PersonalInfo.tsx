@@ -27,10 +27,21 @@ const PersonalInfo: React.FC<SettingsProps> = ({ handleChange, formData }) => {
           Photo
         </label>
         <div className="mt-2 flex items-center gap-x-3">
-          <UserCircleIcon
-            className="h-12 w-12 text-gray-300"
-            aria-hidden="true"
-          />
+          {
+            currUser?.profile.profileImg ? (
+              <img
+                src={currUser.profile.profileImg}
+                alt="profile"
+                className="h-12 w-12 rounded-full"
+              />
+            ) :
+            (
+              <UserCircleIcon
+                className="h-12 w-12 text-gray-300"
+                aria-hidden="true"
+              />
+            )
+          }
           <input
             type="file"
             id="profileImg"
