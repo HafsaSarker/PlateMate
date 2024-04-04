@@ -9,6 +9,8 @@ import { UserContext } from './UserContext';
 import { message_api_path } from '../api/message';
 import { user_api_path } from '../api/user';
 import { ChatContextType } from '../types/chatContextType';
+import { s3_api_path } from '../api/s3';
+import uploadImage from '../utils/uploadImage';
 
 export const ChatContext = createContext<ChatContextType | null>(null);
 const backend_url = import.meta.env.VITE_BACKEND_URL;
@@ -117,18 +119,6 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     updateChatList(messageData);
   };
 
-  async function uploadImage(file: File) {
-    const formData = new FormData();
-    formData.append('image', file);
-    const response = await fetch(`${backend_url}/api/s3`, {
-      method: 'POST',
-      body: formData, // Send formData instead of raw file
-    });
-    const data = await response.json();
-    console.log('data:', data);
-    console.log('data.imageName:', data.imageName);
-    return data.imageName;
-  }
 
   useEffect(() => {
     if (room) {

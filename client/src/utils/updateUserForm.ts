@@ -1,5 +1,20 @@
-import { FormData } from '../types/formData';
-export function updateUserForm(data: FormData) {
+import { s3_api_path } from '../api/s3';
+
+
+async function uploadImage(file: File) {
+  const formData = new FormData();
+  formData.append('image', file);
+  const response = await fetch(s3_api_path, {
+    method: 'POST',
+    body: formData, // Send formData instead of raw file
+  });
+  const data = await response.json();
+  console.log('data:', data);
+  console.log('data.imageName:', data.imageName);
+  return data.imageName;
+}
+
+export async function updateUserForm(data: FormData) {
   const {
     firstName,
     lastName,
@@ -20,12 +35,14 @@ export function updateUserForm(data: FormData) {
     pricePoint,
   } = data;
 
+  const profileImgName = profileImg ? await uploadImage(profileImg) : '';
+
   const submitData = {
     email,
     profile: {
       firstName,
       lastName,
-      profileImg,
+      profileImgName,
       coverImg,
       about,
       nationality,

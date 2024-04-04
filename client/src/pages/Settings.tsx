@@ -78,7 +78,7 @@ function Settings() {
     e.preventDefault();
 
     // modifying formData to match user model
-    const submitData = updateUserForm(formData);
+    const submitData = await updateUserForm(formData);
 
     try {
       // send to server
