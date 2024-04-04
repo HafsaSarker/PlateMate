@@ -41,6 +41,8 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
     sendMessage();
   }
 
+
+
   useEffect(() => {
     scrollToBottom();
   }, [messagesList]);

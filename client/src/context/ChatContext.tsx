@@ -96,18 +96,18 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const sendMessage = async (): Promise<void> => {
     if ((messageInput === '' && imageFile === null) || !currUser || !currPartner) return;
 
-    let imageUrl = null;
+    let imageName = null;
     if (imageFile) {
       console.log('Uploading image')
-      imageUrl = await uploadImage(imageFile);
-      console.log(imageUrl)
+      imageName = await uploadImage(imageFile);
+      console.log(imageName)
     }
     const messageData: MessageData = {
       fromUserId: currUser._id,
       toUserId: currPartner._id,
       room,
       message: messageInput,
-      imageUrl: imageUrl,
+      imageName: imageName,
       sentAt: new Date(),
     };
     socket.emit('send_message', messageData);
@@ -126,7 +126,8 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     });
     const data = await response.json();
     console.log('data:', data);
-    return data.imageUrl;
+    console.log('data.imageName:', data.imageName);
+    return data.imageName;
   }
 
   useEffect(() => {

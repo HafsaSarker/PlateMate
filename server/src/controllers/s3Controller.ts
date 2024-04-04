@@ -15,14 +15,20 @@ const s3 = new S3Client({
 
 const randomImageName = () => crypto.randomBytes(16).toString('hex');
 
-async function generatePresignedUrl(imageName: string) {
-  const params = {
-    Bucket: process.env.AWS_BUCKET_NAME,
-    Key: imageName,
-  };
-  const command = new GetObjectCommand(params);
-  const url = await getSignedUrl(s3, command, { expiresIn: 600000 });
-  return url;
+async function generatePresignedUrl(req: Request, res: Response) {
+  const imageName = req.params.imageName;
+  try {
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: imageName,
+    };
+    const command = new GetObjectCommand(params);
+    const url = await getSignedUrl(s3, command, { expiresIn: 600000 });
+
+    res.send({ url });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 }
 
 async function uploadImage(req: Request, res: Response) {
@@ -30,9 +36,10 @@ async function uploadImage(req: Request, res: Response) {
     console.log('req.body:', req.body);
     console.log('req.file:', req.file);
 
+    const newImageName = randomImageName();
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: randomImageName(),
+      Key: newImageName,
       Body: req.file.buffer,
       ContentType: req.file.mimetype,
     };
@@ -40,9 +47,8 @@ async function uploadImage(req: Request, res: Response) {
     console.log(params.Key)
     await s3.send(command);
 
-    const url = await generatePresignedUrl(params.Key);
-    console.log('url:', url);
-    res.send({ imageUrl: url });
+    console.log('Image uploaded:', newImageName);
+    res.send({ imageName: newImageName });
 
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -51,4 +57,5 @@ async function uploadImage(req: Request, res: Response) {
 
 export const s3Controller = {
   uploadImage,
+  generatePresignedUrl,
 };

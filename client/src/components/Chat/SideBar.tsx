@@ -112,8 +112,8 @@ const FilteredMessagesList: React.FC<FilteredMessagesListProps> = ({ searchMessa
       {searchMessageList.map((message, index) => (
         <div key={index} className="flex bg-background-dark rounded-md p-2 py-3">
           <div className="min-w-[50px] min-h-[50px] mx-2 rounded">
-            {message.imageUrl ? <img src={message.imageUrl} className="rounded-full"/>
-            : <img src="https://via.placeholder.com/50" alt="user-pfp" className="rounded-full"/>}
+            {// replace this with user pfp
+            <img src="https://via.placeholder.com/50" alt="user-pfp" className="rounded-full"/>}
           </div>
           <div className="flex flex-col w-full">
             <div className="flex justify-between">
