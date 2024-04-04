@@ -4,6 +4,7 @@ import { MessageData } from '../../types/messageData';
 import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
 import { s3_api_path } from '../../api/s3';
+import getImageUrl from '../../utils/getImageUrl';
 
 interface MessageProps {
   messageData: MessageData;
@@ -15,22 +16,16 @@ const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
 
   const [imageUrl, setImageUrl] = useState('' as string);
 
-  const fetchImageUrl = async (imageName: string) => {
-    try {
-      const response = await fetch(`${s3_api_path}/get_url/${imageName}`);
-      const data = await response.json();
-      console.log('data:', data)
-      setImageUrl(data.url);
-    } catch (error) {
-      console.error('Error fetching image URL:', error);
-      return '';
-    }
-  }
 
   useEffect(() => {
-    if (messageData.imageName) {
-      fetchImageUrl(messageData.imageName);
-    }
+    const fetchData = async () => {
+      if (messageData.imageName) {
+        const imageUrl = await getImageUrl(messageData.imageName);
+        setImageUrl(imageUrl);
+      }
+    };
+
+    fetchData();
   }, [messageData.imageName]);
 
   const timeDisplay = (time: Date) => {

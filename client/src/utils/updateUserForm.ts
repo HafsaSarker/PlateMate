@@ -1,25 +1,13 @@
 import { s3_api_path } from '../api/s3';
-
-
-async function uploadImage(file: File) {
-  const formData = new FormData();
-  formData.append('image', file);
-  const response = await fetch(s3_api_path, {
-    method: 'POST',
-    body: formData, // Send formData instead of raw file
-  });
-  const data = await response.json();
-  console.log('data:', data);
-  console.log('data.imageName:', data.imageName);
-  return data.imageName;
-}
+import { FormData } from '../types/formData';
+import getImageUrl from './getImageUrl';
+import uploadImage from './uploadImage';
 
 export async function updateUserForm(data: FormData) {
   const {
     firstName,
     lastName,
     email,
-    profileImg,
     coverImg,
     about,
     nationality,
@@ -35,14 +23,18 @@ export async function updateUserForm(data: FormData) {
     pricePoint,
   } = data;
 
+  let { profileImg } = data;
+
   const profileImgName = profileImg ? await uploadImage(profileImg) : '';
+  profileImg = await getImageUrl(profileImgName);
+
 
   const submitData = {
     email,
     profile: {
       firstName,
       lastName,
-      profileImgName,
+      profileImg,
       coverImg,
       about,
       nationality,
@@ -58,5 +50,6 @@ export async function updateUserForm(data: FormData) {
       pricePoint,
     },
   };
+  console.log('submitData:', submitData);
   return submitData;
 }
