@@ -13,7 +13,7 @@ import { ChatContextType } from '../../types/chatContextType';
 import ChatListItem from './ChatListItem';
 
 const ChatList:React.FC = () => {
-  const { currUser } = useContext(UserContext) as UserContextType;
+  const { currUser, userImageUrl } = useContext(UserContext) as UserContextType;
   const {chatList, setChatList} = useContext(ChatContext) as ChatContextType;
   const {generateRoomId, getUserProfile} = useContext(ChatContext) as ChatContextType;
 
@@ -81,7 +81,7 @@ const ChatList:React.FC = () => {
       <div className='h-full pt-5 flex flex-col'>
         <div className='flex py-2 px-6 items-center justify-between'>
           <div className='flex items-center gap-5'>
-            <img className="rounded-full w-[60px] h-[60px]" src={currUser.profile.profileImg} alt='user-pfp' />
+            <img className="rounded-full w-[60px] h-[60px]" src={userImageUrl} alt='user-pfp' />
             <h1 className='text-2xl font-bold'>Chats</h1>
           </div>
           <Cog8ToothIcon className="h-9" />

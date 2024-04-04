@@ -10,6 +10,7 @@ import { MessageData } from "../../types/messageData";
 import { message_api_path } from "../../api/message";
 import { UserContext } from "../../context/UserContext";
 import { UserContextType } from "../../types/userContextType";
+import ProfileImage from "./ProfileImage";
 
 interface SideBarProps {
   toggle: boolean;
@@ -44,6 +45,7 @@ const SideBar: React.FC<SideBarProps> = ({ toggle }) => {
   useEffect(() => {
     setSearchMessageList([]);
     setSearchInput('');
+    console.log(currPartner)
   }, [currPartner]);
 
   if (!toggle || !currPartner) {
@@ -52,7 +54,10 @@ const SideBar: React.FC<SideBarProps> = ({ toggle }) => {
 
   return (
     <div className="flex flex-col w-[40%] p-8 items-center border-l-2 border-gray-300 gap-2">
-      <img src={currPartner.profile.profileImg} alt="profile img" className="bg-gray-500 rounded-full w-[80px] h-[80px] min-h-[80px] border-primary border-2 p-1"/>
+      <div className="bg-gray-500 rounded-full w-[80px] h-[80px] min-h-[80px] border-primary border-2">
+        <ProfileImage imageName={currPartner.profile.profileImg} />
+      </div>
+
       <div className="flex gap-1 items-center">
         <h2 className="font-bold text-xl">{currPartner.profile.firstName} {currPartner.profile.lastName}</h2>
         <p className="text-md">{currPartner.profile.age}</p>

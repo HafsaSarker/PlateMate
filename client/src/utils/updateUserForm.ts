@@ -25,9 +25,7 @@ export async function updateUserForm(data: FormData) {
 
   let { profileImg } = data;
 
-  const profileImgName = profileImg ? await uploadImage(profileImg) : '';
-  profileImg = await getImageUrl(profileImgName);
-
+  profileImg = profileImg ? await uploadImage(profileImg) : '';
 
   const submitData = {
     email,
