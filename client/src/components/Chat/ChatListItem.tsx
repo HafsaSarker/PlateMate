@@ -3,7 +3,6 @@ import { ChatContext } from "../../context/ChatContext";
 import { User } from "../../types/user";
 import { ChatContextType } from "../../types/chatContextType";
 import getImageUrl from "../../utils/getImageUrl";
-import ProfileImage from "./ProfileImage";
 
 interface ChatListItemProps {
   user: User;
@@ -48,9 +47,12 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
   }
 
   const fetchUserImage = async () => {
-    if (!user.profile.profileImg) return;
+    if (!user.profile.profileImg) {
+      setUserImage('user.png');
+    }
     const userImg = await getImageUrl(user.profile.profileImg);
     setUserImage(userImg);
+    console.log(userImg)
   }
 
   useEffect(() => {
@@ -59,9 +61,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
   return (
     <div className={`flex p-4 cursor-pointer hover:bg-background-dark ${user._id === currPartner?._id ? 'bg-background-dark' : ''}`} key={user._id}
       onClick={() => setCurrPartner(user)}>
-      <div className="w-12 h-12">
-        <ProfileImage imageName={user.profile.profileImg} />
-      </div>
+      <img className="w-12 h-12 rounded-full" src={userImage || "user.png"}/>
       <div className='px-4'>
         <div className='font-bold'>{user.profile.firstName + ' ' + user.profile.lastName }</div>
         <p className='text-xs'>{truncateMessage(lastMessage)} •

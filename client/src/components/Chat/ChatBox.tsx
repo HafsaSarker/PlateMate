@@ -9,11 +9,11 @@ import { ChatContextType } from '../../types/chatContextType';
 
 import { PhotoIcon, XCircleIcon, PaperAirplaneIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/solid';
 import SideBar from './SideBar';
-import ProfileImage from './ProfileImage';
 
 const ChatBox: React.FC<ChatBoxProps> = () => {
   const { currUser } = useContext(UserContext) as UserContextType;
   const { currPartner } = useContext(ChatContext) as ChatContextType;
+  const { currPartnerImg } = useContext(ChatContext) as ChatContextType;
   const { imageFile, setImageFile } = useContext(ChatContext) as ChatContextType;
   const { messageInput, setMessageInput, messagesList } = useContext(ChatContext) as ChatContextType;
 
@@ -65,9 +65,8 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
       <section className='flex flex-col right-section chatbox w-full'>
         <div className='chat-heading flex bg-primary p-3 items-center'>
           <div className='flex items-center'>
-            <div className='w-10 h-10'>
-              <ProfileImage imageName={currPartner.profile.profileImg} />
-            </div>
+            <img className='w-10 h-10 rounded-full' src={currPartnerImg || "user.png"}/>
+
             <h3 className='pl-3'>{partnerUsername}</h3>
           </div>
           <button onClick={() => setPartnerProfileToggle(!partnerProfileToggle)} className='ml-auto'>

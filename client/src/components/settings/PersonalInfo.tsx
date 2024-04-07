@@ -7,7 +7,7 @@ import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
 
 const PersonalInfo: React.FC<SettingsProps> = ({ handleChange, formData }) => {
-  const { currUser } = useContext(UserContext) as UserContextType;
+  const { currUser, userImageUrl } = useContext(UserContext) as UserContextType;
   return (
     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
       <div className="col-span-full">
@@ -30,7 +30,7 @@ const PersonalInfo: React.FC<SettingsProps> = ({ handleChange, formData }) => {
           {
             currUser?.profile.profileImg ? (
               <img
-                src={currUser.profile.profileImg}
+                src={userImageUrl}
                 alt="profile"
                 className="h-12 w-12 rounded-full"
               />

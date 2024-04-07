@@ -54,7 +54,7 @@ const SideBar: React.FC<SideBarProps> = ({ toggle }) => {
   return (
     <div className="flex flex-col w-[40%] p-8 items-center border-l-2 border-gray-300 gap-2">
 
-      <img src={currPartnerImg} className="bg-gray-500 rounded-full w-[80px] h-[80px] min-h-[80px] border-primary border-2"/>
+      <img src={currPartnerImg || "user.png"} className="bg-gray-500 rounded-full w-[80px] h-[80px] min-h-[80px] border-primary border-2"/>
 
       <div className="flex gap-1 items-center">
         <h2 className="font-bold text-xl">{currPartner.profile.firstName} {currPartner.profile.lastName}</h2>

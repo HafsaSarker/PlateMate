@@ -9,7 +9,6 @@ import { UserContext } from './UserContext';
 import { message_api_path } from '../api/message';
 import { user_api_path } from '../api/user';
 import { ChatContextType } from '../types/chatContextType';
-import { s3_api_path } from '../api/s3';
 import uploadImage from '../utils/uploadImage';
 import getImageUrl from '../utils/getImageUrl';
 
@@ -126,9 +125,12 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       if (currPartner && currPartner.profile.profileImg) {
         const imageUrl = await getImageUrl(currPartner.profile.profileImg);
         setCurrPartnerImg(imageUrl);
+      } else {
+        setCurrPartnerImg('user.png');
       }
     }
     fetchPartnerImage();
+    console.log('fetching partner image')
   }, [currPartner]); // Fetch past partners whenever the currentUserData changes
 
   useEffect(() => {
