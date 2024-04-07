@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from pymongo import MongoClient
+<<<<<<< HEAD
 import certifi
 from bson import json_util, ObjectId
 import pandas as pd
@@ -8,13 +9,25 @@ from sklearn.decomposition import PCA
 from flask_cors import CORS
 import os
 from sklearn.metrics import silhouette_score
+=======
+from bson import json_util, ObjectId
+import pandas as pd
+import numpy as np
+import certifi
+from sklearn.decomposition import PCA
+
+import os
+>>>>>>> b929feae69882426822b44ae2981b5377473c528
 
 url = os.environ.get('MONGO_URI')
 
 app = Flask(__name__)
 
+<<<<<<< HEAD
 CORS(app)
 
+=======
+>>>>>>> b929feae69882426822b44ae2981b5377473c528
 client = MongoClient(url, tlsCAFile=certifi.where())
 
 db = client.test
@@ -379,6 +392,7 @@ def assign_categories(users):
     
     return users
 
+<<<<<<< HEAD
 def calculate_silhouette_score(users_df):
     cluster_ids = matching_model(users_df)
     labels = []
@@ -387,6 +401,8 @@ def calculate_silhouette_score(users_df):
     silhouette = silhouette_score(users_df, labels)
     return silhouette
 
+=======
+>>>>>>> b929feae69882426822b44ae2981b5377473c528
 def conversion_height(height):
     if isinstance(height, int):
         return height
@@ -418,6 +434,7 @@ def get_demographics(features, centroid_array):
 def matching_model(users):
     features = users[["profile.sex", "profile.height", "profile.age", "profile.foodCategory","profile.restaurantAttributes[1]","profile.restaurantAttributes[2]","profile.restaurantAttributes[3]","profile.restaurantAttributes[4]","profile.pricePoint[1]","profile.pricePoint[2]","profile.pricePoint[3]","profile.smoke","profile.drink"]].fillna(0)
     features = ((features - features.min()) / (features.max() - features.min())) * 9 + 1
+<<<<<<< HEAD
     max_clusters = 10
     silhouette_scores = [silhouette_score(features, get_demographics(features, centroid_randomizer(features, n_clusters))) for n_clusters in range(2, max_clusters + 1)]
     best_cluster_count_index = silhouette_scores.index(max(silhouette_scores))
@@ -425,6 +442,12 @@ def matching_model(users):
     centroid_array = centroid_randomizer(features, best_cluster_count)
     distance = get_demographics(features, centroid_array)
     new_dem_display = new_dems(features, distance, best_cluster_count)
+=======
+    centroid_array = centroid_randomizer(features,10)
+    distance = get_demographics(features, centroid_array)
+    features.groupby(distance).apply(lambda x: np.exp(np.log(x).mean())).T
+    new_dem_display = new_dems(features, distance, 10)
+>>>>>>> b929feae69882426822b44ae2981b5377473c528
     cluster_ids = {}
     for cluster, _ in new_dem_display.items():
         cluster_ids[cluster] = users.index[distance == cluster].tolist()
@@ -432,9 +455,15 @@ def matching_model(users):
 
 @app.route('/')
 def index():
+<<<<<<< HEAD
     return 'Connected to MongoDB'
 
 @app.route('/match', methods=['GET'])
+=======
+    return 'Connected to MongoDB!'
+
+@app.route('/users', methods=['GET'])
+>>>>>>> b929feae69882426822b44ae2981b5377473c528
 def get_users():
     find_values = {
   "_id": 1,
@@ -503,4 +532,8 @@ def get_users():
     return jsonify(cluster_user_ids)
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     app.run(debug=True)
+=======
+    app.run(debug=True)
+>>>>>>> b929feae69882426822b44ae2981b5377473c528
