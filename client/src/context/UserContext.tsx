@@ -13,7 +13,10 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
 
   const fetchUserImage = async () => {
-    if (!currUser?.profile.profileImg) return;
+    if (!currUser?.profile.profileImg) {
+      setUserImageUrl('user.png');
+      return;
+    }
     const url = await getImageUrl(currUser?.profile.profileImg);
     setUserImageUrl(url);
   }
