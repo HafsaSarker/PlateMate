@@ -11,6 +11,7 @@ import { user_api_path } from '../api/user';
 import { ChatContextType } from '../types/chatContextType';
 import { s3_api_path } from '../api/s3';
 import uploadImage from '../utils/uploadImage';
+import getImageUrl from '../utils/getImageUrl';
 
 export const ChatContext = createContext<ChatContextType | null>(null);
 const backend_url = import.meta.env.VITE_BACKEND_URL;
@@ -21,6 +22,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { currUser } = useContext(UserContext) as UserContextType;
   const [currPartner, setCurrPartner] = useState<User | null>(null);
+  const [currPartnerImg, setCurrPartnerImg] = useState<string>('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [messageInput, setMessageInput] = useState<string>('');
   const [messagesList, setMessagesList] = useState<MessageData[]>([]);
@@ -119,6 +121,15 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     updateChatList(messageData);
   };
 
+  useEffect(() => {
+    const fetchPartnerImage = async () => {
+      if (currPartner && currPartner.profile.profileImg) {
+        const imageUrl = await getImageUrl(currPartner.profile.profileImg);
+        setCurrPartnerImg(imageUrl);
+      }
+    }
+    fetchPartnerImage();
+  }, [currPartner]); // Fetch past partners whenever the currentUserData changes
 
   useEffect(() => {
     if (room) {
@@ -171,6 +182,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       updateChatList,
       sendMessage,
       uploadImage,
+      currPartnerImg,
       }}>
       {children}
     </ChatContext.Provider>

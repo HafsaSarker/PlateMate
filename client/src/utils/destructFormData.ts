@@ -23,10 +23,8 @@ export async function destructFormData(data: FormData) {
   } = data;
 
   let { profileImg } = data;
-
-  const profileImgName = profileImg ? await uploadImage(profileImg) : '';
-  profileImg = await getImageUrl(profileImgName);
-
+  // save the image name
+  profileImg= profileImg ? await uploadImage(profileImg) : '';
 
   const submitData = {
     email,

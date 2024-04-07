@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import AWS from 'aws-sdk';
 import multer from 'multer';
 import crypto from 'crypto';
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const s3 = new S3Client({
@@ -17,16 +17,22 @@ const randomImageName = () => crypto.randomBytes(16).toString('hex');
 
 async function generatePresignedUrl(req: Request, res: Response) {
   const imageName = req.params.imageName;
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: imageName,
+  };
   try {
-    const params = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: imageName,
-    };
+    await s3.send(new HeadObjectCommand(params));
+    console.log('Image exists:', imageName)
     const command = new GetObjectCommand(params);
-    const url = await getSignedUrl(s3, command, { expiresIn: 600000 });
+    const url = await getSignedUrl(s3, command, { expiresIn: 100000 });
 
     res.send({ url });
   } catch (error) {
+    console.log(error.name)
+    if (error.name === '403') {
+      return res.send({ url: null });
+    }
     res.status(500).json({ error: error.message });
   }
 }

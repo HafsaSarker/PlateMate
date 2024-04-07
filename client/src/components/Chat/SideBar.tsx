@@ -10,7 +10,6 @@ import { MessageData } from "../../types/messageData";
 import { message_api_path } from "../../api/message";
 import { UserContext } from "../../context/UserContext";
 import { UserContextType } from "../../types/userContextType";
-import ProfileImage from "./ProfileImage";
 
 interface SideBarProps {
   toggle: boolean;
@@ -26,7 +25,7 @@ const SideBar: React.FC<SideBarProps> = ({ toggle }) => {
   const [searchMessageList, setSearchMessageList] = useState<MessageData[]>([]);
 
   const { room } = useContext(ChatContext) as ChatContextType;
-
+  const { currPartnerImg } = useContext(ChatContext) as ChatContextType;
   const fetchSearchMessages = async () => {
     // fetch request to get messages that match search input
     try {
@@ -54,9 +53,8 @@ const SideBar: React.FC<SideBarProps> = ({ toggle }) => {
 
   return (
     <div className="flex flex-col w-[40%] p-8 items-center border-l-2 border-gray-300 gap-2">
-      <div className="bg-gray-500 rounded-full w-[80px] h-[80px] min-h-[80px] border-primary border-2">
-        <ProfileImage imageName={currPartner.profile.profileImg} />
-      </div>
+
+      <img src={currPartnerImg} className="bg-gray-500 rounded-full w-[80px] h-[80px] min-h-[80px] border-primary border-2"/>
 
       <div className="flex gap-1 items-center">
         <h2 className="font-bold text-xl">{currPartner.profile.firstName} {currPartner.profile.lastName}</h2>
@@ -116,26 +114,37 @@ const FilteredMessagesList: React.FC<FilteredMessagesListProps> = ({ searchMessa
     <div className="filtered-message-list flex flex-col gap-2 w-full overflow-auto">
       {searchMessageList.map((message, index) => (
         <div key={index} className="flex bg-background-dark rounded-md p-2 py-3">
-          <div className="min-w-[50px] min-h-[50px] mx-2 rounded">
-            {// replace this with user pfp
-            <img src="https://via.placeholder.com/50" alt="user-pfp" className="rounded-full"/>}
-          </div>
-          <div className="flex flex-col w-full">
-            <div className="flex justify-between">
-              {message.fromUserId === currUser?._id ?
-                <h3 className="font-bold">You</h3> :
-                <h3 className="font-bold">{partnerUsername}</h3>
-              }
-              <p className="text-sm">{timeDisplay(new Date(message.sentAt))}</p>
-            </div>
-            <p>{message.message}</p>
-          </div>
-
+          <FilteredMessagesListItem message={message} />
         </div>
       ))}
     </div>
   );
 }
+
+const FilteredMessagesListItem: React.FC<{ message: MessageData }> = ({ message }) => {
+  const { currUser } = useContext(UserContext) as UserContextType;
+  const { currPartnerImg } = useContext(ChatContext) as ChatContextType;
+  const { userImageUrl } = useContext(UserContext) as UserContextType;
+  return (
+    <div className="filtered-message-list-item flex bg-background-dark rounded-md p-2 py-3">
+      <div className="min-w-[50px] min-h-[50px] mx-2 rounded">
+        {// replace this with user pfp
+        message.fromUserId === currUser?._id ?
+          <img src={userImageUrl} alt="user-pfp" className="rounded-full w-12 h-12"/>:
+          <img src={currPartnerImg} alt="user-pfp" className="rounded-full w-12 h-12"/>
+        }
+      </div>
+      <div className="flex flex-col w-full">
+        <div className="flex justify-between">
+          <h3 className="font-bold">You</h3>
+          <p className="text-sm">{new Date(message.sentAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</p>
+        </div>
+        <p>{message.message}</p>
+      </div>
+    </div>
+  );
+}
+
 
 export default SideBar;
 
