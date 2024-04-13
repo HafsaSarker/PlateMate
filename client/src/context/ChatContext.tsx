@@ -9,6 +9,8 @@ import { UserContext } from './UserContext';
 import { message_api_path } from '../api/message';
 import { user_api_path } from '../api/user';
 import { ChatContextType } from '../types/chatContextType';
+import uploadImage from '../utils/uploadImage';
+import getImageUrl from '../utils/getImageUrl';
 
 export const ChatContext = createContext<ChatContextType | null>(null);
 const backend_url = import.meta.env.VITE_BACKEND_URL;
@@ -19,6 +21,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { currUser } = useContext(UserContext) as UserContextType;
   const [currPartner, setCurrPartner] = useState<User | null>(null);
+  const [currPartnerImg, setCurrPartnerImg] = useState<string>('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [messageInput, setMessageInput] = useState<string>('');
   const [messagesList, setMessagesList] = useState<MessageData[]>([]);
@@ -96,18 +99,18 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const sendMessage = async (): Promise<void> => {
     if ((messageInput === '' && imageFile === null) || !currUser || !currPartner) return;
 
-    let imageUrl = null;
+    let imageName = null;
     if (imageFile) {
       console.log('Uploading image')
-      imageUrl = await uploadImage(imageFile);
-      console.log(imageUrl)
+      imageName = await uploadImage(imageFile);
+      console.log(imageName)
     }
     const messageData: MessageData = {
       fromUserId: currUser._id,
       toUserId: currPartner._id,
       room,
       message: messageInput,
-      imageUrl: imageUrl,
+      imageName: imageName,
       sentAt: new Date(),
     };
     socket.emit('send_message', messageData);
@@ -117,17 +120,18 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     updateChatList(messageData);
   };
 
-  async function uploadImage(file: File) {
-    const formData = new FormData();
-    formData.append('image', file);
-    const response = await fetch(`${backend_url}/api/s3`, {
-      method: 'POST',
-      body: formData, // Send formData instead of raw file
-    });
-    const data = await response.json();
-    console.log('data:', data);
-    return data.imageUrl;
-  }
+  useEffect(() => {
+    const fetchPartnerImage = async () => {
+      if (currPartner && currPartner.profile.profileImg) {
+        const imageUrl = await getImageUrl(currPartner.profile.profileImg);
+        setCurrPartnerImg(imageUrl);
+      } else {
+        setCurrPartnerImg('user.png');
+      }
+    }
+    fetchPartnerImage();
+    console.log('fetching partner image')
+  }, [currPartner]); // Fetch past partners whenever the currentUserData changes
 
   useEffect(() => {
     if (room) {
@@ -180,6 +184,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       updateChatList,
       sendMessage,
       uploadImage,
+      currPartnerImg,
       }}>
       {children}
     </ChatContext.Provider>

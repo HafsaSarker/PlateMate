@@ -3,8 +3,8 @@ export interface FormData {
   lastName: string;
   email: string;
   password: string;
-  profileImg?: string;
-  coverImg?: string;
+  profileImg?: File | null;
+  coverImg?: File | null;
   about?: string;
   nationality?: string;
   sex?: string;

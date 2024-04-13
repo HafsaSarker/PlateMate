@@ -13,6 +13,7 @@ import SideBar from './SideBar';
 const ChatBox: React.FC<ChatBoxProps> = () => {
   const { currUser } = useContext(UserContext) as UserContextType;
   const { currPartner } = useContext(ChatContext) as ChatContextType;
+  const { currPartnerImg } = useContext(ChatContext) as ChatContextType;
   const { imageFile, setImageFile } = useContext(ChatContext) as ChatContextType;
   const { messageInput, setMessageInput, messagesList } = useContext(ChatContext) as ChatContextType;
 
@@ -41,6 +42,8 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
     sendMessage();
   }
 
+
+
   useEffect(() => {
     scrollToBottom();
   }, [messagesList]);
@@ -60,9 +63,10 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
   return (
     <div className='flex w-full'>
       <section className='flex flex-col right-section chatbox w-full'>
-        <div className='chat-heading flex bg-primary p-4 items-center'>
+        <div className='chat-heading flex bg-primary p-3 items-center'>
           <div className='flex items-center'>
-            <img className="rounded-full" src='https://via.placeholder.com/50' alt='user-pfp' />
+            <img className='w-10 h-10 rounded-full' src={currPartnerImg || "user.png"}/>
+
             <h3 className='pl-3'>{partnerUsername}</h3>
           </div>
           <button onClick={() => setPartnerProfileToggle(!partnerProfileToggle)} className='ml-auto'>

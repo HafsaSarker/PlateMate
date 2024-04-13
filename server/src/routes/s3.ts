@@ -9,4 +9,5 @@ const upload = multer({ storage });
 
 export default (router: express.Router) => {
   router.post('/s3', upload.single('image'), s3Controller.uploadImage);
+  router.get('/s3/get_url/:imageName', s3Controller.generatePresignedUrl);
 };

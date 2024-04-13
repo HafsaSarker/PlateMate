@@ -6,7 +6,7 @@ export interface User {
   profile: {
     firstName: string;
     lastName: string;
-    profileImg?: string;
+    profileImg: string;
     coverImg?: string;
     about?: string;
     nationality?: string;
