@@ -109,6 +109,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       message: messageInput,
       imageUrl: imageUrl,
       sentAt: new Date(),
+      readStatus: false,
     };
     socket.emit('send_message', messageData);
     setMessagesList((messagesList) => [...messagesList, messageData]);
