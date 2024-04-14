@@ -31,7 +31,6 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
 
   }
 
-  const { currPartner, setCurrPartner } = useContext(ChatContext) as ChatContextType;
   const [ userImage, setUserImage ] = useState('');
 
 
