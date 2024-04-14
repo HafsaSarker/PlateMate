@@ -1,3 +1,12 @@
+function isNotCurrUser(
+  currUid: string | undefined,
+  matchedUid: string | undefined,
+): boolean {
+  if (currUid !== matchedUid) {
+    return true;
+  }
+  return false;
+}
 // Check if the user's nationality is in the current user's preferences
 function nationalityMatch(
   nationalityPrefs: string[] | undefined,
@@ -44,8 +53,8 @@ function ageMatch(
   age_to: number | undefined,
   userAge: number | undefined | null,
 ): boolean {
-  // user's age prefs are default vals === no age prefs
-  if ((age_from === 18 && age_to === 90) || (!age_from && !age_to)) {
+  // no age prefs
+  if (!age_from && !age_to) {
     return true;
   }
 
@@ -115,7 +124,7 @@ function smokeMatch(
   smoke: boolean | undefined,
   userSmoke: boolean | undefined,
 ): boolean {
-  if (smoke === userSmoke) {
+  if (smoke === undefined || smoke === userSmoke) {
     return true;
   }
 
@@ -126,7 +135,7 @@ function drinkMatch(
   drink: boolean | undefined,
   userDrink: boolean | undefined,
 ): boolean {
-  if (drink === userDrink) {
+  if (drink === undefined || drink === userDrink) {
     return true;
   }
 
@@ -134,6 +143,7 @@ function drinkMatch(
 }
 
 export const matchFunctions = {
+  isNotCurrUser,
   nationalityMatch,
   sexMatch,
   ageMatch,

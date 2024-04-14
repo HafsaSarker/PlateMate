@@ -79,7 +79,6 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
           [name]: value,
         }));
     }
-    console.log(filters);
   };
 
   // save filters to database

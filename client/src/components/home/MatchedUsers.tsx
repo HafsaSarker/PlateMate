@@ -36,7 +36,7 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({
       setUserImageUrls(newImageUrls);
     };
 
-    // fetchImageUrls();
+    fetchImageUrls();
   }, [users]);
 
   function onClickActions(user: User) {
