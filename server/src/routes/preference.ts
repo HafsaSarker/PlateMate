@@ -16,4 +16,10 @@ export default (router: express.Router) => {
     isOwner,
     preferenceController.updateUserPreference
   );
+  router.patch(
+    "/preference/reset/:uid",
+    isAuthenticated,
+    isOwner,
+    preferenceController.resetUserPreference
+  );
 };
