@@ -58,6 +58,7 @@ const Home = () => {
       } catch (error) {
         console.error(error);
       }
+      console.log(preferences);
     }
     fetchSimilarUsers();
   }, [clickedRestaurant, preferences]);
