@@ -1,8 +1,10 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { MessageData } from '../../types/messageData';
 
 import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
+import { s3_api_path } from '../../api/s3';
+import getImageUrl from '../../utils/getImageUrl';
 
 interface MessageProps {
   messageData: MessageData;
@@ -11,6 +13,20 @@ interface MessageProps {
 const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
 
   const { currUser } = useContext(UserContext) as UserContextType;
+
+  const [imageUrl, setImageUrl] = useState('' as string);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (messageData.imageName) {
+        const imageUrl = await getImageUrl(messageData.imageName);
+        setImageUrl(imageUrl);
+      }
+    };
+
+    fetchData();
+  }, [messageData.imageName]);
 
   const timeDisplay = (time: Date) => {
     const currDate = new Date();
@@ -36,7 +52,7 @@ const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
         <div className='max-w-[500px] break-words'>
           <p>{messageData.message}</p>
         </div>
-        {messageData.imageUrl && <img src={messageData.imageUrl} alt='sentImage' className='max-w-[500px] max-h-[500px]' />}
+        {messageData.imageName && <img src={imageUrl} alt='sentImage' className='max-w-[500px] max-h-[500px]' />}
         <p className='flex justify-end text-xs'>
           {timeDisplay(new Date(messageData.sentAt))}
         </p>

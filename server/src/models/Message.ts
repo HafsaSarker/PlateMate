@@ -5,7 +5,7 @@ interface IMessage extends Document {
   toUserId: string;
   room: string;
   message: string;
-  imageUrl: string | null;
+  imageName: string | null;
   sentAt: Date;
   readStatus: boolean;
 }
@@ -15,7 +15,7 @@ const messageSchema: Schema = new Schema({
   toUserId: { type: String, required: true },
   room: { type: String, required: true },
   message: { type: String, required: false },
-  imageUrl: { type: String, default: null },
+  imageName: { type: String, default: null },
   sentAt: { type: Date, default: Date.now },
   readStatus: { type: Boolean, default: false },
 });

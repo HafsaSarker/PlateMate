@@ -20,6 +20,6 @@ export interface ChatContextType {
   updateChatList: (messageData: MessageData) => Promise<void>;
   sendMessage: () => Promise<void>;
   uploadImage: (file: File) => Promise<string>;
-
+  currPartnerImg: string;
 
 }

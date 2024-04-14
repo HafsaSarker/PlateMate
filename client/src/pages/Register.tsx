@@ -17,8 +17,8 @@ export default function Register() {
     lastName: '',
     email: '',
     password: '',
-    profileImg: '',
-    coverImg: '',
+    profileImg: null,
+    coverImg: null,
     about: '',
     nationality: '',
     sex: '',
@@ -76,7 +76,7 @@ export default function Register() {
     e.preventDefault();
 
     // modifying formData to match user model
-    const submitData = destructFormData(formData);
+    const submitData = await destructFormData(formData);
 
     try {
       // send to server

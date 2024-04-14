@@ -2,16 +2,44 @@ import { MatchedUsersProp } from '../../types/matchedUsersProp';
 import { Link } from 'react-router-dom';
 import { IoIosChatbubbles } from 'react-icons/io';
 import { User } from '../../types/user';
+import { useEffect, useState } from 'react';
+import getImageUrl from '../../utils/getImageUrl';
 
 const MatchedUsers: React.FC<MatchedUsersProp> = ({
   users,
   setShowProfile,
   setUser,
 }) => {
+  const [userImageUrls, setUserImageUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!users) return;
+    const fetchImageUrls = async () => {
+      const urls = await Promise.all(users.map(async (user) => {
+        const url = await getImageUrl(user.profile.profileImg);
+        if (!url) return { userId: user._id, url: 'user.png' };
+        return { userId: user._id, url };
+      }));
+
+      const newImageUrls = urls.reduce((acc, current) => {
+        acc[current.userId] = current.url;
+        return acc;
+      }, {} as Record<string, string>);
+
+      setUserImageUrls(newImageUrls);
+    };
+
+    fetchImageUrls();
+  }, [users]);
+
   function onClickActions(user: User) {
     setUser(user);
     setShowProfile(true);
   }
+
+  useEffect(() => {
+    console.log(userImageUrls);
+  }, [userImageUrls]);
 
   return (
     <div className="flex flex-col items-start w-full py-2 px-2 mx-4 overflow-auto">
@@ -26,7 +54,7 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({
             >
               <div className="flex items-center gap-2">
                 {user.profile.profileImg ? (
-                  <img className="w-10" src={user.profile.profileImg} />
+                  <img className="w-10 h-10 rounded-full" src={userImageUrls[user._id]} />
                 ) : (
                   <img className="w-10" src="user.png" />
                 )}
