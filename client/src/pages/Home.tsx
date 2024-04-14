@@ -59,7 +59,7 @@ const Home = () => {
           withCredentials: true,
         });
         // console.log('res.data', res.data);
-        // console.log(preferences);
+        console.log({ preferences });
 
         // filter users based on preferences
         const filteredUsers = filterUsers(preferences, res.data);

@@ -45,7 +45,7 @@ function ageMatch(
   userAge: number | undefined | null,
 ): boolean {
   // user's age prefs are default vals === no age prefs
-  if (age_from === 18 && age_to === 90) {
+  if ((age_from === 18 && age_to === 90) || (!age_from && !age_to)) {
     return true;
   }
 
@@ -71,13 +71,8 @@ function heightMatch(
   user_height_ft: number | undefined | null,
   user_height_in: number | undefined | null,
 ): boolean {
-  // user has default height prefs === no height prefs
-  if (
-    height_from_ft === 1 &&
-    height_from_in === 0 &&
-    height_to_ft === 12 &&
-    height_to_in === 12
-  ) {
+  // no height prefs
+  if (!height_from_ft && !height_from_in && !height_to_ft && !height_to_in) {
     return true;
   }
 

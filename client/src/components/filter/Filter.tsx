@@ -53,9 +53,13 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
         }));
         break;
       case 'number':
+        let min = '';
+        if (e.target instanceof HTMLInputElement) {
+          min = e.target.min;
+        }
         setFilters((prevFilters) => ({
           ...prevFilters,
-          [name]: value !== '' ? parseInt(value, 10) : undefined,
+          [name]: value !== '' ? parseInt(value, 10) : parseInt(min, 10),
         }));
         break;
       case 'select-multiple':
@@ -75,6 +79,7 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
           [name]: value,
         }));
     }
+    console.log(filters);
   };
 
   // save filters to database
