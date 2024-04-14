@@ -105,6 +105,28 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
       console.log(error);
     }
   };
+
+  // reset user preferences
+  const resetPreferences = async () => {
+    try {
+      const res = await axios.patch(
+        `${preference_api_path}reset/${currUser?._id}`,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+
+      if (res.data) {
+        // update user preference
+        setPreferences(res.data);
+      }
+      // remove filter pop up
+      setShowFilters(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div
       id="default-modal"
@@ -165,11 +187,11 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
                 Save
               </button>
               <button
-                onClick={() => setShowFilters(false)}
+                onClick={resetPreferences}
                 type="button"
                 className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-indigo-600 focus:z-10 focus:ring-4 focus:ring-gray-100"
               >
-                Go Back
+                Reset
               </button>
             </div>
           </form>
