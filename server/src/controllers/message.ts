@@ -70,7 +70,40 @@ async function getChatPartners(req: Request, res: Response): Promise<void> {
   }
 }
 
+
+async function markMessagesAsRead(req: Request, res: Response): Promise<void> {
+  const senderId = req.params.senderId;
+  const roomId = req.params.roomId;
+  console.log('markMessagesAsRead', senderId, roomId)
+  try {
+    await Message.updateMany(
+      {
+        fromUserId: senderId,
+        room: roomId,
+      },
+      {$set: {readStatus: true}}
+    );
+  } catch (error) {
+    throw error;
+  }
+  res.sendStatus(204)
+}
+
+async function countUnreadMessages(req: Request, res: Response): Promise<void> {
+  const roomId = req.params.roomId;
+  const receiverId = req.params.receiverId;
+
+  try {
+    const unreadCount = await Message.countDocuments({room:roomId, toUserId:receiverId, readStatus: false})
+    res.json(unreadCount);
+  } catch (error) {
+    throw error;
+  }
+}
+
 export const messageController = {
   getMessages,
   getChatPartners,
+  markMessagesAsRead,
+  countUnreadMessages
 };

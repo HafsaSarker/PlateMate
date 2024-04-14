@@ -1,6 +1,11 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "../../context/ChatContext";
 import { User } from "../../types/user";
+import { ChatContextType } from "../../types/chatContextType";
+import { UserContextType } from "../../types/userContextType";
+import { UserContext } from "../../context/UserContext";
+import axios from "axios";
+import { message_api_path } from "../../api/message";
 
 interface ChatListItemProps {
   user: User;
@@ -9,8 +14,18 @@ interface ChatListItemProps {
 }
 
 const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMessageTime }) => {
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0)
+  const { currPartner, setCurrPartner, generateRoomId } = useContext(ChatContext) as ChatContextType;
+  const {currUser} = useContext(UserContext) as UserContextType;
 
-  const { currPartner, setCurrPartner } = useContext(ChatContext)!;
+  const getUnreadMessagesCount = async () => {
+    const roomId = generateRoomId(currUser._id, user._id);
+    // fetch request to get unread messages count
+    const response = await axios.get(`${message_api_path}/countUnread/${roomId}/${currUser._id}`)
+    const unreadCount = response.data;
+    setUnreadMessagesCount(unreadCount)
+
+  }
 
   const displayTime = (time:number) => {
     const currentTime = new Date().getTime();
@@ -43,9 +58,12 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
     return message.length > maxLength ? message.substring(0, maxLength) + '...' : message;
   }
 
-  
+  useEffect(() => {
+    getUnreadMessagesCount();
+  }, [currPartner])
+
   return (
-    <div className={`flex p-4 cursor-pointer hover:bg-background-dark ${user._id === currPartner?._id ? 'bg-background-dark' : ''}`} key={user._id}
+    <div className={`flex p-4 cursor-pointer items-center hover:bg-background-dark ${user._id === currPartner?._id ? 'bg-background-dark' : ''}`} key={user._id}
       onClick={() => setCurrPartner(user)}>
       <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full max-h-[50px]'/>
       <div className='px-4'>
@@ -53,6 +71,10 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
         <p className='text-xs'>{truncateMessage(lastMessage)} •
         {displayTime(lastMessageTime)}</p>
       </div>
+      {
+        unreadMessagesCount > 0 &&
+        <div className="bg-red-400 flex justify-center rounded-full h-5 w-5 text-sm">{unreadMessagesCount}</div>
+      }
     </div>
   );
 }

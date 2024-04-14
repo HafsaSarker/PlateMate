@@ -159,6 +159,17 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [currUser, currPartner]); // update the room when currentUserData or chatPartnerId changes
 
+  // mark all messages as read when currPartner changes
+  useEffect(() => {
+    console.log('read')
+    if (currUser && currPartner) {
+      const roomId = generateRoomId(currUser._id, currPartner._id);
+      fetch(`${message_api_path}/markRead/${roomId}/${currPartner._id}`, {
+        method: 'PUT',
+      });
+    }
+  }, [currPartner]);
+
 
   return (
     <ChatContext.Provider value={{
