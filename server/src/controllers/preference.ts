@@ -50,8 +50,47 @@ async function updateUserPreference(req: Request, res: Response) {
   }
 }
 
+async function resetUserPreference(req: Request, res: Response) {
+  const { uid } = req.params;
+
+  try {
+    const userPreference = await PreferenceModel.findOne({
+      uid: new Object(uid),
+    });
+
+    if (!userPreference) {
+      return res.status(404).send("User preference not found.");
+    }
+
+    const resetPreferences = await PreferenceModel.findOneAndUpdate(
+      { _id: userPreference._id },
+      {
+        $unset: {
+          nationalities: "",
+          age_from: "",
+          age_to: "",
+          drink: "",
+          female: "",
+          height_from_ft: "",
+          height_from_in: "",
+          height_to_ft: "",
+          height_to_in: "",
+          male: "",
+          other: "",
+          smoke: "",
+        },
+      },
+      { new: true }
+    );
+
+    res.status(200).json(resetPreferences);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to reset preference", error });
+  }
+}
 export const preferenceController = {
   getUserPreference,
   createUserPreference,
   updateUserPreference,
+  resetUserPreference,
 };
