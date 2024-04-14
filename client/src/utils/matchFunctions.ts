@@ -5,7 +5,8 @@ function nationalityMatch(
 ): boolean {
   // nationality pref is empty == user doent have pref on it
   if (
-    !nationalityPrefs?.length ||
+    !nationalityPrefs ||
+    nationalityPrefs.length < 1 ||
     (userNationality && nationalityPrefs.includes(userNationality))
   ) {
     return true;
@@ -43,6 +44,11 @@ function ageMatch(
   age_to: number | undefined,
   userAge: number | undefined | null,
 ): boolean {
+  // user's age prefs are default vals === no age prefs
+  if (age_from === 18 && age_to === 90) {
+    return true;
+  }
+
   if (
     age_from &&
     userAge &&
@@ -65,6 +71,16 @@ function heightMatch(
   user_height_ft: number | undefined | null,
   user_height_in: number | undefined | null,
 ): boolean {
+  // user has default height prefs === no height prefs
+  if (
+    height_from_ft === 1 &&
+    height_from_in === 0 &&
+    height_to_ft === 12 &&
+    height_to_in === 12
+  ) {
+    return true;
+  }
+
   // Convert user's height to inches
   const userHeightIn = (user_height_ft || 0) * 12 + (user_height_in || 0);
 
@@ -75,12 +91,7 @@ function heightMatch(
   const rangeStart: boolean = height_from_ft || height_from_in ? true : false;
   const rangeEnd: boolean = height_to_ft || height_to_in ? true : false;
 
-  // user has no height prefs
-  if (!rangeStart && !rangeEnd) {
-    return true;
-  }
-
-  // height pref exist but user profile doesn't specify height
+  // height pref exist but matched user profile doesn't specify height
   if ((!user_height_ft || !user_height_in) && (rangeStart || rangeEnd)) {
     return false;
   }

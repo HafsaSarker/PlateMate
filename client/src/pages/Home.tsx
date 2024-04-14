@@ -14,6 +14,7 @@ import Filter from '../components/filter/Filter';
 import { PreferenceContext } from '../context/PreferenceContext';
 import { PreferenceContextType } from '../types/PreferenceContextType';
 import { preference_api_path } from '../api/preference';
+import { filterUsers } from '../utils/filterUsers';
 
 const Home = () => {
   const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
@@ -49,16 +50,24 @@ const Home = () => {
   // load similar users everytime clicked restaurant and preferences change
   useEffect(() => {
     async function fetchSimilarUsers() {
+      if (!preferences) {
+        return;
+      }
+
       try {
         const res = await axios.get(user_api_path, {
           withCredentials: true,
         });
+        // console.log('res.data', res.data);
+        // console.log(preferences);
 
-        setUsers(res.data);
+        // filter users based on preferences
+        const filteredUsers = filterUsers(preferences, res.data);
+
+        setUsers(filteredUsers);
       } catch (error) {
         console.error(error);
       }
-      console.log(preferences);
     }
     fetchSimilarUsers();
   }, [clickedRestaurant, preferences]);
