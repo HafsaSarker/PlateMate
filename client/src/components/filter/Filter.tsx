@@ -13,15 +13,12 @@ import { UserContextType } from '../../types/userContextType';
 import { UserContext } from '../../context/UserContext';
 import axios from 'axios';
 import { preference_api_path } from '../../api/preference';
-import { useNavigate } from 'react-router-dom';
 
 const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
   const { preferences, setPreferences } = useContext(
     PreferenceContext,
   ) as PreferenceContextType;
   const { currUser } = useContext(UserContext) as UserContextType;
-
-  const navigate = useNavigate();
 
   const [filters, setFilters] = useState<FilterForm>({
     uid: currUser?._id,
@@ -56,9 +53,13 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
         }));
         break;
       case 'number':
+        let min = '';
+        if (e.target instanceof HTMLInputElement) {
+          min = e.target.min;
+        }
         setFilters((prevFilters) => ({
           ...prevFilters,
-          [name]: value !== '' ? parseInt(value, 10) : undefined,
+          [name]: value !== '' ? parseInt(value, 10) : parseInt(min, 10),
         }));
         break;
       case 'select-multiple':
