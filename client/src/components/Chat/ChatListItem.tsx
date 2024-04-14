@@ -19,6 +19,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
   const {currUser} = useContext(UserContext) as UserContextType;
 
   const getUnreadMessagesCount = async () => {
+    if (!currUser) return;
     const roomId = generateRoomId(currUser._id, user._id);
     // fetch request to get unread messages count
     const response = await axios.get(`${message_api_path}/countUnread/${roomId}/${currUser._id}`)

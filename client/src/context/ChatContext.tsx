@@ -146,6 +146,8 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
       return () => {
         socket.off('receive_message', receiveMessage);
+        socket.emit('leave_room', room);
+        console.log('leaving room', room)
       };
     }
   }, [room]); // Fetch messages and set up socket listeners whenever the room changes
