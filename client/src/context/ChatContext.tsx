@@ -112,6 +112,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       message: messageInput,
       imageName: imageName,
       sentAt: new Date(),
+      readStatus: false,
     };
     socket.emit('send_message', messageData);
     setMessagesList((messagesList) => [...messagesList, messageData]);
@@ -150,6 +151,8 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
       return () => {
         socket.off('receive_message', receiveMessage);
+        socket.emit('leave_room', room);
+        console.log('leaving room', room)
       };
     }
   }, [room]); // Fetch messages and set up socket listeners whenever the room changes
@@ -162,6 +165,17 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
   }, [currUser, currPartner]); // update the room when currentUserData or chatPartnerId changes
+
+  // mark all messages as read when currPartner changes
+  useEffect(() => {
+    console.log('read')
+    if (currUser && currPartner) {
+      const roomId = generateRoomId(currUser._id, currPartner._id);
+      fetch(`${message_api_path}/markRead/${roomId}/${currPartner._id}`, {
+        method: 'PUT',
+      });
+    }
+  }, [currPartner]);
 
 
   return (

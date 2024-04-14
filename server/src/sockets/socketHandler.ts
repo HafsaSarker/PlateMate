@@ -43,6 +43,11 @@ const socketHandler = (io: Server): void => {
         console.error("Error saving message to database:", error);
       }
     });
+
+    socket.on('leave_room', (room) => {
+      socket.leave(room);
+      console.log(`Socket ${socket.id} left room ${room}`);
+    });
   });
 };
 
