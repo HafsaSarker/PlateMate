@@ -19,8 +19,8 @@ function Settings() {
     lastName: currUser ? currUser.profile.lastName : '',
     email: currUser ? currUser.email : '',
     password: '',
-    profileImg: currUser ? currUser.profile.profileImg : '',
-    coverImg: currUser ? currUser.profile.coverImg : '',
+    profileImg: null,
+    coverImg: null,
     about: currUser ? currUser.profile.about : '',
     nationality: currUser ? currUser.profile.nationality : '',
     sex: currUser ? currUser.profile.sex : '',
@@ -78,7 +78,7 @@ function Settings() {
     e.preventDefault();
 
     // modifying formData to match user model
-    const submitData = updateUserForm(formData);
+    const submitData = await updateUserForm(formData);
 
     try {
       // send to server

@@ -1,11 +1,12 @@
 import { FormData } from '../types/formData';
-export function destructFormData(data: FormData) {
+import getImageUrl from './getImageUrl';
+import uploadImage from './uploadImage';
+export async function destructFormData(data: FormData) {
   const {
     firstName,
     lastName,
     email,
     password,
-    profileImg,
     coverImg,
     about,
     nationality,
@@ -20,6 +21,10 @@ export function destructFormData(data: FormData) {
     restaurantAttributes,
     pricePoint,
   } = data;
+
+  let { profileImg } = data;
+  // save the image name
+  profileImg= profileImg ? await uploadImage(profileImg) : '';
 
   const submitData = {
     email,

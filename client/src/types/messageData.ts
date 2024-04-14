@@ -3,7 +3,7 @@ export interface MessageData {
   toUserId: string;
   room: string;
   message: string;
-  imageUrl: string | null;
+  imageName: string | null;
   sentAt: Date;
   readStatus: boolean;
 }

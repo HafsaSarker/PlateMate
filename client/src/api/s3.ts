@@ -1,0 +1,1 @@
+export const s3_api_path = 'http://localhost:8080/api/s3';

@@ -6,6 +6,8 @@ import { UserContextType } from "../../types/userContextType";
 import { UserContext } from "../../context/UserContext";
 import axios from "axios";
 import { message_api_path } from "../../api/message";
+import getImageUrl from "../../utils/getImageUrl";
+
 
 interface ChatListItemProps {
   user: User;
@@ -18,6 +20,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
   const { currPartner, setCurrPartner, generateRoomId } = useContext(ChatContext) as ChatContextType;
   const {currUser} = useContext(UserContext) as UserContextType;
 
+
   const getUnreadMessagesCount = async () => {
     if (!currUser) return;
     const roomId = generateRoomId(currUser._id, user._id);
@@ -27,6 +30,10 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
     setUnreadMessagesCount(unreadCount)
 
   }
+
+  const { currPartner, setCurrPartner } = useContext(ChatContext) as ChatContextType;
+  const [ userImage, setUserImage ] = useState('');
+
 
   const displayTime = (time:number) => {
     const currentTime = new Date().getTime();
@@ -59,14 +66,28 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
     return message.length > maxLength ? message.substring(0, maxLength) + '...' : message;
   }
 
+
   useEffect(() => {
     getUnreadMessagesCount();
   }, [currPartner])
 
+  const fetchUserImage = async () => {
+    if (!user.profile.profileImg) {
+      setUserImage('user.png');
+    }
+    const userImg = await getImageUrl(user.profile.profileImg);
+    setUserImage(userImg);
+    console.log(userImg)
+  }
+
+  useEffect(() => {
+    fetchUserImage();
+  }, []);
+
   return (
     <div className={`flex p-4 cursor-pointer items-center hover:bg-background-dark ${user._id === currPartner?._id ? 'bg-background-dark' : ''}`} key={user._id}
       onClick={() => setCurrPartner(user)}>
-      <img src={"https://via.placeholder.com/50"} alt="profile" className='rounded-full max-h-[50px]'/>
+      <img className="w-12 h-12 rounded-full" src={userImage || "user.png"}/>
       <div className='px-4'>
         <div className='font-bold'>{user.profile.firstName + ' ' + user.profile.lastName }</div>
         <p className='text-xs'>{truncateMessage(lastMessage)} •

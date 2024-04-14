@@ -13,15 +13,12 @@ import { UserContextType } from '../../types/userContextType';
 import { UserContext } from '../../context/UserContext';
 import axios from 'axios';
 import { preference_api_path } from '../../api/preference';
-import { useNavigate } from 'react-router-dom';
 
 const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
   const { preferences, setPreferences } = useContext(
     PreferenceContext,
   ) as PreferenceContextType;
   const { currUser } = useContext(UserContext) as UserContextType;
-
-  const navigate = useNavigate();
 
   const [filters, setFilters] = useState<FilterForm>({
     uid: currUser?._id,
@@ -56,9 +53,13 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
         }));
         break;
       case 'number':
+        let min = '';
+        if (e.target instanceof HTMLInputElement) {
+          min = e.target.min;
+        }
         setFilters((prevFilters) => ({
           ...prevFilters,
-          [name]: value !== '' ? parseInt(value, 10) : undefined,
+          [name]: value !== '' ? parseInt(value, 10) : parseInt(min, 10),
         }));
         break;
       case 'select-multiple':
@@ -89,6 +90,28 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
       const res = await axios.patch(
         `${preference_api_path}${currUser?._id}`,
         filters,
+        {
+          withCredentials: true,
+        },
+      );
+
+      if (res.data) {
+        // update user preference
+        setPreferences(res.data);
+      }
+      // remove filter pop up
+      setShowFilters(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // reset user preferences
+  const resetPreferences = async () => {
+    try {
+      const res = await axios.patch(
+        `${preference_api_path}reset/${currUser?._id}`,
+        {},
         {
           withCredentials: true,
         },
@@ -164,11 +187,11 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
                 Save
               </button>
               <button
-                onClick={() => setShowFilters(false)}
+                onClick={resetPreferences}
                 type="button"
                 className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-indigo-600 focus:z-10 focus:ring-4 focus:ring-gray-100"
               >
-                Go Back
+                Reset
               </button>
             </div>
           </form>

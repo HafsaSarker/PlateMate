@@ -66,7 +66,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
           </div>
 
           {/* <!-- Modal body --> */}
-          <div className="p-4 md:p-5 flex items-start justify-center gap-10 w-full">
+          <div className="p-4 md:p-5 flex items-start justify-center gap-10 w-full ">
             <div className="flex flex-col items-start text-start">
               <span className="text-gray-500 text-xs px-2">About me</span>
               <p className="leading-relaxed text-gray-500 border min-w-[250px] max-w-[300px] min-h-[250px] rounded-lg px-2 py-1">
@@ -76,14 +76,14 @@ const UserInfo: React.FC<UserInfoProps> = ({
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-2 justify-center">
+            <div className="flex flex-col items-center gap-2 justify-center w-fit">
               <div>
                 <span className="text-gray-500 text-xs px-2">Height</span>
-                <div className="flex items-center">
-                  <p className=" leading-relaxed text-gray-500 w-full ">
+                <div className="flex items-center px-1 gap-1">
+                  <p className=" leading-relaxed text-gray-500 ">
                     {height_ft ? `${height_ft} ft` : 'N/A'}
                   </p>
-                  <p className=" leading-relaxed text-gray-500 w-full ">
+                  <p className=" leading-relaxed text-gray-500 ">
                     {height_in ? `${height_in} in` : ''}
                   </p>
                 </div>
