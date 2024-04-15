@@ -14,7 +14,7 @@ import ChatListItem from './ChatListItem';
 
 const ChatList:React.FC = () => {
   const { currUser, userImageUrl } = useContext(UserContext) as UserContextType;
-  const {chatList, setChatList} = useContext(ChatContext) as ChatContextType;
+  const {chatList, setChatList, currPartner} = useContext(ChatContext) as ChatContextType;
   const {generateRoomId, getUserProfile} = useContext(ChatContext) as ChatContextType;
 
   const [searchInput, setSearchInput] = useState('');
@@ -42,7 +42,6 @@ const ChatList:React.FC = () => {
   }
 
   const getPastPartners = async (userId:string) => {
-    setChatList([]);
     const partnerIds = await getPastPartnersId(userId);
     const newChatList = [];
 
@@ -64,6 +63,8 @@ const ChatList:React.FC = () => {
     setChatList(newChatList);
   }
 
+
+
   const truncateMessage = (message:string, maxLength = 35) => {
     return message.length > maxLength ? message.substring(0, maxLength) + '...' : message;
   }
@@ -74,10 +75,10 @@ const ChatList:React.FC = () => {
 
   useEffect(() => {
     getPastPartners(currUser._id);
-  }, []);
+  }, [currPartner]);
 
   return (
-    <section className='left-section w-[30%] border-x-2 border-gray-300 flex flex-col h-full'>
+    <section className='left-section w-[30%] min-w-[300px] border-x-2 border-gray-300 flex flex-col h-full'>
       <div className='h-full pt-5 flex flex-col'>
         <div className='flex py-2 px-6 items-center justify-between'>
           <div className='flex items-center gap-5'>
