@@ -62,10 +62,18 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
   }
   const updateChatList = async (messageData: MessageData) => {
     // Check if the message receiver is not in the current partner list
-    if (!chatList.some(partner => partner.user._id === messageData.toUserId)) {
+    console.log('test')
+    // get partner id
+    let partnerId;
+    if (messageData.fromUserId != currUser?._id) {
+      partnerId = messageData.fromUserId;
+    } else {
+      partnerId = messageData.toUserId;
+    }
+    const partnerProfile = await getUserProfile(partnerId);
+    if (!chatList.some(partner => partner.user._id === partnerId)) {
       try {
         // Fetch user profile data of the message receiver
-        const partnerProfile = await getUserProfile(messageData.toUserId);
         if (partnerProfile) {
           // Create new partner data
           const newPartnerData = {
@@ -81,12 +89,13 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Error updating partner list:", error);
       }
     } else {
+      console.log(messageData)
       // If the user already exists in the partner list, update their last message and time
       setChatList(chatList.map(partner => {
         if (partner.user._id === currPartner?._id) {
           return {
             ...partner, // Copy all existing partner properties
-            lastMessage: messageInput, // Set the new last message
+            lastMessage: messageData.message, // Set the new last message
             lastMessageTime: Date.now(), // Set the new last message time, assuming you want the current time
           };
         } else {
@@ -145,6 +154,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
           ...messageData,
           sentAt: new Date(messageData.sentAt)
         }]);
+        updateChatList(messageData);
       };
 
       socket.on('receive_message', receiveMessage);
@@ -166,16 +176,6 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [currUser, currPartner]); // update the room when currentUserData or chatPartnerId changes
 
-  // mark all messages as read when currPartner changes
-  useEffect(() => {
-    console.log('read')
-    if (currUser && currPartner) {
-      const roomId = generateRoomId(currUser._id, currPartner._id);
-      fetch(`${message_api_path}/markRead/${roomId}/${currPartner._id}`, {
-        method: 'PUT',
-      });
-    }
-  }, [currPartner]);
 
 
   return (

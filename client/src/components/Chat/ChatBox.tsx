@@ -27,7 +27,7 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
   };
 
   const handleFileReset = () => {
