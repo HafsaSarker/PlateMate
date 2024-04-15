@@ -65,9 +65,23 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
     return message.length > maxLength ? message.substring(0, maxLength) + '...' : message;
   }
 
+  // mark all messages as read when currPartner changes
+  useEffect(() => {
+    console.log('read')
+    if (currUser && currPartner) {
+      const roomId = generateRoomId(currUser._id, currPartner._id);
+      fetch(`${message_api_path}/markRead/${roomId}/${currPartner._id}`, {
+        method: 'PUT',
+      });
+    }
+  }, [currPartner]);
 
   useEffect(() => {
-    getUnreadMessagesCount();
+    if (currPartner?._id === user._id) {
+      setUnreadMessagesCount(0);
+    } else {
+      getUnreadMessagesCount();
+    }
   }, [currPartner])
 
   const fetchUserImage = async () => {
