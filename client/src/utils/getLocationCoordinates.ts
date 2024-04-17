@@ -22,7 +22,6 @@ export const getLocationCoordinates = async (
 
       return coordinates;
     } else {
-      console.error('Location not found');
       return null;
     }
   } catch (error) {
