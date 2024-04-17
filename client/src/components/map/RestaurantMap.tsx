@@ -60,20 +60,22 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
   }, [mapCenter]);
 
   const fetchRestaurants = async () => {
+    const baseUrl = `/yelp-api/v3/businesses/search`;
+
+    // building the query parameters
+    let queryParams = `?term=restaurants&location=${currUser?.profile.restaurantLocation}&categories=${currUser?.profile.foodCategory}`;
+
+    if (currUser?.profile.restaurantAttributes?.length) {
+      queryParams += `&attributes=${currUser.profile.restaurantAttributes}`;
+    }
+
+    if (currUser?.profile.pricePoint?.length) {
+      queryParams += `&price=${currUser.profile.pricePoint}`;
+    }
+
+    const url = `${baseUrl}${queryParams}&radius=40000&sort_by=distance&limit=50`;
     try {
-      const response = await fetch(
-        `/yelp-api/v3/businesses/search?term=restaurants` +
-          `&location=${currUser?.profile.restaurantLocation}` +
-          `&categories=${currUser?.profile.foodCategory}` +
-          `&attributes=${currUser?.profile.restaurantAttributes}` +
-          `&radius=40000` +
-          `&sort_by=distance` +
-          `&limit=50` +
-          `&price=${currUser?.profile.pricePoint}`,
-        {
-          method: 'GET',
-        },
-      );
+      const response = await fetch(url, { method: 'GET' });
       const data = await response.json();
       setRestaurants(data.businesses);
 

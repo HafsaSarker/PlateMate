@@ -48,6 +48,6 @@ export async function updateUserForm(data: FormData) {
       pricePoint,
     },
   };
-  console.log('submitData:', submitData);
+
   return submitData;
 }
