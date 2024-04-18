@@ -1,3 +1,4 @@
 export interface MapSearchProps {
-  setCurrentLocation: (location: { lat: number; lng: number }) => void;
+  showSearch: boolean;
+  setShowSearch: React.Dispatch<React.SetStateAction<boolean>>;
 }
