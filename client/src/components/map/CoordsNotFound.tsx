@@ -1,7 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { CoordsNotFoundProps } from '../../types/coordsNotFoundProps';
+import MapSearch from './MapSearch';
 
-function CoordsNotFound() {
+const CoordsNotFound: React.FC<CoordsNotFoundProps> = ({
+  setShowSearch,
+  setIsError,
+  showSearch,
+}) => {
+  const changeLocPrefs = () => {
+    setIsError(false);
+    setShowSearch(true);
+  };
   return (
     <div
       id="default-modal"
@@ -21,19 +30,20 @@ function CoordsNotFound() {
 
           {/* <!-- Modal footer --> */}
           <div className="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b ">
-            <Link to="/settings">
-              <button
-                type="button"
-                className="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center"
-              >
-                Change Location
-              </button>
-            </Link>
+            <button
+              type="button"
+              className="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center"
+              onClick={changeLocPrefs}
+            >
+              Change Location
+            </button>
           </div>
         </div>
       </div>
+
+      {showSearch && <MapSearch setShowSearch={setShowSearch} />}
     </div>
   );
-}
+};
 
 export default CoordsNotFound;

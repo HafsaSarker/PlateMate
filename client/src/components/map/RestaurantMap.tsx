@@ -18,6 +18,7 @@ import { getLocationCoordinates } from '../../utils/getLocationCoordinates';
 import { fetchRestaurants } from '../../utils/fetchRestaurants';
 import { MapMarker } from '../../types/mapMarker';
 import CoordsNotFound from './CoordsNotFound';
+import { FaWandMagicSparkles } from 'react-icons/fa6';
 
 const RestaurantMap: React.FC<RestaurantMapProps> = ({
   setClickedRestaurant,
@@ -36,11 +37,13 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
 
   const [mapCenter, setMapCenter] = useState(currentLocation);
   const mapCenterRef = useRef(mapCenter); // this is so the debounced function can access the latest mapCenter
+
   const [isError, setIsError] = useState<boolean>(false);
+  const [showSearch, setShowSearch] = useState<boolean>(false);
 
   // Get user's preffered location
   useEffect(() => {
-    if (!currentLocation && currUser) {
+    if (currUser) {
       getLocationCoordinates(currUser.profile.restaurantLocation).then(
         (coordinates) => {
           if (coordinates) {
@@ -52,7 +55,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
         },
       );
     }
-  }, [currentLocation]);
+  }, [currUser]);
 
   useEffect(() => {
     mapCenterRef.current = mapCenter; // Update ref on mapCenter change
@@ -89,12 +92,12 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
     debounce(() => {
       updateRestaurants();
     }, 400),
-    [],
+    [currUser],
   );
 
   useEffect(() => {
     updateRestaurants();
-  }, []);
+  }, [currUser]);
 
   // Call debouncedFetchRestaurants on mapCenter change
   useEffect(() => {
@@ -109,7 +112,20 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
 
   return (
     <>
-      <MapSearch setCurrentLocation={setCurrentLocation} />
+      {/* modify search */}
+      <div className="flex pt-11 pb-2  justify-end">
+        <button
+          className="flex items-center gap-2 px-4 py-1 bg-indigo-600 text-gray-50 rounded-lg text-sm focus:outline-none focus:border-none hover:bg-indigo-500"
+          onClick={() => setShowSearch(true)}
+        >
+          Modify Search
+          <span>
+            <FaWandMagicSparkles />
+          </span>
+        </button>
+      </div>
+
+      {/* map */}
       <APIProvider apiKey={config.mapsAPIKey}>
         <div className="w-full h-full pb-11">
           <Map
@@ -132,7 +148,18 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
           </Map>
         </div>
       </APIProvider>
-      {isError && <CoordsNotFound />}
+
+      {/* error component */}
+      {isError && (
+        <CoordsNotFound
+          showSearch={showSearch}
+          setShowSearch={setShowSearch}
+          setIsError={setIsError}
+        />
+      )}
+
+      {/* search component */}
+      {showSearch && <MapSearch setShowSearch={setShowSearch} />}
     </>
   );
 };
