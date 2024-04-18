@@ -21,12 +21,15 @@ import { MapEvent } from '../../types/mapEvent';
 import { UserContextType } from '../../types/userContextType';
 import { UserContext } from '../../context/UserContext';
 import { getLocationCoordinates } from '../../utils/getLocationCoordinates';
+import { fetchRestaurants } from '../../utils/fetchRestaurants';
+import { MapMarker } from '../../types/mapMarker';
+import CoordsNotFound from './CoordsNotFound';
 
 const RestaurantMap: React.FC<RestaurantMapProps> = ({
   setClickedRestaurant,
 }) => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [mapMarkers, setMapMarkers] = useState<Restaurant[]>([]); // store map markers
+  const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]); // store map markers
 
   // initial currLocation
   // changes after fetching currUser's location prefs
@@ -39,6 +42,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
 
   const [mapCenter, setMapCenter] = useState(currentLocation);
   const mapCenterRef = useRef(mapCenter); // this is so the debounced function can access the latest mapCenter
+  const [isError, setIsError] = useState<boolean>(false);
 
   // Get user's preffered location
   useEffect(() => {
@@ -47,8 +51,9 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
         (coordinates) => {
           if (coordinates) {
             setCurrentLocation(coordinates);
+            setIsError(false);
           } else {
-            console.log('Coordinates not found');
+            setIsError(true);
           }
         },
       );
@@ -59,61 +64,48 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
     mapCenterRef.current = mapCenter; // Update ref on mapCenter change
   }, [mapCenter]);
 
-  const fetchRestaurants = async () => {
-    const baseUrl = `/yelp-api/v3/businesses/search`;
+  // pass restaurant info up to parent to use on right section
+  const handleMarkerClick = (restaurant: Restaurant) => {
+    setClickedRestaurant(restaurant);
+  };
 
-    // building the query parameters
-    let queryParams = `?term=restaurants&location=${currUser?.profile.restaurantLocation}&categories=${currUser?.profile.foodCategory}`;
+  const updateRestaurants = async () => {
+    const data = await fetchRestaurants(
+      currUser?.profile.restaurantLocation,
+      currUser?.profile.foodCategory,
+      currUser?.profile.restaurantAttributes,
+      currUser?.profile.pricePoint,
+    );
 
-    if (currUser?.profile.restaurantAttributes?.length) {
-      queryParams += `&attributes=${currUser.profile.restaurantAttributes}`;
-    }
+    setRestaurants(data);
 
-    if (currUser?.profile.pricePoint?.length) {
-      queryParams += `&price=${currUser.profile.pricePoint}`;
-    }
-
-    const url = `${baseUrl}${queryParams}&radius=40000&sort_by=distance&limit=50`;
-    try {
-      const response = await fetch(url, { method: 'GET' });
-      const data = await response.json();
-      setRestaurants(data.businesses);
-
-      // Set markers on the map based on yelp results
-      const markers = data.businesses.map((restaurant: Restaurant) => ({
-        position: {
-          lat: restaurant.coordinates.latitude,
-          lng: restaurant.coordinates.longitude,
-        },
-        onClick: () => handleMarkerClick(restaurant),
-      }));
-      setMapMarkers(markers);
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    // Set markers on the map based on yelp results
+    const markers = data.map((restaurant: Restaurant) => ({
+      position: {
+        lat: restaurant.coordinates.latitude,
+        lng: restaurant.coordinates.longitude,
+      },
+      onClick: () => handleMarkerClick(restaurant),
+    }));
+    setMapMarkers(markers);
   };
 
   // debounced api call so we don't make a request on every map move, updates after .4 second
   const debouncedFetchRestaurants = useCallback(
     debounce(() => {
-      fetchRestaurants();
+      updateRestaurants();
     }, 400),
     [],
   );
 
   useEffect(() => {
-    fetchRestaurants();
+    updateRestaurants();
   }, []);
 
   // Call debouncedFetchRestaurants on mapCenter change
   useEffect(() => {
     debouncedFetchRestaurants();
   }, [mapCenter, debouncedFetchRestaurants]);
-
-  // pass restaurant info up to parent to use on right section
-  const handleMarkerClick = (restaurant: Restaurant) => {
-    setClickedRestaurant(restaurant);
-  };
 
   // updates the center of the map when it is moved
   const updateMap = (map: MapEvent) => {
@@ -147,6 +139,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
           </Map>
         </div>
       </APIProvider>
+      {isError && <CoordsNotFound />}
     </>
   );
 };
