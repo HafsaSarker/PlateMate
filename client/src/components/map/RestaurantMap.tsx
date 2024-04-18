@@ -150,12 +150,16 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
       </APIProvider>
 
       {/* error component */}
-      {isError && <CoordsNotFound />}
+      {isError && (
+        <CoordsNotFound
+          showSearch={showSearch}
+          setShowSearch={setShowSearch}
+          setIsError={setIsError}
+        />
+      )}
 
       {/* search component */}
-      {showSearch && (
-        <MapSearch showSearch={showSearch} setShowSearch={setShowSearch} />
-      )}
+      {showSearch && <MapSearch setShowSearch={setShowSearch} />}
     </>
   );
 };

@@ -12,7 +12,7 @@ interface MapSearchForm {
   pricePoint?: string[];
 }
 
-const MapSearch: React.FC<MapSearchProps> = ({ showSearch, setShowSearch }) => {
+const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
   const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
 
   const [formData, setFormData] = useState<MapSearchForm>({
@@ -21,10 +21,7 @@ const MapSearch: React.FC<MapSearchProps> = ({ showSearch, setShowSearch }) => {
     restaurantAttributes: currUser ? currUser.profile.restaurantAttributes : [],
     pricePoint: currUser ? currUser.profile.pricePoint : [],
   });
-  // console.log(formData);
-  useEffect(() => {
-    console.log(formData);
-  }, [currUser]);
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
