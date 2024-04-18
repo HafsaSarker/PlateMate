@@ -5,13 +5,7 @@ import React, {
   useRef,
   useContext,
 } from 'react';
-import {
-  APIProvider,
-  AdvancedMarker,
-  Map,
-  Marker,
-  Pin,
-} from '@vis.gl/react-google-maps';
+import { APIProvider, AdvancedMarker, Map } from '@vis.gl/react-google-maps';
 import { config } from '../../config';
 import { debounce } from 'lodash';
 import MapSearch from './MapSearch';
@@ -126,14 +120,13 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
           >
             {/* Render markers based on mapMarkers state */}
             {mapMarkers.map((marker, index) => (
-              <Marker key={index} {...marker} />
+              <AdvancedMarker key={index} {...marker} />
             ))}
             <AdvancedMarker position={currentLocation}>
-              <Pin
-                background={'#f472b6'}
-                borderColor={'#fb923c'}
-                glyphColor={'#fb923c'}
-                scale={1.3}
+              <img
+                src="./pin.png"
+                alt="Custom Icon"
+                className="w-[70px] h-[70px]"
               />
             </AdvancedMarker>
           </Map>
