@@ -34,11 +34,14 @@ async function updateUserById(
   id: string,
   values: Record<string, any>
 ): Promise<IUser | null> {
-  // option "new" returns the updated doc
-  return UserModel.findByIdAndUpdate(id, values, {
-    new: true,
-    runValidators: true,
-  });
+  return UserModel.findByIdAndUpdate(
+    id,
+    { $set: values },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 }
 
 export const userAction = {
