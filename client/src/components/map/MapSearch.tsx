@@ -4,13 +4,7 @@ import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
 import axios from 'axios';
 import { user_api_path } from '../../api/user';
-
-interface MapSearchForm {
-  restaurantLocation: string;
-  foodCategory: string;
-  restaurantAttributes?: string[];
-  pricePoint?: string[];
-}
+import { MapSearchForm } from '../../types/mapSearchForm';
 
 const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
   const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
@@ -52,7 +46,6 @@ const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
       'profile.restaurantAttributes': formData.restaurantAttributes,
       'profile.pricePoint': formData.pricePoint,
     };
-    console.log({ updateData });
 
     try {
       // send to server
