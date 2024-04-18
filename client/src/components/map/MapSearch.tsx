@@ -1,7 +1,9 @@
-import { ChangeEvent, FormEvent, useContext, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
 import { MapSearchProps } from '../../types/mapSearchProps';
 import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
+import axios from 'axios';
+import { user_api_path } from '../../api/user';
 
 interface MapSearchForm {
   restaurantLocation: string;
@@ -19,34 +21,66 @@ const MapSearch: React.FC<MapSearchProps> = ({ showSearch, setShowSearch }) => {
     restaurantAttributes: currUser ? currUser.profile.restaurantAttributes : [],
     pricePoint: currUser ? currUser.profile.pricePoint : [],
   });
-
+  // console.log(formData);
+  useEffect(() => {
+    console.log(formData);
+  }, [currUser]);
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
 
-    if (e.target.type === 'select-multiple') {
-      const options = (e.target as HTMLSelectElement).options;
-      const values = Array.from(options)
-        .filter((option) => option.selected)
-        .map((option) => option.value);
+    switch (type) {
+      case 'select-multiple':
+        // Handling multiple select inputs
+        const selectedOptions = Array.from(
+          (e.target as HTMLSelectElement).options,
+        )
+          .filter((option) => option.selected)
+          .map((option) => option.value);
+        setFormData((prevData) => ({ ...prevData, [name]: selectedOptions }));
+        break;
 
-      setFormData((prev) => ({
-        ...prev,
-        [name]: values,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+      default:
+        setFormData((prevData) => ({ ...prevData, [name]: value }));
     }
   };
 
   const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(formData);
+    const updateData = {
+      'profile.restaurantLocation': formData.restaurantLocation,
+      'profile.foodCategory': formData.foodCategory,
+      'profile.restaurantAttributes': formData.restaurantAttributes,
+      'profile.pricePoint': formData.pricePoint,
+    };
+    console.log({ updateData });
+
+    try {
+      // send to server
+      const res = await axios.patch(
+        `${user_api_path}/${currUser?._id}`,
+        updateData,
+        {
+          withCredentials: true,
+        },
+      );
+
+      if (res.data) {
+        console.log(res.data);
+
+        // set updated user as current user
+        setCurrUser(res.data);
+
+        // set local storage
+        localStorage.setItem('user', JSON.stringify(res.data));
+      }
+      // remove pop up
+      setShowSearch(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -184,6 +218,7 @@ const MapSearch: React.FC<MapSearchProps> = ({ showSearch, setShowSearch }) => {
                 </button>
                 <button
                   onClick={() => setShowSearch(false)}
+                  type="button"
                   className="rounded-lg text-sm px-3 py-1.5  ms-3  font-medium text-gray-900 focus:outline-none bg-white  border border-gray-200 hover:bg-gray-100 hover:text-indigo-600 focus:z-10 focus:ring-4 focus:ring-gray-100"
                 >
                   Go Back

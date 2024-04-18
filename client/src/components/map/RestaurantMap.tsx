@@ -43,7 +43,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
 
   // Get user's preffered location
   useEffect(() => {
-    if (!currentLocation && currUser) {
+    if (currUser) {
       getLocationCoordinates(currUser.profile.restaurantLocation).then(
         (coordinates) => {
           if (coordinates) {
@@ -55,7 +55,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
         },
       );
     }
-  }, [currentLocation]);
+  }, [currUser]);
 
   useEffect(() => {
     mapCenterRef.current = mapCenter; // Update ref on mapCenter change
@@ -92,12 +92,12 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
     debounce(() => {
       updateRestaurants();
     }, 400),
-    [],
+    [currUser],
   );
 
   useEffect(() => {
     updateRestaurants();
-  }, []);
+  }, [currUser]);
 
   // Call debouncedFetchRestaurants on mapCenter change
   useEffect(() => {

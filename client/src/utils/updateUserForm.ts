@@ -1,6 +1,4 @@
-import { s3_api_path } from '../api/s3';
 import { FormData } from '../types/formData';
-import getImageUrl from './getImageUrl';
 import uploadImage from './uploadImage';
 
 export async function updateUserForm(data: FormData) {
