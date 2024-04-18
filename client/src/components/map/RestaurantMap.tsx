@@ -23,6 +23,7 @@ import { UserContext } from '../../context/UserContext';
 import { getLocationCoordinates } from '../../utils/getLocationCoordinates';
 import { fetchRestaurants } from '../../utils/fetchRestaurants';
 import { MapMarker } from '../../types/mapMarker';
+import CoordsNotFound from './CoordsNotFound';
 
 const RestaurantMap: React.FC<RestaurantMapProps> = ({
   setClickedRestaurant,
@@ -41,6 +42,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
 
   const [mapCenter, setMapCenter] = useState(currentLocation);
   const mapCenterRef = useRef(mapCenter); // this is so the debounced function can access the latest mapCenter
+  const [isError, setIsError] = useState<boolean>(false);
 
   // Get user's preffered location
   useEffect(() => {
@@ -49,8 +51,9 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
         (coordinates) => {
           if (coordinates) {
             setCurrentLocation(coordinates);
+            setIsError(false);
           } else {
-            console.log('Coordinates not found');
+            setIsError(true);
           }
         },
       );
@@ -136,6 +139,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
           </Map>
         </div>
       </APIProvider>
+      {isError && <CoordsNotFound />}
     </>
   );
 };
