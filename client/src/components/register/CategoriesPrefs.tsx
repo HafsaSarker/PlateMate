@@ -1,7 +1,10 @@
 import React, { ChangeEvent, useState } from 'react';
 import allCategories from '../../data/allCategories';
+import { FoodPrefsProps } from '../../types/foodPrefsProps';
 
-function CategoriesPrefs() {
+const CategoriesPrefs: React.FC<FoodPrefsProps> = ({
+  handleCategoriesChange,
+}) => {
   const [tags, setTags] = useState<string[]>([]);
   const [input, setInput] = useState<string>('');
   const [filteredCategories, setFilteredCategories] = useState<string[]>([]);
@@ -10,7 +13,7 @@ function CategoriesPrefs() {
     const value = e.target.value;
     setInput(value);
 
-    // filter suggestions after user has typed two characters
+    // filter suggestions after user types
     if (value.length > 0) {
       const newFilteredCategories = allCategories.filter((category) =>
         category.toLowerCase().includes(value.toLowerCase()),
@@ -21,18 +24,25 @@ function CategoriesPrefs() {
     }
   };
 
+  const updateTags = (newTags: string[]) => {
+    setTags(newTags);
+    handleCategoriesChange(newTags);
+  };
+
   const handleCategoryClick = (category: string) => {
     if (!tags.includes(category)) {
-      setTags([...tags, category]);
+      const newTags = [...tags, category];
+      updateTags(newTags);
+      setTags(newTags);
       setInput('');
       setFilteredCategories([]);
     }
-    console.log(tags);
   };
 
   const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
-    console.log(tags);
+    const newTags = tags.filter((tag) => tag !== tagToRemove);
+    setTags(newTags);
+    updateTags(newTags);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -42,7 +52,9 @@ function CategoriesPrefs() {
       );
 
       if (matchedSuggestion && !tags.includes(matchedSuggestion)) {
-        setTags([...tags, matchedSuggestion]);
+        const newTags = [...tags, matchedSuggestion];
+        setTags(newTags);
+        updateTags(newTags);
         setInput('');
         setFilteredCategories([]);
       }
@@ -75,7 +87,6 @@ function CategoriesPrefs() {
         onKeyDown={handleKeyDown}
         placeholder="eg, Chinese"
         className="block w-full rounded-md  border-0 py-1.5 b-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-        required={tags.length === 0}
       />
       {filteredCategories.length > 0 && (
         <ul className="block w-full shadow-sm  py-1.5 bg-inherit border border-gray-200 text-gray-900 sm:text-sm sm:leading-6 max-h-[200px] overflow-y-auto rounded-b-md">
@@ -94,5 +105,5 @@ function CategoriesPrefs() {
       )}
     </div>
   );
-}
+};
 export default CategoriesPrefs;

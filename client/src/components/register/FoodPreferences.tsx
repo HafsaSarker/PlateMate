@@ -1,9 +1,11 @@
 import React from 'react';
-import { RegisterProps } from '../../types/registerProps';
-import allCategories from '../../data/allCategories';
 import CategoriesPrefs from './CategoriesPrefs';
+import { FoodPrefsProps } from '../../types/foodPrefsProps';
 
-const FoodPreferences: React.FC<RegisterProps> = ({ handleChange }) => {
+const FoodPreferences: React.FC<FoodPrefsProps> = ({
+  handleChange,
+  handleCategoriesChange,
+}) => {
   return (
     <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
       <div className="col-span-full">
@@ -43,7 +45,7 @@ const FoodPreferences: React.FC<RegisterProps> = ({ handleChange }) => {
           Food Categories*
         </label>
         <div className="mt-2">
-          <CategoriesPrefs />
+          <CategoriesPrefs handleCategoriesChange={handleCategoriesChange} />
         </div>
         <span className="block text-xs font-medium leading-6 text-gray-900">
           View a list of all categories{' '}
