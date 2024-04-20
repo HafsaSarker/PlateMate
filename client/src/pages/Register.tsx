@@ -82,25 +82,24 @@ export default function Register() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
 
-    // // modifying formData to match user model
-    // const submitData = await destructFormData(formData);
+    // modifying formData to match user model
+    const submitData = await destructFormData(formData);
 
-    // try {
-    //   // send to server
-    //   const res = await axios.post(`${auth_api_path}register`, submitData);
+    try {
+      // send to server
+      const res = await axios.post(`${auth_api_path}register`, submitData);
 
-    //   // init an empty preference
-    //   initPreferences(res.data._id);
+      if (res.data) {
+        // init an empty preference
+        initPreferences(res.data._id);
 
-    //   if (res.data) {
-    //     // go to login
-    //     navigate('/');
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+        // go to login
+        navigate('/');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="h-full w-full flex items-center overflow-y-auto py-20 px-52">
