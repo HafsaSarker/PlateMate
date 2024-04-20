@@ -12,7 +12,7 @@ async function register(
       firstName,
       lastName,
       restaurantLocation,
-      foodCategory,
+      foodCategories,
       profileImg,
       coverImg,
       about,
@@ -35,7 +35,7 @@ async function register(
       !firstName ||
       !lastName ||
       !restaurantLocation ||
-      !foodCategory
+      !foodCategories.length
     ) {
       return res.status(400).json({ error: "Missing required fields" });
     }
@@ -61,7 +61,7 @@ async function register(
         firstName,
         lastName,
         restaurantLocation,
-        foodCategory,
+        foodCategories,
         profileImg,
         coverImg,
         about,
