@@ -4,4 +4,6 @@ export interface RegisterProps {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ) => void;
+
+  handleCategoriesChange?: (categories: string[]) => void;
 }

@@ -17,7 +17,7 @@ export interface User {
     smoke?: boolean;
     drink?: boolean;
     restaurantLocation: string;
-    foodCategory: string;
+    foodCategories: string[];
     restaurantAttributes?: string[];
     pricePoint?: string[];
   };

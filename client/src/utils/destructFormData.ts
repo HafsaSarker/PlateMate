@@ -17,14 +17,14 @@ export async function destructFormData(data: FormData) {
     smoke,
     drink,
     restaurantLocation,
-    foodCategory,
+    foodCategories,
     restaurantAttributes,
     pricePoint,
   } = data;
 
   let { profileImg } = data;
   // save the image name
-  profileImg= profileImg ? await uploadImage(profileImg) : '';
+  profileImg = profileImg ? await uploadImage(profileImg) : '';
 
   const submitData = {
     email,
@@ -45,7 +45,7 @@ export async function destructFormData(data: FormData) {
       smoke,
       drink,
       restaurantLocation,
-      foodCategory,
+      foodCategories,
       restaurantAttributes,
       pricePoint,
     },

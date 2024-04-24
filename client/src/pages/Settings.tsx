@@ -30,7 +30,7 @@ function Settings() {
     smoke: currUser ? currUser.profile.smoke : false,
     drink: currUser ? currUser.profile.drink : false,
     restaurantLocation: currUser ? currUser.profile.restaurantLocation : '',
-    foodCategory: currUser ? currUser.profile.foodCategory : '',
+    foodCategories: currUser ? currUser.profile.foodCategories : [],
     restaurantAttributes: currUser ? currUser.profile.restaurantAttributes : [],
     pricePoint: currUser ? currUser.profile.pricePoint : [],
   });
@@ -72,6 +72,14 @@ function Settings() {
       default:
         setFormData((prevData) => ({ ...prevData, [name]: value }));
     }
+  };
+
+  // get all food categories user selected
+  const handleCategoriesChange = (categories: string[]) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      foodCategories: categories,
+    }));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -206,7 +214,11 @@ function Settings() {
           <Lifestyle handleChange={handleChange} formData={formData} />
 
           {/* FOOD PREFERENCES */}
-          <FoodPreferences handleChange={handleChange} formData={formData} />
+          <FoodPreferences
+            handleChange={handleChange}
+            formData={formData}
+            handleCategoriesChange={handleCategoriesChange}
+          />
         </div>
 
         <div className="mt-6 flex items-end justify-end gap-x-6 pb-20">

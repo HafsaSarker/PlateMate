@@ -1,17 +1,18 @@
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { MapSearchProps } from '../../types/mapSearchProps';
 import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
 import axios from 'axios';
 import { user_api_path } from '../../api/user';
 import { MapSearchForm } from '../../types/mapSearchForm';
+import CategoriesPrefs from './CategoriesPrefs';
 
 const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
   const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
 
   const [formData, setFormData] = useState<MapSearchForm>({
     restaurantLocation: currUser ? currUser.profile.restaurantLocation : '',
-    foodCategory: currUser ? currUser.profile.foodCategory : '',
+    foodCategories: currUser ? currUser.profile.foodCategories : [],
     restaurantAttributes: currUser ? currUser.profile.restaurantAttributes : [],
     pricePoint: currUser ? currUser.profile.pricePoint : [],
   });
@@ -37,12 +38,20 @@ const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
     }
   };
 
+  // get all food categories user selected
+  const handleCategoriesChange = (categories: string[]) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      foodCategories: categories,
+    }));
+  };
+
   const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const updateData = {
       'profile.restaurantLocation': formData.restaurantLocation,
-      'profile.foodCategory': formData.foodCategory,
+      'profile.foodCategories': formData.foodCategories,
       'profile.restaurantAttributes': formData.restaurantAttributes,
       'profile.pricePoint': formData.pricePoint,
     };
@@ -58,8 +67,6 @@ const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
       );
 
       if (res.data) {
-        console.log(res.data);
-
         // set updated user as current user
         setCurrUser(res.data);
 
@@ -124,13 +131,9 @@ const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
                     Food Category*
                   </label>
                   <div>
-                    <input
-                      type="text"
-                      name="foodCategory"
-                      id="foodCategory"
-                      value={formData.foodCategory}
-                      className="block w-full rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-600 sm:text-sm sm:leading-6"
-                      onChange={handleChange}
+                    <CategoriesPrefs
+                      handleCategoriesChange={handleCategoriesChange}
+                      currCategories={formData.foodCategories}
                     />
                   </div>
                   <span className="block text-xs font-medium leading-6 text-gray-900">

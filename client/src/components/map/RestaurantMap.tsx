@@ -44,6 +44,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
   // Get user's preffered location
   useEffect(() => {
     if (currUser) {
+      // returns hardcoded coords FOR NOW
       getLocationCoordinates(currUser.profile.restaurantLocation).then(
         (coordinates) => {
           if (coordinates) {
@@ -68,10 +69,14 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
 
   const updateRestaurants = async () => {
     const data = await fetchRestaurants(
-      currUser?.profile.restaurantLocation,
-      currUser?.profile.foodCategory,
-      currUser?.profile.restaurantAttributes,
-      currUser?.profile.pricePoint,
+      currUser?.profile.restaurantLocation
+        ? currUser.profile.restaurantLocation
+        : '',
+      currUser?.profile.foodCategories ? currUser.profile.foodCategories : [],
+      currUser?.profile.restaurantAttributes
+        ? currUser.profile.restaurantAttributes
+        : [],
+      currUser?.profile.pricePoint ? currUser.profile.pricePoint : [],
     );
 
     setRestaurants(data);

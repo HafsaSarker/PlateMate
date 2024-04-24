@@ -14,7 +14,7 @@ interface IUserProfile {
   smoke?: boolean;
   drink?: boolean;
   restaurantLocation: string;
-  foodCategory: string;
+  foodCategories: string[];
   restaurantAttributes?: string[];
   pricePoint?: string[];
 }
@@ -79,8 +79,8 @@ const UserSchema = new Schema<IUser>(
         type: String,
         required: true,
       },
-      foodCategory: {
-        type: String,
+      foodCategories: {
+        type: [String],
         required: true,
       },
       restaurantAttributes: [String], // ["wifi_free", "parking_lot"]

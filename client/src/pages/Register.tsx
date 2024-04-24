@@ -28,7 +28,7 @@ export default function Register() {
     smoke: false,
     drink: false,
     restaurantLocation: '',
-    foodCategory: '',
+    foodCategories: [],
     restaurantAttributes: [],
     pricePoint: [],
   });
@@ -72,6 +72,14 @@ export default function Register() {
     }
   };
 
+  // get all food categories user selected
+  const handleCategoriesChange = (categories: string[]) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      foodCategories: categories,
+    }));
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -82,10 +90,10 @@ export default function Register() {
       // send to server
       const res = await axios.post(`${auth_api_path}register`, submitData);
 
-      // init an empty preference
-      initPreferences(res.data._id);
-
       if (res.data) {
+        // init an empty preference
+        initPreferences(res.data._id);
+
         // go to login
         navigate('/');
       }
@@ -197,7 +205,10 @@ export default function Register() {
           <Lifestyle handleChange={handleChange} />
 
           {/* FOOD PREFERENCES */}
-          <FoodPreferences handleChange={handleChange} />
+          <FoodPreferences
+            handleChange={handleChange}
+            handleCategoriesChange={handleCategoriesChange}
+          />
         </div>
 
         <div className="mt-6 flex flex-col items-end justify-end gap-x-6 pb-20">
