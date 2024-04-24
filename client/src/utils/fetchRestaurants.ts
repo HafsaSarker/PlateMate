@@ -1,25 +1,29 @@
 import { Restaurant } from '../types/restaurant';
 
 export const fetchRestaurants = async (
-  location: string | undefined,
-  categorie: string | undefined,
-  attributes: string[] | undefined,
-  pricePoint: string[] | undefined,
+  location: string,
+  categories: string[],
+  attributes: string[],
+  pricePoint: string[],
 ): Promise<Restaurant[]> => {
   const baseUrl = `/yelp-api/v3/businesses/search`;
 
   // building the query parameters
-  let queryParams = `?term=restaurants&location=${location}&categories=${categorie}`;
+  let queryParams = `?term=restaurants&location=${encodeURIComponent(location)}`;
+
+  if (categories.length) {
+    queryParams += `&categories=${categories.join(',')}`;
+  }
 
   if (attributes?.length) {
-    queryParams += `&attributes=${attributes}`;
+    queryParams += `&attributes=${attributes.join(',')}`;
   }
 
   if (pricePoint?.length) {
-    queryParams += `&price=${pricePoint}`;
+    queryParams += `&price=${pricePoint.join(',')}`;
   }
 
-  const url = `${baseUrl}${queryParams}&radius=40000&sort_by=distance&limit=50`;
+  const url = `${baseUrl}${queryParams}&radius=40000&sort_by=best_match&limit=50`;
   try {
     const response = await fetch(url, { method: 'GET' });
     const data = await response.json();

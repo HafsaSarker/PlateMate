@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { MapSearchProps } from '../../types/mapSearchProps';
 import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
