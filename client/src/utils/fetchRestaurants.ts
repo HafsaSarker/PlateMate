@@ -12,7 +12,7 @@ export const fetchRestaurants = async (
   let queryParams = `?term=restaurants&location=${encodeURIComponent(location)}`;
 
   if (categories.length) {
-    queryParams += `&categories=${categories.join(',')}`;
+    queryParams += `&categories=${categories.map((category) => category.toLowerCase()).join(',')}`;
   }
 
   if (attributes?.length) {
