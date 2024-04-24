@@ -8,3 +8,7 @@ export interface SettingsProps {
   ) => void;
   formData: FormData;
 }
+
+export interface FoodCategoriesProps extends SettingsProps {
+  handleCategoriesChange: (categories: string[]) => void;
+}

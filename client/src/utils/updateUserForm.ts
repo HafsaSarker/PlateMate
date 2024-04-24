@@ -16,7 +16,7 @@ export async function updateUserForm(data: FormData) {
     smoke,
     drink,
     restaurantLocation,
-    foodCategory,
+    foodCategories,
     restaurantAttributes,
     pricePoint,
   } = data;
@@ -41,7 +41,7 @@ export async function updateUserForm(data: FormData) {
       smoke,
       drink,
       restaurantLocation,
-      foodCategory,
+      foodCategories,
       restaurantAttributes,
       pricePoint,
     },
