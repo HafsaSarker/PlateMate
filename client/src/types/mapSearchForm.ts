@@ -1,6 +1,6 @@
 export interface MapSearchForm {
   restaurantLocation: string;
-  foodCategory: string;
+  foodCategories: string[];
   restaurantAttributes?: string[];
   pricePoint?: string[];
 }

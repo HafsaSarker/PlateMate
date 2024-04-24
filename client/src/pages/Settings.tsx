@@ -87,7 +87,6 @@ function Settings() {
 
     // modifying formData to match user model
     const submitData = await updateUserForm(formData);
-    console.log(submitData);
 
     try {
       // send to server

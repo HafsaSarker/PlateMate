@@ -44,6 +44,7 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
   // Get user's preffered location
   useEffect(() => {
     if (currUser) {
+      // returns hardcoded coords FOR NOW
       getLocationCoordinates(currUser.profile.restaurantLocation).then(
         (coordinates) => {
           if (coordinates) {
