@@ -8,10 +8,12 @@ import { destructFormData } from '../utils/destructFormData';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { initPreferences } from '../utils/initPreferences';
+import WarningToast from '../components/toast/WarningToast';
 
 export default function Register() {
   const navigate = useNavigate();
 
+  const [showToast, setShowToast] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -83,10 +85,17 @@ export default function Register() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!formData.foodCategories.length) {
+      setShowToast(true);
+      return;
+    }
+
     // modifying formData to match user model
     const submitData = await destructFormData(formData);
 
     try {
+      setShowToast(false);
+
       // send to server
       const res = await axios.post(`${auth_api_path}register`, submitData);
 
@@ -230,6 +239,12 @@ export default function Register() {
           </div>
         </div>
       </form>
+      {showToast && (
+        <WarningToast
+          message="Food category is required"
+          setShowToast={setShowToast}
+        />
+      )}
     </div>
   );
 }
