@@ -9,11 +9,13 @@ import { FormData } from '../types/formData';
 import axios from 'axios';
 import { user_api_path } from '../api/user';
 import { updateUserForm } from '../utils/updateUserForm';
+import WarningToast from '../components/toast/WarningToast';
 
 function Settings() {
   const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
   const navigate = useNavigate();
 
+  const [showToast, setShowToast] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
     firstName: currUser ? currUser.profile.firstName : '',
     lastName: currUser ? currUser.profile.lastName : '',
@@ -85,10 +87,17 @@ function Settings() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!formData.foodCategories.length) {
+      setShowToast(true);
+      return;
+    }
+
     // modifying formData to match user model
     const submitData = await updateUserForm(formData);
 
     try {
+      setShowToast(false);
+
       // send to server
       const res = await axios.patch(
         `${user_api_path}/${currUser?._id}`,
@@ -237,6 +246,13 @@ function Settings() {
           </button>
         </div>
       </form>
+
+      {showToast && (
+        <WarningToast
+          message="Food category is required"
+          setShowToast={setShowToast}
+        />
+      )}
     </div>
   );
 }

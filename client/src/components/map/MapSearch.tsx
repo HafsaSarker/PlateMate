@@ -6,10 +6,12 @@ import axios from 'axios';
 import { user_api_path } from '../../api/user';
 import { MapSearchForm } from '../../types/mapSearchForm';
 import CategoriesPrefs from './CategoriesPrefs';
+import WarningToast from '../toast/WarningToast';
 
 const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
   const { currUser, setCurrUser } = useContext(UserContext) as UserContextType;
 
+  const [showToast, setShowToast] = useState<boolean>(false);
   const [formData, setFormData] = useState<MapSearchForm>({
     restaurantLocation: currUser ? currUser.profile.restaurantLocation : '',
     foodCategories: currUser ? currUser.profile.foodCategories : [],
@@ -49,6 +51,11 @@ const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
   const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!formData.foodCategories.length) {
+      setShowToast(true);
+      return;
+    }
+
     const updateData = {
       'profile.restaurantLocation': formData.restaurantLocation,
       'profile.foodCategories': formData.foodCategories,
@@ -57,6 +64,8 @@ const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
     };
 
     try {
+      setShowToast(false);
+
       // send to server
       const res = await axios.patch(
         `${user_api_path}/${currUser?._id}`,
@@ -221,6 +230,12 @@ const MapSearch: React.FC<MapSearchProps> = ({ setShowSearch }) => {
           </div>
         </div>
       </div>
+      {showToast && (
+        <WarningToast
+          message="Food category is required"
+          setShowToast={setShowToast}
+        />
+      )}
     </div>
   );
 };
