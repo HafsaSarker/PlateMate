@@ -59,9 +59,28 @@ async function updateUser(req: Request, res: Response) {
   }
 }
 
+async function getUserMatches(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+
+    const user = await userAction.getUserById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: "user does not exist" });
+    }
+
+    const matches = await userAction.findMatches(user);
+
+    return res.status(200).json(matches);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 export const userController = {
   getAllUsers,
   getUser,
   deleteUser,
   updateUser,
+  getUserMatches,
 };

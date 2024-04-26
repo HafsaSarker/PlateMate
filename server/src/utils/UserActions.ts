@@ -44,6 +44,24 @@ async function updateUserById(
   );
 }
 
+// returns users with similar foodCategories, restuarantAttributes and pricePoint
+async function findMatches(user: IUser): Promise<IUser[] | null> {
+  try {
+    const { foodCategories, restaurantAttributes, pricePoint } = user.profile;
+
+    const matches = await UserModel.find({
+      _id: { $ne: user._id }, // Exclude curr user's id
+      "profile.foodCategories": { $in: foodCategories },
+      "profile.restaurantAttributes": { $in: restaurantAttributes },
+      "profile.pricePoint": { $in: pricePoint },
+    });
+
+    return matches;
+  } catch (error) {
+    console.error("Error finding matches:", error);
+    return null;
+  }
+}
 export const userAction = {
   getUsers,
   getUserByEmail,
@@ -52,4 +70,5 @@ export const userAction = {
   createUser,
   deleteUserById,
   updateUserById,
+  findMatches,
 };
