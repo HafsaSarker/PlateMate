@@ -6,6 +6,12 @@ import { isAuthenticated, isOwner } from "../middlewares/index";
 export default (router: express.Router) => {
   router.get("/users", isAuthenticated, userController.getAllUsers);
   router.get("/users/:id", isAuthenticated, userController.getUser);
+  router.get(
+    "/users/matches/:id",
+    isAuthenticated,
+    isOwner,
+    userController.getUserMatches
+  );
   router.delete(
     "/users/:id",
     isAuthenticated,
