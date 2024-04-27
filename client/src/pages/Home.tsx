@@ -15,6 +15,7 @@ import { PreferenceContextType } from '../types/PreferenceContextType';
 import { preference_api_path } from '../api/preference';
 import { filterUsers } from '../utils/filterUsers';
 import { FaAnglesDown } from 'react-icons/fa6';
+import { IoInformationCircle } from 'react-icons/io5';
 
 const Home = () => {
   const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
@@ -98,9 +99,18 @@ const Home = () => {
       </div>
 
       <div className="flex flex-col h-full w-8/12 overflow-y-auto overflow-x-hidden">
-        {clickedRestaurant && (
+        {clickedRestaurant ? (
           <section className="flex flex-col items-start justify-start w-[500px] max-w-[600px] pt-6 pb-2">
             <SelectedRestaurant clickedRestaurant={clickedRestaurant} />
+          </section>
+        ) : (
+          <section className="flex items-center justify-center w-[500px] max-w-[600px] pt-6 pb-2">
+            <p className="text-sm flex items-center justify-center rounded-lg gap-1 bg-gray-100 hover:bg-gray-200 border py-1 px-2 cursor-pointer">
+              <span className="text-xl text-orange-500">
+                <IoInformationCircle />
+              </span>
+              No restaurants found, try a different search!
+            </p>
           </section>
         )}
 

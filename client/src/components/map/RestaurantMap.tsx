@@ -83,6 +83,8 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
 
     setRestaurants(data);
 
+    setClickedRestaurant(data[0]);
+
     // Set markers on the map based on yelp results
     const markers = data.map((restaurant: Restaurant) => ({
       position: {
