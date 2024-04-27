@@ -95,6 +95,7 @@ const Home = () => {
         <RestaurantMap
           setClickedRestaurant={setClickedRestaurant}
           setShowFilters={setShowFilters}
+          clickedRestaurant={clickedRestaurant}
         />
       </div>
 
@@ -129,7 +130,7 @@ const Home = () => {
               </div>
 
               {showMatches && (
-                <section className="flex flex-col items-start w-full max-h-[300px]">
+                <section className="flex flex-col items-start w-full max-h-[250px]">
                   {/* PASS IN RECOMMENDED USERS HERE */}
                   <MatchedUsers
                     users={users}
@@ -151,7 +152,7 @@ const Home = () => {
               </div>
 
               {showRecommended && (
-                <section className="flex flex-col items-start w-full max-h-[300px]">
+                <section className="flex flex-col items-start w-full max-h-[250px]">
                   <MatchedUsers
                     users={users}
                     setShowProfile={setShowProfile}

@@ -24,6 +24,7 @@ import { VscSettings } from 'react-icons/vsc';
 const RestaurantMap: React.FC<RestaurantMapProps> = ({
   setClickedRestaurant,
   setShowFilters,
+  clickedRestaurant,
 }) => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]); // store map markers
@@ -83,7 +84,9 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
 
     setRestaurants(data);
 
-    setClickedRestaurant(data[0]);
+    if (!clickedRestaurant) {
+      setClickedRestaurant(data[0]);
+    }
 
     // Set markers on the map based on yelp results
     const markers = data.map((restaurant: Restaurant) => ({
