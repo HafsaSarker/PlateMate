@@ -19,9 +19,11 @@ import { fetchRestaurants } from '../../utils/fetchRestaurants';
 import { MapMarker } from '../../types/mapMarker';
 import CoordsNotFound from './CoordsNotFound';
 import { FaWandMagicSparkles } from 'react-icons/fa6';
+import { VscSettings } from 'react-icons/vsc';
 
 const RestaurantMap: React.FC<RestaurantMapProps> = ({
   setClickedRestaurant,
+  setShowFilters,
 }) => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [mapMarkers, setMapMarkers] = useState<MapMarker[]>([]); // store map markers
@@ -117,19 +119,32 @@ const RestaurantMap: React.FC<RestaurantMapProps> = ({
 
   return (
     <>
-      {/* modify search */}
-      <div className="flex pt-11 pb-2  justify-end">
-        <button
-          className="flex items-center gap-2 px-4 py-1 bg-indigo-600 text-gray-50 rounded-lg text-sm focus:outline-none focus:border-none hover:bg-indigo-500"
-          onClick={() => setShowSearch(true)}
-        >
-          Modify Search
-          <span>
-            <FaWandMagicSparkles />
-          </span>
-        </button>
-      </div>
+      {/* modify search (users and location) */}
+      <div className="flex items-center w-full justify-end gap-3">
+        <div className="flex pt-5 pb-2 justify-end">
+          <button
+            className="flex items-center gap-2 px-4 py-1 bg-indigo-600 text-gray-50 rounded-lg text-sm focus:outline-none focus:border-none hover:bg-indigo-500"
+            onClick={() => setShowSearch(true)}
+          >
+            Modify Search
+            <span>
+              <FaWandMagicSparkles />
+            </span>
+          </button>
+        </div>
 
+        <div className="flex pt-5 pb-2 justify-end">
+          <button
+            className="flex items-center gap-2 px-4 py-1 text-sm text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-indigo-600 focus:z-10 focus:ring-4 focus:ring-gray-100"
+            onClick={() => setShowFilters(true)}
+          >
+            Filter Matches
+            <span>
+              <VscSettings />
+            </span>
+          </button>
+        </div>
+      </div>
       {/* map */}
       <APIProvider apiKey={config.mapsAPIKey}>
         <div className="w-full h-full pb-11">

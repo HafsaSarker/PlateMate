@@ -45,10 +45,10 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({
   }
 
   return (
-    <div className="flex flex-col items-start w-full py-2 px-2 mx-4 overflow-auto">
+    <div className="flex flex-col items-start w-full py-2 px-2 overflow-auto">
       {/* map over all users */}
       {users ? (
-        <div className="flex flex-col w-full gap-3 pr-8 hover:cursor-pointer">
+        <div className="flex flex-col w-full gap-3 hover:cursor-pointer">
           {users.map((user) => (
             <div
               key={user._id}
