@@ -12,6 +12,8 @@ import { Server, Socket } from "socket.io";
 import socketHandler from "./sockets/socketHandler";
 import AWS from "aws-sdk";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { generateRandomUsers } from "./generators/generateRandomUsers";
+
 
 dotenv.config();
 
@@ -56,6 +58,8 @@ const boot = async () => {
     server.listen(8080, () => {
       console.log("Server running on http://localhost:8080/");
     });
+
+    // await generateRandomUsers();
   } catch (error) {
     console.log(error);
   }
