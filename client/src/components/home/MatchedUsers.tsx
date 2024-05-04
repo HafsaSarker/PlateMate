@@ -4,6 +4,7 @@ import { IoIosChatbubbles } from 'react-icons/io';
 import { User } from '../../types/user';
 import { useEffect, useState } from 'react';
 import getImageUrl from '../../utils/getImageUrl';
+import WarningToast from '../toast/WarningToast';
 
 const MatchedUsers: React.FC<MatchedUsersProp> = ({
   users,
@@ -13,6 +14,13 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({
   const [userImageUrls, setUserImageUrls] = useState<Record<string, string>>(
     {},
   );
+  const [showToast, setShowToast] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!users?.length) {
+      setShowToast(true);
+    }
+  }, [users]);
 
   useEffect(() => {
     if (!users) return;
@@ -47,7 +55,7 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({
   return (
     <div className="flex flex-col items-start w-full py-2 px-2 overflow-auto">
       {/* map over all users */}
-      {users ? (
+      {users && users.length ? (
         <div className="flex flex-col w-full gap-3 hover:cursor-pointer">
           {users.map((user) => (
             <div
@@ -90,7 +98,12 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({
         </div>
       ) : (
         <div>
-          <p>No users found, try using different filters</p>
+          {showToast && (
+            <WarningToast
+              message="No users found. Please try adjusting your filters."
+              setShowToast={setShowToast}
+            />
+          )}
         </div>
       )}
     </div>
