@@ -14,7 +14,7 @@ import ChatListItem from './ChatListItem';
 
 const ChatList:React.FC = () => {
   const { currUser, userImageUrl } = useContext(UserContext) as UserContextType;
-  const {chatList, setChatList, currPartner} = useContext(ChatContext) as ChatContextType;
+  const {chatList, setChatList, currPartner, messagesList} = useContext(ChatContext) as ChatContextType;
   const {generateRoomId, getUserProfile} = useContext(ChatContext) as ChatContextType;
 
   const [searchInput, setSearchInput] = useState('');
@@ -75,7 +75,7 @@ const ChatList:React.FC = () => {
 
   useEffect(() => {
     getPastPartners(currUser._id);
-  }, [currPartner]);
+  }, [currPartner, messagesList]);
 
   return (
     <section className='left-section w-[30%] min-w-[300px] border-x-2 border-gray-300 flex flex-col h-full'>
