@@ -358,7 +358,12 @@ def assign_categories(users):
     users.loc[(users['profile.sex'] == 'other'), 'profile.sex'] = 3
     users.loc[(users['profile.sex'] == 0), 'profile.sex'] = 3
     
+    users['profile.height_ft'].fillna(0, inplace=True)
+    users['profile.height_in'].fillna(0, inplace=True)
+    users['profile.height_ft'] = pd.to_numeric(users['profile.height_ft'], errors='coerce')
+    users['profile.height_in'] = pd.to_numeric(users['profile.height_in'], errors='coerce')
     users['profile.height'] = users['profile.height_ft'] * 12 + users['profile.height_in']
+    users['profile.height'] = pd.to_numeric(users['profile.height'], errors='coerce')
     
     users.loc[(users['profile.age'] == 'None'), 'profile.age'] = 18
     users['profile.age'] = pd.to_numeric(users['profile.age'], errors='coerce')
@@ -407,6 +412,8 @@ def get_demographics(features, centroid_array):
 
 def matching_model(users):
     features = users[["profile.sex", "profile.height", "profile.age", "profile.foodCategory","profile.restaurantAttributes[1]","profile.restaurantAttributes[2]","profile.restaurantAttributes[3]","profile.restaurantAttributes[4]","profile.pricePoint[1]","profile.pricePoint[2]","profile.pricePoint[3]","profile.smoke","profile.drink"]].fillna(0)
+    features = features.apply(pd.to_numeric, errors='coerce')
+    features.fillna(0, inplace=True)
     features = ((features - features.min()) / (features.max() - features.min())) * 9 + 1
     max_clusters = 10
     silhouette_scores = [silhouette_score(features, get_demographics(features, centroid_randomizer(features, n_clusters))) for n_clusters in range(2, max_clusters + 1)]
