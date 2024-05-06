@@ -21,5 +21,5 @@ export interface ChatContextType {
   sendMessage: () => Promise<void>;
   uploadImage: (file: File) => Promise<string>;
   currPartnerImg: string;
-
+  handleDeleteMessage: (messageId: string) => void;
 }

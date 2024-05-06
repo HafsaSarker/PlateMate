@@ -5,6 +5,9 @@ import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
 import { s3_api_path } from '../../api/s3';
 import getImageUrl from '../../utils/getImageUrl';
+import { CiTrash } from "react-icons/ci";
+import axios from 'axios';
+import { message_api_path } from '../../api/message';
 
 interface MessageProps {
   messageData: MessageData;
@@ -40,6 +43,12 @@ const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
     return time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   }
 
+
+  const deleteMessage = async () => {
+    console.log('delete message');
+    const response = axios.delete(`${message_api_path}/${messageData._id}`)
+  }
+
   if (currUser === null) {
     return <></>
   }
@@ -47,7 +56,7 @@ const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
   return (
     <div className={`message px-4 py-1 flex ${messageData.fromUserId === currUser._id ? 'justify-end' : 'justify-start'}`}>
       {messageData.fromUserId === currUser._id &&
-      <button>Delete</button>}
+      <button onClick={deleteMessage}><CiTrash /></button>}
       <div className={` max-w-full
         message-content p-2 rounded-lg whitespace-pre-wrap min-w-32
         ${messageData.fromUserId === currUser._id ? 'bg-secondary text-white' : 'bg-gray-300 text-black'}`}>

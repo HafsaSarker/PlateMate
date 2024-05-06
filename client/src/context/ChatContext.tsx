@@ -1,5 +1,7 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import io, { Socket } from 'socket.io-client';
+import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 import { User } from '../types/user';
 import { MessageData } from '../types/messageData';
@@ -11,6 +13,7 @@ import { user_api_path } from '../api/user';
 import { ChatContextType } from '../types/chatContextType';
 import uploadImage from '../utils/uploadImage';
 import getImageUrl from '../utils/getImageUrl';
+
 
 export const ChatContext = createContext<ChatContextType | null>(null);
 const backend_url = import.meta.env.VITE_BACKEND_URL;
@@ -34,6 +37,10 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     return roomId;
   }
 
+  const handleDeleteMessage = async (messageId: string) => {
+    setMessagesList(currentMessages => currentMessages.filter(message => message._id !== messageId));
+  };
+
   const fetchMessages = async (roomId: string) => {
     try {
       const response = await fetch(`${message_api_path}/${roomId}`);
@@ -43,6 +50,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         sentAt: new Date(message.sentAt),
       })).reverse();
       setMessagesList(messagesWithDates); // Update state with fetched messages
+      console.log(messagesWithDates)
     } catch (error) {
       console.error("Failed to fetch messages:", error);
     }
@@ -122,6 +130,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       imageName: imageName,
       sentAt: new Date(),
       readStatus: false,
+      _id: uuidv4(),
     };
     socket.emit('send_message', messageData);
     setMessagesList((messagesList) => [...messagesList, messageData]);
@@ -199,6 +208,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       sendMessage,
       uploadImage,
       currPartnerImg,
+      handleDeleteMessage,
       }}>
       {children}
     </ChatContext.Provider>
