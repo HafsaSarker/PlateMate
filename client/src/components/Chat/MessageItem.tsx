@@ -5,6 +5,11 @@ import { UserContext } from '../../context/UserContext';
 import { UserContextType } from '../../types/userContextType';
 import { s3_api_path } from '../../api/s3';
 import getImageUrl from '../../utils/getImageUrl';
+import { CiTrash } from "react-icons/ci";
+import axios from 'axios';
+import { message_api_path } from '../../api/message';
+import { ChatContext } from '../../context/ChatContext';
+import { ChatContextType } from '../../types/chatContextType';
 
 interface MessageProps {
   messageData: MessageData;
@@ -13,7 +18,7 @@ interface MessageProps {
 const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
 
   const { currUser } = useContext(UserContext) as UserContextType;
-
+  const { handleDeleteMessage } = useContext(ChatContext) as ChatContextType;
   const [imageUrl, setImageUrl] = useState('' as string);
 
 
@@ -40,12 +45,21 @@ const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
     return time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   }
 
+
+  const deleteMessage = async () => {
+    console.log('delete message');
+    const response = axios.delete(`${message_api_path}/${messageData._id}`)
+    handleDeleteMessage(messageData._id);
+  }
+
   if (currUser === null) {
     return <></>
   }
 
   return (
-    <div className={`message px-4 py-1 flex flex-col ${messageData.fromUserId === currUser._id ? 'items-end' : 'items-start'}`}>
+    <div className={`message px-4 py-1 flex ${messageData.fromUserId === currUser._id ? 'justify-end' : 'justify-start'}`}>
+      {messageData.fromUserId === currUser._id &&
+      <button onClick={deleteMessage}><CiTrash /></button>}
       <div className={` max-w-full
         message-content p-2 rounded-lg whitespace-pre-wrap min-w-32
         ${messageData.fromUserId === currUser._id ? 'bg-secondary text-white' : 'bg-gray-300 text-black'}`}>

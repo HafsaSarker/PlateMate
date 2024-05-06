@@ -9,6 +9,7 @@ interface MessageData {
   imageName: string | null;
   room: string;
   sentAt: Date;
+  _id: string;
 }
 
 const socketHandler = (io: Server): void => {
@@ -33,6 +34,7 @@ const socketHandler = (io: Server): void => {
         message: data.message,
         imageName: data.imageName,
         sentAt: data.sentAt,
+        _id: data._id,
       });
       console.log(newMessage);
       // Add to MongoDB database

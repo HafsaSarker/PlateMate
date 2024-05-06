@@ -6,4 +6,5 @@ export interface MessageData {
   imageName: string | null;
   sentAt: Date;
   readStatus: boolean;
+  _id: string;
 }
