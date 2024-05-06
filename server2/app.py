@@ -417,7 +417,8 @@ def matching_model(users):
     features = ((features - features.min()) / (features.max() - features.min())) * 9 + 1
     max_clusters = 10
     silhouette_scores = [silhouette_score(features, get_demographics(features, centroid_randomizer(features, n_clusters))) for n_clusters in range(2, max_clusters + 1)]
-    best_cluster_count_index = silhouette_scores.index(max(silhouette_scores))
+    mean_silhouette_score = np.mean(silhouette_scores)
+    best_cluster_count_index = np.argmax(silhouette_scores)
     best_cluster_count = best_cluster_count_index + 2
     centroid_array = centroid_randomizer(features, best_cluster_count)
     distance = get_demographics(features, centroid_array)
