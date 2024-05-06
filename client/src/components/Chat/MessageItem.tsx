@@ -45,7 +45,9 @@ const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
   }
 
   return (
-    <div className={`message px-4 py-1 flex flex-col ${messageData.fromUserId === currUser._id ? 'items-end' : 'items-start'}`}>
+    <div className={`message px-4 py-1 flex ${messageData.fromUserId === currUser._id ? 'justify-end' : 'justify-start'}`}>
+      {messageData.fromUserId === currUser._id &&
+      <button>Delete</button>}
       <div className={` max-w-full
         message-content p-2 rounded-lg whitespace-pre-wrap min-w-32
         ${messageData.fromUserId === currUser._id ? 'bg-secondary text-white' : 'bg-gray-300 text-black'}`}>

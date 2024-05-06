@@ -101,9 +101,22 @@ async function countUnreadMessages(req: Request, res: Response): Promise<void> {
   }
 }
 
+async function deleteMessage(req: Request, res: Response): Promise<void> {
+  const messageId = req.params.messageId;
+  try {
+    await Message.findByIdAndDelete(messageId);
+    res.sendStatus(204);
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+
 export const messageController = {
   getMessages,
   getChatPartners,
   markMessagesAsRead,
-  countUnreadMessages
+  countUnreadMessages,
+  deleteMessage
 };
