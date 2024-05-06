@@ -8,6 +8,8 @@ import getImageUrl from '../../utils/getImageUrl';
 import { CiTrash } from "react-icons/ci";
 import axios from 'axios';
 import { message_api_path } from '../../api/message';
+import { ChatContext } from '../../context/ChatContext';
+import { ChatContextType } from '../../types/chatContextType';
 
 interface MessageProps {
   messageData: MessageData;
@@ -16,7 +18,7 @@ interface MessageProps {
 const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
 
   const { currUser } = useContext(UserContext) as UserContextType;
-
+  const { handleDeleteMessage } = useContext(ChatContext) as ChatContextType;
   const [imageUrl, setImageUrl] = useState('' as string);
 
 
@@ -47,6 +49,7 @@ const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
   const deleteMessage = async () => {
     console.log('delete message');
     const response = axios.delete(`${message_api_path}/${messageData._id}`)
+    handleDeleteMessage(messageData._id);
   }
 
   if (currUser === null) {
