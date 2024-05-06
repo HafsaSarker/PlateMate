@@ -26,3 +26,4 @@
 5. `venv\Scripts\activate` to activate virtual environment (or `source venv/bin/activate` on macOS/Linux)
 6. install required packages by `pip install flask flask-cors pymongo pandas scikit-learn python-dotenv certifi`
 7. `python app.py` to start flask app
+8. run `deactivate` to return to system's default Python environment
