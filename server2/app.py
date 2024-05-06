@@ -358,6 +358,8 @@ def assign_categories(users):
     users.loc[(users['profile.sex'] == 'other'), 'profile.sex'] = 3
     users.loc[(users['profile.sex'] == 0), 'profile.sex'] = 3
     
+    users['profile.height'] = users['profile.height_ft'] * 12 + users['profile.height_in']
+    
     users.loc[(users['profile.age'] == 'None'), 'profile.age'] = 18
     users['profile.age'] = pd.to_numeric(users['profile.age'], errors='coerce')
     
@@ -386,18 +388,6 @@ def calculate_silhouette_score(users_df):
         labels.extend([cluster_id] * len(users))
     silhouette = silhouette_score(users_df, labels)
     return silhouette
-
-def conversion_height(height):
-    if isinstance(height, int):
-        return height
-    parts = height.split()
-    feet = inches = 0
-    if 'ft' in parts:
-        feet = int(parts[parts.index('ft') - 1])
-    if 'in' in parts:
-        inches = int(parts[parts.index('in') - 1])
-    total_inches = feet * 12 + inches
-    return total_inches
 
 def new_dems(features, distance, n):
     return features.groupby(distance).apply(lambda x: np.exp(np.log(x).mean())).T
@@ -439,7 +429,8 @@ def get_users():
     find_values = {
   "_id": 1,
   "profile.sex": 1,
-  "profile.height": 1,
+  "profile.height_ft": 1,
+  "profile.height_in": 1,
   "profile.age": 1,
   "profile.lifeStyle": 1,
   "profile.foodCategory": 1,
@@ -485,12 +476,10 @@ def get_users():
     
     users_df = assign_categories(users_df)
     
-    users_df.drop(columns=['profile.pricePoint', 'profile.lifeStyle', 'profile.restaurantAttributes'], inplace=True)
+    users_df.drop(columns=['profile.pricePoint', 'profile.lifeStyle', 'profile.restaurantAttributes', 'profile.height_ft', 'profile.height_in'], inplace=True)
     
     default_value = 0
     users_df.fillna(default_value, inplace=True)
-    
-    users_df['profile.height'] = users_df['profile.height'].apply(conversion_height)
     
     users_dict = users_df.to_dict(orient='records')
     
