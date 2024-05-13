@@ -57,37 +57,15 @@ const Home = () => {
 
   // load similar users preferences change
   useEffect(() => {
-    // gets non-ML matched users
-    async function fetchSimilarUsers() {
+    async function fetchUsers() {
       if (!preferences) {
         return;
       }
 
       try {
-        const res = await axios.get(
-          `${user_api_path}/matches/${currUser?._id}`,
-          {
-            withCredentials: true,
-          },
-        );
-
-        // filter users based on preferences
-        const filteredUsers = filterUsers(preferences, res.data);
-
-        setUsers(filteredUsers);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    // gets ML matched users here
-    async function fetchRecommendedUsers() {
-      if (!preferences) {
-        return;
-      }
-
-      try {
+        // gets ML matched users
         let uids: string[] = [];
+        let filteredRecomendedUsers: User[] = [];
         const res = await axios.get(user_match_api_path);
         if (res && res.data && currUser) {
           // Find the scale that includes the current user id
@@ -103,21 +81,41 @@ const Home = () => {
             const allReccomendedUsers = await getRecommendedUsers(uids);
 
             // filter users based on preferences
-            const filteredReccomendedUsers = filterUsers(
+            filteredRecomendedUsers = filterUsers(
               preferences,
               allReccomendedUsers,
             );
 
-            setRecommendedUsers(filteredReccomendedUsers);
+            setRecommendedUsers(filteredRecomendedUsers);
           }
         }
+
+        // gets non-ML matched users
+        const result = await axios.get(
+          `${user_api_path}/matches/${currUser?._id}`,
+          {
+            withCredentials: true,
+          },
+        );
+
+        // filter users based on preferences
+        const filteredUsers = filterUsers(preferences, result.data);
+
+        // exclude recommended users from non-ML matched users
+        const uniqueUsers = filteredUsers.filter(
+          (user) =>
+            !filteredRecomendedUsers.some(
+              (recommendedUser) => recommendedUser._id === user._id,
+            ),
+        );
+
+        setUsers(uniqueUsers);
       } catch (error) {
         console.error(error);
       }
     }
 
-    fetchSimilarUsers();
-    fetchRecommendedUsers();
+    fetchUsers();
   }, [preferences, currUser]);
 
   return (
