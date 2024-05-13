@@ -16,6 +16,9 @@ import { preference_api_path } from '../api/preference';
 import { filterUsers } from '../utils/filterUsers';
 import { FaAnglesDown } from 'react-icons/fa6';
 import { IoInformationCircle } from 'react-icons/io5';
+import { user_match_api_path } from '../api/match';
+import { getRecommendedUsers } from '../utils/getRecommendedUsers';
+import Loader from '../components/loader/Loader';
 
 const Home = () => {
   const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
@@ -36,7 +39,7 @@ const Home = () => {
   const [showMatches, setShowMatches] = useState<boolean>(true);
   const [showRecommended, setShowRecommended] = useState<boolean>(true);
   // ML recommended users
-  const [recommendedUsers, setRecommendedUsers] = useState<User | null>(null);
+  const [recommendedUsers, setRecommendedUsers] = useState<User[] | null>(null);
 
   useEffect(() => {
     // get user preferences
@@ -55,14 +58,41 @@ const Home = () => {
 
   // load similar users preferences change
   useEffect(() => {
-    // gets non-ML matched users
-    async function fetchSimilarUsers() {
+    async function fetchUsers() {
       if (!preferences) {
         return;
       }
 
       try {
-        const res = await axios.get(
+        // gets ML matched users
+        let uids: string[] = [];
+        let filteredRecomendedUsers: User[] = [];
+        const res = await axios.get(user_match_api_path);
+        if (res && res.data && currUser) {
+          // Find the scale that includes the current user id
+          const scales = Object.keys(res.data);
+          const scaleWithCurrentUser = scales.find((scale) =>
+            res.data[scale].includes(currUser._id),
+          );
+
+          if (scaleWithCurrentUser) {
+            // uid of all ML recommended users
+            uids = Object.values(res.data[scaleWithCurrentUser]);
+
+            const allReccomendedUsers = await getRecommendedUsers(uids);
+
+            // filter users based on preferences
+            filteredRecomendedUsers = filterUsers(
+              preferences,
+              allReccomendedUsers,
+            );
+
+            setRecommendedUsers(filteredRecomendedUsers);
+          }
+        }
+
+        // gets non-ML matched users
+        const result = await axios.get(
           `${user_api_path}/matches/${currUser?._id}`,
           {
             withCredentials: true,
@@ -70,23 +100,23 @@ const Home = () => {
         );
 
         // filter users based on preferences
-        const filteredUsers = filterUsers(preferences, res.data);
+        const filteredUsers = filterUsers(preferences, result.data);
 
-        setUsers(filteredUsers);
+        // exclude recommended users from non-ML matched users
+        const uniqueUsers = filteredUsers.filter(
+          (user) =>
+            !filteredRecomendedUsers.some(
+              (recommendedUser) => recommendedUser._id === user._id,
+            ),
+        );
+
+        setUsers(uniqueUsers);
       } catch (error) {
         console.error(error);
       }
     }
 
-    // gets ML matched users here
-    async function fetchRecommendedUsers() {
-      console.log('function still in progress');
-      // get someUsers
-      // filer someUsers based on preferences
-      // setRecommendedUsers(someUsers)
-    }
-
-    fetchSimilarUsers();
+    fetchUsers();
   }, [preferences, currUser]);
 
   return (
@@ -115,7 +145,7 @@ const Home = () => {
           </section>
         )}
 
-        {users && (
+        {users && recommendedUsers ? (
           <>
             <div className="flex flex-col w-[500px] max-w-[600px] h-full pt-5 pb-2 px-4">
               <div className="flex w-full items-center justify-center gap-1 pb-3 font-semibold text-gray-800">
@@ -133,7 +163,7 @@ const Home = () => {
                 <section className="flex flex-col items-start w-full max-h-[250px]">
                   {/* PASS IN RECOMMENDED USERS HERE */}
                   <MatchedUsers
-                    users={users}
+                    users={recommendedUsers}
                     setShowProfile={setShowProfile}
                     setUser={setUser}
                   />
@@ -162,6 +192,10 @@ const Home = () => {
               )}
             </div>
           </>
+        ) : (
+          <div className="flex w-[500px] max-w-[600px] h-full items-center">
+            <Loader />
+          </div>
         )}
 
         {showFilters && <Filter setShowFilters={setShowFilters} />}
