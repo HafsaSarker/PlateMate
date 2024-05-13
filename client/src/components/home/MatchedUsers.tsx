@@ -28,7 +28,6 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({
       const urls = await Promise.all(
         users.map(async (user) => {
           const url = await getImageUrl(user.profile.profileImg);
-          if (!url) return { userId: user._id, url: 'user.png' };
           return { userId: user._id, url };
         }),
       );

@@ -1,7 +1,7 @@
 import { s3_api_path } from '../api/s3';
 
 const getImageUrl = async (imageName: string) => {
-  if (!imageName) return null;
+  if (!imageName) return 'user.png';
   try {
     const response = await fetch(`${s3_api_path}/get_url/${imageName}`);
     const data = await response.json();
@@ -9,7 +9,7 @@ const getImageUrl = async (imageName: string) => {
     return data.url;
   } catch (error) {
     console.error('Error fetching image URL:', error);
-    return null;
+    return 'user.png';
   }
 };
 

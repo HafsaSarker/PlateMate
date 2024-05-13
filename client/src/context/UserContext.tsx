@@ -11,7 +11,6 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [currUser, setCurrUser] = useState<User | null>(null);
   const [userImageUrl, setUserImageUrl] = useState<string>('');
 
-
   const fetchUserImage = async () => {
     if (!currUser?.profile.profileImg) {
       setUserImageUrl('user.png');
