@@ -1,8 +1,4 @@
-import axios from 'axios';
 import React, { useEffect, useState, useContext } from 'react';
-import { User } from '../../types/user';
-import { message_api_path } from '../../api/message';
-import { chat_partner_api_path } from '../../api/chat-partners';
 import { Cog8ToothIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 
@@ -14,56 +10,11 @@ import ChatListItem from './ChatListItem';
 
 const ChatList:React.FC = () => {
   const { currUser, userImageUrl } = useContext(UserContext) as UserContextType;
-  const {chatList, setChatList, currPartner} = useContext(ChatContext) as ChatContextType;
-  const {generateRoomId, getUserProfile} = useContext(ChatContext) as ChatContextType;
+  const {chatList, currPartner, messagesList} = useContext(ChatContext) as ChatContextType;
 
   const [searchInput, setSearchInput] = useState('');
-  const getMostRecentMessage = async (roomId:string) => {
-    try {
-      const response = await axios.get(`${message_api_path}/${roomId}?limit=1`);
-      const messageArray = await response.data;
-      const messageData = messageArray[0];
-      return messageData ? messageData : null;
-    } catch (error) {
-      console.error("Failed to fetch most recent message:", error);
-      return null;
-    }
-  }
 
-  const getPastPartnersId = async (userId:string) => {
-    // fetch request to get past partners id
-    try {
-      const response = await axios.get(`${chat_partner_api_path}/${userId}`);
-      const partnerIds = response.data[0].users;
-      return partnerIds;
-    } catch (error) {
-      console.error("Failed to fetch partner IDs:", error);
-    }
-  }
-
-  const getPastPartners = async (userId:string) => {
-    const partnerIds = await getPastPartnersId(userId);
-    const newChatList = [];
-
-    // for each old chat partner, get their profile and most recent message and add to the list
-    for (let partnerId of partnerIds) {
-        const roomId = generateRoomId(userId, partnerId);
-        const [partnerProfile, messageData] = await Promise.all([
-          getUserProfile(partnerId),
-          getMostRecentMessage(roomId)
-        ]);
-        if (partnerProfile) { // Only add to the list if the profile is not null
-          newChatList.push({ user: partnerProfile, room: roomId,
-              lastMessage: messageData.message, lastMessageTime: new Date(messageData.sentAt).getTime() });
-        }
-    }
-    // sort the list by most recent message
-    newChatList.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
-
-    setChatList(newChatList);
-  }
-
-
+  const { updateChatList } = useContext(ChatContext) as ChatContextType;
 
   const truncateMessage = (message:string, maxLength = 35) => {
     return message.length > maxLength ? message.substring(0, maxLength) + '...' : message;
@@ -74,8 +25,8 @@ const ChatList:React.FC = () => {
   }
 
   useEffect(() => {
-    getPastPartners(currUser._id);
-  }, [currPartner]);
+    updateChatList(currUser._id);
+  }, [currPartner, messagesList]);
 
   return (
     <section className='left-section w-[30%] min-w-[300px] border-x-2 border-gray-300 flex flex-col h-full'>
@@ -87,8 +38,6 @@ const ChatList:React.FC = () => {
           </div>
           <Cog8ToothIcon className="h-9" />
         </div>
-
-
 
         <div className='py-3 px-6 gap-4 flex justify-center items-center bg-background-dark mx-4 my-2 rounded-full'>
           <MagnifyingGlassIcon className='h-5 w-5'/>

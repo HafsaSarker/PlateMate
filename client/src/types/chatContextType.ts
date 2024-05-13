@@ -17,9 +17,9 @@ export interface ChatContextType {
   generateRoomId: (userId1:string, userId2:string) => string;
   fetchMessages: (roomId: string) => Promise<void>;
   getUserProfile: (userId:string) => Promise<User>;
-  updateChatList: (messageData: MessageData) => Promise<void>;
   sendMessage: () => Promise<void>;
   uploadImage: (file: File) => Promise<string>;
   currPartnerImg: string;
   handleDeleteMessage: (messageId: string) => void;
+  updateChatList: (userId:string) => Promise<void>;
 }
