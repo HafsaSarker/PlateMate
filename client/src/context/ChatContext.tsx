@@ -142,8 +142,10 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const fetchPartnerImage = async () => {
       if (currPartner && currPartner.profile.profileImg) {
+        console.log('fetching partner image')
         const imageUrl = await getImageUrl(currPartner.profile.profileImg);
         setCurrPartnerImg(imageUrl);
+        console.log(imageUrl)
       }
     }
     fetchPartnerImage();
