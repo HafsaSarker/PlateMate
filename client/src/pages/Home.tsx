@@ -18,6 +18,7 @@ import { FaAnglesDown } from 'react-icons/fa6';
 import { IoInformationCircle } from 'react-icons/io5';
 import { user_match_api_path } from '../api/match';
 import { getRecommendedUsers } from '../utils/getRecommendedUsers';
+import Loader from '../components/loader/Loader';
 
 const Home = () => {
   const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
@@ -144,7 +145,7 @@ const Home = () => {
           </section>
         )}
 
-        {users && recommendedUsers && (
+        {users && recommendedUsers ? (
           <>
             <div className="flex flex-col w-[500px] max-w-[600px] h-full pt-5 pb-2 px-4">
               <div className="flex w-full items-center justify-center gap-1 pb-3 font-semibold text-gray-800">
@@ -191,6 +192,10 @@ const Home = () => {
               )}
             </div>
           </>
+        ) : (
+          <div className="flex w-[500px] max-w-[600px] h-full items-center">
+            <Loader />
+          </div>
         )}
 
         {showFilters && <Filter setShowFilters={setShowFilters} />}
