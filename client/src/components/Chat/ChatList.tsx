@@ -36,7 +36,7 @@ const ChatList:React.FC = () => {
             <img className="rounded-full w-[60px] h-[60px]" src={userImageUrl} alt='user-pfp' />
             <h1 className='text-2xl font-bold'>Chats</h1>
           </div>
-          <Cog8ToothIcon className="h-9" />
+
         </div>
 
         <div className='py-3 px-6 gap-4 flex justify-center items-center bg-background-dark mx-4 my-2 rounded-full'>
