@@ -57,10 +57,10 @@ const MessageItem: React.FC<MessageProps> = ({ messageData }) => {
   }
 
   return (
-    <div className={`message px-4 py-1 flex ${messageData.fromUserId === currUser._id ? 'justify-end' : 'justify-start'}`}>
+    <div className={`message group px-4 py-1 flex ${messageData.fromUserId === currUser._id ? 'justify-end' : 'justify-start'}`}>
       {messageData.fromUserId === currUser._id &&
-      <button onClick={deleteMessage}><CiTrash /></button>}
-      <div className={` max-w-full
+      <button className="hidden group-hover:block pr-2" onClick={deleteMessage}><CiTrash className='h-4 w-4'/></button>}
+      <div className={`group max-w-full
         message-content p-2 rounded-lg whitespace-pre-wrap min-w-32
         ${messageData.fromUserId === currUser._id ? 'bg-secondary text-white' : 'bg-gray-300 text-black'}`}>
         <div className='max-w-[500px] break-words'>
