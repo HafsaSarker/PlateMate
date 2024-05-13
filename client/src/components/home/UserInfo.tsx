@@ -3,6 +3,8 @@ import { IoMdClose } from 'react-icons/io';
 import { User } from '../../types/user';
 import { UserInfoProps } from '../../types/userInfoProps';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import getImageUrl from "../../utils/getImageUrl";
 
 const UserInfo: React.FC<UserInfoProps> = ({
   setShowProfile,
@@ -20,10 +22,23 @@ const UserInfo: React.FC<UserInfoProps> = ({
     profileImg,
   } = { ...user?.profile } || ({} as User);
 
+  const [userImg, setUserImg] = useState<string>('user.png');
+
   function onClickActions() {
     setUser(null);
     setShowProfile(false);
   }
+
+  useEffect(() => {
+    if (profileImg) {
+      const fetchUserImage = async () => {
+        const url = await getImageUrl(profileImg);
+        setUserImg(url);
+      };
+      fetchUserImage();
+    }
+  }, [profileImg]);
+
   return (
     <div
       id="default-modal"
@@ -47,7 +62,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
           {/* <!-- Modal header --> */}
           <div className="flex flex-col items-center justify-between p-4 md:p-5 border-b rounded-t">
             <img
-              src={profileImg ? profileImg : 'user.png'}
+              src={userImg}
               alt="profile image"
               width={100}
               className="rounded-full mb-3"

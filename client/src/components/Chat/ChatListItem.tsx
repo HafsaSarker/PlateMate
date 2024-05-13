@@ -85,9 +85,6 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
   }, [currPartner])
 
   const fetchUserImage = async () => {
-    if (!user.profile.profileImg) {
-      setUserImage('user.png');
-    }
     const userImg = await getImageUrl(user.profile.profileImg);
     setUserImage(userImg);
     console.log(userImg)
@@ -100,7 +97,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ user, lastMessage, lastMess
   return (
     <div className={`flex p-4 cursor-pointer items-center hover:bg-background-dark ${user._id === currPartner?._id ? 'bg-background-dark' : ''}`} key={user._id}
       onClick={() => setCurrPartner(user)}>
-      <img className="w-12 h-12 rounded-full" src={userImage || "user.png"}/>
+      <img className="w-12 h-12 rounded-full" src={userImage}/>
       <div className='px-4'>
         <div className='font-bold'>{user.profile.firstName + ' ' + user.profile.lastName }</div>
         <p className='text-xs'>{truncateMessage(lastMessage)} •

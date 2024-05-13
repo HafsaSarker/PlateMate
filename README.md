@@ -1,5 +1,4 @@
 # PlateMate
-
 A dating app that matches users based on food, location, and restaurant preferences using Google Maps, Geolocation, and Yelp Fusion APIs.
 
 ## Features
