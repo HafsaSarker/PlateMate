@@ -16,6 +16,8 @@ import { preference_api_path } from '../api/preference';
 import { filterUsers } from '../utils/filterUsers';
 import { FaAnglesDown } from 'react-icons/fa6';
 import { IoInformationCircle } from 'react-icons/io5';
+import { user_match_api_path } from '../api/match';
+import { getRecommendedUsers } from '../utils/getRecommendedUsers';
 
 const Home = () => {
   const [clickedRestaurant, setClickedRestaurant] = useState<Restaurant | null>(
@@ -36,7 +38,7 @@ const Home = () => {
   const [showMatches, setShowMatches] = useState<boolean>(true);
   const [showRecommended, setShowRecommended] = useState<boolean>(true);
   // ML recommended users
-  const [recommendedUsers, setRecommendedUsers] = useState<User | null>(null);
+  const [recommendedUsers, setRecommendedUsers] = useState<User[] | null>(null);
 
   useEffect(() => {
     // get user preferences
@@ -80,13 +82,42 @@ const Home = () => {
 
     // gets ML matched users here
     async function fetchRecommendedUsers() {
-      console.log('function still in progress');
-      // get someUsers
-      // filer someUsers based on preferences
-      // setRecommendedUsers(someUsers)
+      if (!preferences) {
+        return;
+      }
+
+      try {
+        let uids: string[] = [];
+        const res = await axios.get(user_match_api_path);
+        if (res && res.data && currUser) {
+          // Find the scale that includes the current user id
+          const scales = Object.keys(res.data);
+          const scaleWithCurrentUser = scales.find((scale) =>
+            res.data[scale].includes(currUser._id),
+          );
+
+          if (scaleWithCurrentUser) {
+            // uid of all ML recommended users
+            uids = Object.values(res.data[scaleWithCurrentUser]);
+
+            const allReccomendedUsers = await getRecommendedUsers(uids);
+
+            // filter users based on preferences
+            const filteredReccomendedUsers = filterUsers(
+              preferences,
+              allReccomendedUsers,
+            );
+
+            setRecommendedUsers(filteredReccomendedUsers);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     fetchSimilarUsers();
+    fetchRecommendedUsers();
   }, [preferences, currUser]);
 
   return (
@@ -115,7 +146,7 @@ const Home = () => {
           </section>
         )}
 
-        {users && (
+        {users && recommendedUsers && (
           <>
             <div className="flex flex-col w-[500px] max-w-[600px] h-full pt-5 pb-2 px-4">
               <div className="flex w-full items-center justify-center gap-1 pb-3 font-semibold text-gray-800">
@@ -133,7 +164,7 @@ const Home = () => {
                 <section className="flex flex-col items-start w-full max-h-[250px]">
                   {/* PASS IN RECOMMENDED USERS HERE */}
                   <MatchedUsers
-                    users={users}
+                    users={recommendedUsers}
                     setShowProfile={setShowProfile}
                     setUser={setUser}
                   />
