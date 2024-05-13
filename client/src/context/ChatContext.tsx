@@ -68,50 +68,50 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       return null;
     }
   }
-  const updateChatList = async (messageData: MessageData) => {
-    // Check if the message receiver is not in the current partner list
-    console.log('test')
-    // get partner id
-    let partnerId;
-    if (messageData.fromUserId != currUser?._id) {
-      partnerId = messageData.fromUserId;
-    } else {
-      partnerId = messageData.toUserId;
+
+  const getMostRecentMessage = async (roomId:string) => {
+    try {
+      const response = await axios.get(`${message_api_path}/${roomId}?limit=1`);
+      const messageArray = await response.data;
+      const messageData = messageArray[0];
+      return messageData ? messageData : null;
+    } catch (error) {
+      console.error("Failed to fetch most recent message:", error);
+      return null;
     }
-    const partnerProfile = await getUserProfile(partnerId);
-    if (!chatList.some(partner => partner.user._id === partnerId)) {
-      try {
-        // Fetch user profile data of the message receiver
-        if (partnerProfile) {
-          // Create new partner data
-          const newPartnerData = {
-            user: partnerProfile,
-            room: messageData.room,
-            lastMessage: messageData.message,
-            lastMessageTime: Date.now(),
-          };
-          // Update the partner list by adding the new partner
-          setChatList(oldList => [newPartnerData, ...oldList]);
-        }
-      } catch (error) {
-        console.error("Error updating partner list:", error);
-      }
-    } else {
-      console.log(messageData)
-      // If the user already exists in the partner list, update their last message and time
-      setChatList(chatList.map(partner => {
-        if (partner.user._id === currPartner?._id) {
-          return {
-            ...partner, // Copy all existing partner properties
-            lastMessage: messageData.message, // Set the new last message
-            lastMessageTime: Date.now(), // Set the new last message time, assuming you want the current time
-          };
-        } else {
-          return partner; // Return the unchanged partner object
-        }
-      }).sort((a, b) => b.lastMessageTime - a.lastMessageTime));
+  }
+
+  const getPartnerIds = async (userId:string) => {
+    // fetch request to get past partners id
+    try {
+      const response = await axios.get(`${message_api_path}/partners/${userId}`);
+      const partnerIds = response.data[0].users;
+      return partnerIds;
+    } catch (error) {
+      console.error("Failed to fetch partner IDs:", error);
     }
-  };
+  }
+
+  const updateChatList = async (userId:string) => {
+    const partnerIds = await getPartnerIds(userId);
+    const newChatList = [];
+
+    // for each old chat partner, get their profile and most recent message and add to the list
+    for (let partnerId of partnerIds) {
+        const roomId = generateRoomId(userId, partnerId);
+        const [partnerProfile, messageData] = await Promise.all([
+          getUserProfile(partnerId),
+          getMostRecentMessage(roomId)
+        ]);
+        if (partnerProfile) { // Only add to the list if the profile is not null
+          newChatList.push({ user: partnerProfile, room: roomId,
+              lastMessage: messageData.message, lastMessageTime: new Date(messageData.sentAt).getTime() });
+        }
+    }
+    // sort the list by most recent message
+    newChatList.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+    setChatList(newChatList);
+  }
 
   const sendMessage = async (): Promise<void> => {
     if ((messageInput === '' && imageFile === null) || !currUser || !currPartner) return;
@@ -136,7 +136,7 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
     setMessagesList((messagesList) => [...messagesList, messageData]);
     setMessageInput('');
     console.log(messagesList)
-    updateChatList(messageData);
+    updateChatList(currUser._id);
   };
 
   useEffect(() => {
@@ -163,7 +163,9 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
           ...messageData,
           sentAt: new Date(messageData.sentAt)
         }]);
-        updateChatList(messageData);
+        if (currUser) {
+          updateChatList(currUser._id);
+        }
       };
 
       socket.on('receive_message', receiveMessage);
@@ -204,11 +206,11 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       generateRoomId,
       fetchMessages,
       getUserProfile,
-      updateChatList,
       sendMessage,
       uploadImage,
       currPartnerImg,
       handleDeleteMessage,
+      updateChatList,
       }}>
       {children}
     </ChatContext.Provider>
