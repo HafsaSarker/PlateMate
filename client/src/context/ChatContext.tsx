@@ -144,8 +144,6 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
       if (currPartner && currPartner.profile.profileImg) {
         const imageUrl = await getImageUrl(currPartner.profile.profileImg);
         setCurrPartnerImg(imageUrl);
-      } else {
-        setCurrPartnerImg('user.png');
       }
     }
     fetchPartnerImage();

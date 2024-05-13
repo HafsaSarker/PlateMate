@@ -19,7 +19,7 @@ const SideBar: React.FC<SideBarProps> = ({ toggle }) => {
   const {currPartner} = useContext(ChatContext) as ChatContextType;
 
   const [showProfile, setShowProfile] = useState<boolean>(false);
-  const [setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const [searchInput, setSearchInput] = useState('');
   const [searchMessageList, setSearchMessageList] = useState<MessageData[]>([]);

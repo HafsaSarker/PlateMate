@@ -42,8 +42,6 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
     sendMessage();
   }
 
-
-
   useEffect(() => {
     scrollToBottom();
   }, [messagesList]);
@@ -65,7 +63,7 @@ const ChatBox: React.FC<ChatBoxProps> = () => {
       <section className='flex flex-col right-section chatbox w-full'>
         <div className='chat-heading flex bg-primary p-3 items-center'>
           <div className='flex items-center'>
-            <img className='w-10 h-10 rounded-full' src={currPartnerImg || "user.png"}/>
+            <img className='w-10 h-10 rounded-full' src={currPartnerImg}/>
 
             <h3 className='pl-3'>{partnerUsername}</h3>
           </div>
