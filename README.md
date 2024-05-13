@@ -1,15 +1,26 @@
-# Getting started
+# PlateDate
+A dating app that matches users based on food, location, and restaurant preferences using Google Maps, Geolocation, and Yelp Fusion APIs.
 
+## Features
+* Real-time chatting
+* Restaurant selection
+* User matching
+  * Machine learning algorithms
+  * User preferences  
+* Customizable profile
+* User authentication
+
+## Installation
 1. Clone this repo using `git clone` command
 
-# Run client
+### Run client
 
 1. `cd client`
 2. create the env file in client directory (with Google Map API key and ID)
 3. `npm i`
 4. `npm run dev` to get localhost server running
 
-# Run typescript server
+### Run typescript server
 
 1. Open a new terminal
 2. `cd server`
@@ -17,7 +28,7 @@
 4. `npm i`
 5. `npm start` to get server running
 
-# Run server2 (for ML recommended users)
+### Run server2 (for ML recommended users)
 
 1. Open a new terminal (make sure you have python3 installed)
 2. `cd server2`
