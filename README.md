@@ -1,16 +1,19 @@
-# PlateDate
+# PlateMate
+
 A dating app that matches users based on food, location, and restaurant preferences using Google Maps, Geolocation, and Yelp Fusion APIs.
 
 ## Features
-* Real-time chatting
-* Restaurant selection
-* User matching
-  * Machine learning algorithms
-  * User preferences  
-* Customizable profile
-* User authentication
+
+- Real-time chatting
+- Restaurant selection
+- User matching
+  - Machine learning algorithms
+  - User preferences
+- Customizable profile
+- User authentication
 
 ## Installation
+
 1. Clone this repo using `git clone` command
 
 ### Run client
