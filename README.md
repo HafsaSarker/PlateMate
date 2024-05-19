@@ -48,6 +48,7 @@
       <ul>
         <li><a href="#features">Features</a></li>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#mini-demo">Mini Demo</a></li>
       </ul>
     </li>
     <li>
@@ -89,6 +90,17 @@
 * [![TypeScript][TypeScript]][TypeScript-url]
 * [![Google Maps API][GoogleMaps]][GoogleMaps-url]
 * [![Yelp Fusion API][Yelp]][Yelp-url]
+
+### Mini Demo
+
+##### Register Page
+<img src="client/public/demo/authentication.png" width="600">
+
+##### Home Page
+<img src="client/public/demo/home.png" width="600">
+
+##### Filter Matches
+<img src="client/public/demo/filter_matches.png" width="600">
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
