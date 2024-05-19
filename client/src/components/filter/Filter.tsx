@@ -135,7 +135,7 @@ const Filter: React.FC<FilterProps> = ({ setShowFilters }) => {
     >
       <div className="relative p-4 w-full max-w-2xl max-h-full">
         {/* <!-- Modal content --> */}
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div className="relative bg-white rounded-lg shadow">
           {/* <!-- Modal close btn --> */}
           <div className="w-full flex items-end pr-2 pt-2">
             <button
