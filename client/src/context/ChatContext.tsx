@@ -166,6 +166,9 @@ export const ChatContextProvider: React.FC<{ children: React.ReactNode }> = ({
         if (currUser) {
           updateChatList(currUser._id);
         }
+        fetch(`${message_api_path}/markRead/${room}/${messageData.fromUserId}`, {
+          method: 'PUT',
+        });
       };
 
       socket.on('receive_message', receiveMessage);
