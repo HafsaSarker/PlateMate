@@ -4,7 +4,7 @@ import { User } from '../../types/user';
 import { UserInfoProps } from '../../types/userInfoProps';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import getImageUrl from "../../utils/getImageUrl";
+import getImageUrl from '../../utils/getImageUrl';
 
 const UserInfo: React.FC<UserInfoProps> = ({
   setShowProfile,
@@ -47,7 +47,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
     >
       <div className="relative p-4 w-full max-w-2xl max-h-full">
         {/* <!-- Modal content --> */}
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div className="relative bg-white rounded-lg shadow">
           {/* <!-- Modal close btn --> */}
           <div className="w-full flex items-end pr-2 pt-2">
             <button
@@ -64,8 +64,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
             <img
               src={userImg}
               alt="profile image"
-              width={100}
-              className="rounded-full mb-3"
+              className="w-[100px] h-[100px] object-cover rounded-full mb-3"
             />
             <h3 className="text-xl font-semibold text-gray-900 ">
               {firstName} {lastName}

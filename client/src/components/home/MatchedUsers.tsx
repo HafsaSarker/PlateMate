@@ -65,7 +65,7 @@ const MatchedUsers: React.FC<MatchedUsersProp> = ({
               <div className="flex items-center gap-2">
                 {user.profile.profileImg ? (
                   <img
-                    className="w-10 h-10 rounded-full"
+                    className="w-10 h-10 rounded-full object-cover"
                     src={userImageUrls[user._id]}
                   />
                 ) : (
