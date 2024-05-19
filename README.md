@@ -124,8 +124,13 @@ To get a local copy up and running, follow these steps.
    ```sh
    git clone https://github.com/HafsaSarker/PlateMate.git
    ```
+   Open Directory
+   
+    ```sh
+   cd PlateMate
+   ```
 
-2. Run the client:
+3. Run the client:
 
    ```sh
    cd client
@@ -146,7 +151,7 @@ To get a local copy up and running, follow these steps.
    npm run dev
    ```
 
-3. Run the TypeScript server:
+4. Run the TypeScript server:
 
    Open a new terminal and navigate to the server directory:
 
@@ -173,7 +178,7 @@ To get a local copy up and running, follow these steps.
    npm start
    ```
 
-4. Run server2 (for ML recommended users):
+5. Run server2 (for ML recommended users):
 
    Open a new terminal and navigate to the server2 directory:
 
