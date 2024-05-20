@@ -141,7 +141,6 @@ To get a local copy up and running, follow these steps.
    ```sh
    VITE_MAPS_API=your_google_maps_api_key
    VITE_MAP_ID=your_google_maps_api_id
-   VITE_BACKEND_URL=your_backend_url
    ```
 
    Install NPM packages and run the development server:
